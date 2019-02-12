@@ -43,7 +43,7 @@ Then you're ready to use the usual `rails` commands (like `bin/rails serve`) to 
 Start up the Rails server with:
 
 ```shell
-bin/rails serve
+bin/rails server
 ```
 
 This serves the entire app, including all frontend assets (bundled using [Webpack](https://webpack.js.org/)).
