@@ -50,7 +50,7 @@ services:
       - 3000:3000
 
   sidekiq_redis:
-    image: redis:5.0.3
+    image: redis:5.0.3-alpine
     ports:
       - 6379:6379
 
