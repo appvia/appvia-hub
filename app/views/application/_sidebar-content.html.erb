@@ -2,7 +2,7 @@
   <%= link_to 'Home', root_path %>
 </h6>
 
-<hr class="" />
+<hr />
 
 <h6 class="sidebar-heading">
   <%= link_to 'New space', new_project_path, class: 'btn btn-sm btn-primary float-right' %>
@@ -14,14 +14,14 @@
   <% end %>
 </ul>
 
-<hr class="" />
+<hr />
 
 <h6 class="sidebar-heading">
   <%= link_to 'Users', users_path %>
 </h6>
 
 <% if current_user.admin? %>
-  <hr class="" />
+  <hr />
 
   <h6 class="sidebar-heading">
     <%= link_to 'Admin', admin_integrations_path %>
