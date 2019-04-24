@@ -1,31 +1,47 @@
 <h1>Users</h1>
 
-<% @users.each do |user| %>
-  <div class="card shadow-sm mb-3">
-    <div class="card-body">
-      <h5 class="card-title">
-        <% if user.admin? %>
-          <span class="badge badge-success float-right">
-            Admin
-          </span>
-        <% end %>
 
-        <%= user.email %>
-      </h5>
-      <% if user.name.present? %>
-        <h6 class="card-subtitle mb-2 text-muted">
-          <%= user.name %>
-        </h6>
-      <% end %>
-    </div>
-    <% if current_user.admin? %>
-      <div class="card-footer text-muted">
-        <% if user.admin? %>
-          <%= update_user_role_link 'Revoke Admin', user, :user %>
-        <% else %>
-          <%= update_user_role_link 'Make Admin', user, :admin %>
-        <% end %>
-      </div>
-    <% end %>
-  </div>
-<% end %>
+<table class="table">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Access</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <% @users.each do |user| %>
+            <tr>
+                <td>
+                    <% if user.name.present? %>
+                        <%= user.name %>
+                    <% end %>
+                </td>
+                <td>
+                    <%= user.email %>
+                </td>
+                <td>
+                    <% if user.admin? %>
+                      <span class="badge badge-pill badge-success">
+                        Admin
+                      </span>
+                    <% else %>
+                    <span class="badge badge-pill badge-secondary">
+                      User
+                    </span>
+                    <% end %>
+                </td>
+                <td>
+                    <% if current_user.admin? %>
+                        <% if user.admin? %>
+                          <%= update_user_role_link 'Revoke Admin', user, :user %>
+                        <% else %>
+                          <%= update_user_role_link 'Make Admin', user, :admin %>
+                        <% end %>
+                    <% end %>
+                </td>
+            </tr>
+            <% end %>
+        </tbody>
+    </table>

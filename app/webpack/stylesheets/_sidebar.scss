@@ -24,7 +24,7 @@
     @extend .text-muted;
     font-size: .85rem;
     text-transform: uppercase;
-
+    margin-top:0 !important;
     .btn-sm {
       font-size: 0.75em;
       margin-top: -5px;
@@ -32,18 +32,29 @@
   }
 
   .nav-link {
+    padding: 0.2rem 2rem;
     @extend .pl-3;
     font-weight: 500;
-    color: #333;
+    color: $green;
 
+    &:hover, &:hover i{
+        color: darken($green, 15%);
+    }
+    &:hover{
+        text-decoration: underline;
+    }
     &.active {
-      color: $cyan;
+      color: $black;
+          .fas,
+          .fab {
+            color: $black;
+          }
     }
   }
 
   .fas,
   .fab {
-    color: $gray-500;
+    color: $green;
     margin-right: 0.3em;
   }
 }

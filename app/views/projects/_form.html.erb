@@ -1,19 +1,26 @@
 <%= bootstrap_form_with(model: project, local: true) do |form| %>
   <%= form.alert_message "Please fix the issues below:" %>
 
-  <%= form.text_field :name %>
+  <%= form.text_field :name, class: "col-md-12 col-lg-4" %>
 
   <% if project.new_record? %>
     <%=
       form.text_field :slug,
+        class: "col-md-12 col-lg-4",
         help: Project::SLUG_FORMAT_TEXT.capitalize,
         pattern: "^#{Project::SLUG_FORMAT_REGEX}$"
     %>
   <% else %>
-    <%= form.static_control :slug %>
+    <%=
+        form.static_control :slug,
+            class: "col-md-12 col-lg-4"
+    %>
   <% end %>
 
-  <%= form.text_area :description %>
+  <%=
+    form.text_area :description,
+    class: "col-md-12 col-lg-4"
+    %>
 
   <% submit_label = project.new_record? ? 'Create space' : 'Update space' %>
   <%= form.primary submit_label %>

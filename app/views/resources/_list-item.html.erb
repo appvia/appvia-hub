@@ -1,13 +1,13 @@
-<div class="list-group-item">
+<div class="list-group-item bg-light">
   <%= tag.span(resource.status, class: "badge badge-#{resource_status_class(resource.status)} float-right ml-3") %>
 
-  <h5 class="text-primary">
+  <h6 class="text-primary">
     <%= resource.name %>
 
-    <small class="text-muted ml-2">
+    <span class="text-muted ml-2">
       on <%= resource.integration.name %>
-    </small>
-  </h5>
+    </span>
+  </h6>
 
   <% unless resource.pending? %>
     <p>

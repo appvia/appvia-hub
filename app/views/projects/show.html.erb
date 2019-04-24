@@ -1,4 +1,4 @@
-<div class="btn-group float-right" role="group" aria-label="Space actions">
+<div class="btn-group float-right mt-3" role="group" aria-label="Space actions">
   <button id="projectActionsGroupDropdown" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     Actions
   </button>
@@ -10,18 +10,18 @@
 
 <h1>
   <%= @project.name %>
-
-  <small class="badge badge-info ml-3 text-monospace">
-    <%= @project.slug %>
-  </small>
 </h1>
 
-<p class="text-muted">
+<span class="badge badge-info mr-3 text-monospace">
+  <%= @project.slug %>
+</span>
+
+<span class="small text-muted">
   Created <%= local_time_ago(@project.created_at) %>
-</p>
+</span>
 
 <% if @project.description.present? %>
-  <div class="lead">
+  <div class="lead mt-3">
     <%= simple_format @project.description %>
   </div>
 <% end %>

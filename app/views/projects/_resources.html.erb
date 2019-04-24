@@ -2,11 +2,11 @@
   <% project.resources_by_type.each do |group| %>
     <% resources = group[:resources] %>
 
-    <h4 class="m-0 p-3 bg-light">
+    <h5 class="m-0 p-3">
       <%= resource_icon group[:id] %>
       <%= group[:name] %>
-      <span class="text-muted ml-2">(<%= resources.count -%>)</span>
-    </h4>
+      <span class="ml-2">(<%= resources.count -%>)</span>
+    </h5>
 
     <div class="list-group list-group-flush">
       <% if resources.present? %>
@@ -14,7 +14,7 @@
           <%= render partial: 'resources/list-item', locals: { resource: r } %>
         <% end %>
       <% else %>
-        <div class="list-group-item text-center">
+        <div class="list-group-item text-center bg-light">
           <span class="none-text inline-block">
             No resources of this type yet
           </span>

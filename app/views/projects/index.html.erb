@@ -9,23 +9,30 @@
 <% @projects.each do |project| %>
   <div class="card shadow-sm mb-3">
     <div class="card-body">
-      <h5 class="card-title">
-        <%= icon 'cube' %>
-        <%= link_to project.name, project_path(project) %>
 
-        <small class="badge badge-info ml-2 text-monospace">
-          <%= project.slug %>
-        </small>
-      </h5>
-
-      <% if project.description.present? %>
-        <div class="card-text mt-3">
-          <%= simple_format project.description %>
+        <div class="row">
+            <div class="col-md-10 col-sm-12">
+                <h5 class="card-title float-left mr-2">
+                  <%= icon 'cube' %>
+                  <%= link_to project.name, project_path(project) %>
+                </h5>
+                <small class="badge badge-info text-monospace">
+                  <%= project.slug %>
+                </small>
+                <% if project.description.present? %>
+                  <div class="card-text mt-3">
+                    <%= simple_format project.description %>
+                  </div>
+                <% end %>
+            </div>
+            <div class="col-md-2 col-sm-12">
+                <div class="float-right">
+                  <%= delete_project_link project, css_class: 'float-right btn btn-danger' %>
+                </div>
+            </div>
         </div>
-      <% end %>
+
     </div>
-    <div class="card-footer text-muted">
-      <%= delete_project_link project, css_class: 'float-right btn btn-danger' %>
-    </div>
+
   </div>
 <% end %>
