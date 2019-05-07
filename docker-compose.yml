@@ -85,5 +85,15 @@ services:
     ports:
       - 10003:10003
 
+  grafana_agent:
+    image: quay.io/appvia/hub-grafana-agent:v0.0.1-rc1
+    environment:
+      - DEBUG=true
+      - HTTP_PORT=10004
+      - LISTEN=0.0.0.0
+      - AUTH_TOKEN=secret-grafana-agent-token
+    ports:
+      - 10004:10004
+
 volumes:
   pgdata:
