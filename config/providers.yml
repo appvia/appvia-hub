@@ -170,3 +170,14 @@
       - url
       - api_key
       - template_url
+
+- id: loki
+  name: Loki
+  config_spec:
+    properties:
+      grafana_url:
+        title: Grafana URL
+        description: The URL to a Grafana instance with the Loki data source configured.
+        type: string
+    required:
+      - grafana_url
