@@ -51,6 +51,11 @@ module Resources
           grafana_api_key: config['api_key'],
           grafana_ca_cert: config['ca_cert']
         )
+      end,
+      'loki' => lambda do |config|
+        LokiAgent.new(
+          grafana_url: config['grafana_url']
+        )
       end
     }.freeze
 

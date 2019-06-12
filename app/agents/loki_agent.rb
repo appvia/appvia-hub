@@ -24,7 +24,7 @@ class LokiAgent
     end
   end
 
-  def delete_logging_view(namespace)
+  def delete_logging_view(_namespace)
     true
   end
 end
