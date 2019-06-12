@@ -47,6 +47,17 @@ module Resources
 
           true
         end
+      },
+      'Resources::LoggingView' => {
+        'loki' => lambda do |resource, agent, config|
+          namespace = config['namespace']
+
+          result = agent.construct_logging_view_url resource.name, namespace: namespace
+
+          resource.url = result.url
+
+          true
+        end
       }
     }.freeze
 
