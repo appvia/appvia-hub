@@ -28,6 +28,12 @@ module Resources
           agent.delete_dashboard resource.name
           true
         end
+      },
+      'Resources::LoggingView' => {
+        'grafana' => lambda do |resource, agent, _config|
+          agent.delete_logging_view resource.name
+          true
+        end
       }
     }.freeze
 

@@ -40,6 +40,13 @@ class ResourceTypesService
           name: 'Monitoring Dashboards',
           top_level: false,
           providers: %w[grafana].freeze
+        },
+        {
+          id: 'LoggingView',
+          class: 'Resources::LoggingView',
+          name: 'Logging View',
+          top_level: false,
+          providers: %w[loki].freeze
         }
       ].map(&:freeze).freeze
     end

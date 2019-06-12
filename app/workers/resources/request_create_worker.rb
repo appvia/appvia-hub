@@ -52,7 +52,7 @@ module Resources
         'loki' => lambda do |resource, agent, config|
           namespace = config['namespace']
 
-          result = agent.construct_logging_view_url resource.name, namespace: namespace
+          result = agent.create_logging_view resource.name, namespace: namespace
 
           resource.url = result.url
 
