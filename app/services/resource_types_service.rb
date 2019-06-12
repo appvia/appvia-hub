@@ -10,7 +10,7 @@ class ResourceTypesService
 
   class << self
     extend Memoist
-
+    # rubocop:disable Metrics/MethodLength
     def all
       [
         {
@@ -42,14 +42,15 @@ class ResourceTypesService
           providers: %w[grafana].freeze
         },
         {
-          id: 'LoggingView',
-          class: 'Resources::LoggingView',
+          id: 'LoggingDashboard',
+          class: 'Resources::LoggingDashboard',
           name: 'Logging View',
           top_level: false,
           providers: %w[loki].freeze
         }
       ].map(&:freeze).freeze
     end
+    # rubocop:enable Metrics/MethodLength
     memoize :all
 
     def get(id)

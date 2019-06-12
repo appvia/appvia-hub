@@ -29,7 +29,7 @@ module Resources
           true
         end
       },
-      'Resources::LoggingView' => {
+      'Resources::LoggingDashboard' => {
         'grafana' => lambda do |resource, agent, _config|
           agent.delete_logging_view resource.name
           true

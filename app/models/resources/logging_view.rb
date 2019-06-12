@@ -1,5 +1,5 @@
 module Resources
-  class LoggingView < Resource
+  class LoggingDashboard < Resource
     attr_json :url, :string
   end
 end

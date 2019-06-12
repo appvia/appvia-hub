@@ -48,7 +48,7 @@ module Resources
           true
         end
       },
-      'Resources::LoggingView' => {
+      'Resources::LoggingDashboard' => {
         'loki' => lambda do |resource, agent, config|
           namespace = config['namespace']
 
