@@ -50,9 +50,9 @@ module Resources
       },
       'Resources::LoggingDashboard' => {
         'loki' => lambda do |resource, agent, config|
-          namespace = config['namespace']
+          grafana_url = config['grafana_url']
 
-          result = agent.create_logging_view resource.name, namespace: namespace
+          result = agent.create_logging_view resource.name, grafana_url: grafana_url
 
           resource.url = result.url
 
