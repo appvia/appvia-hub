@@ -31,7 +31,7 @@ module Resources
       },
       'Resources::LoggingDashboard' => {
         'grafana' => lambda do |resource, agent, _config|
-          agent.delete_logging_view resource.name
+          agent.delete_logging_dashboard resource.name
           true
         end
       }
