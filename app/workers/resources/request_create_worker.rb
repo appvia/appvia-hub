@@ -33,6 +33,7 @@ module Resources
           agent.create_namespace resource.name
 
           ResourceProvisioningService.new.request_dependent_create resource, 'MonitoringDashboard'
+          ResourceProvisioningService.new.request_dependent_create resource, 'LoggingDashboard'
 
           true
         end
