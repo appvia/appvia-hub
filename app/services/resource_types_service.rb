@@ -44,7 +44,7 @@ class ResourceTypesService
         {
           id: 'LoggingDashboard',
           class: 'Resources::LoggingDashboard',
-          name: 'Logging View',
+          name: 'Logging Dashboard',
           top_level: false,
           providers: %w[loki].freeze
         }
