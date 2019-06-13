@@ -55,7 +55,7 @@ module Resources
 
           result = agent.create_logging_dashboard resource.name, query_expression, grafana_url: grafana_url
 
-          resource.url = result.url
+          resource.url = result
 
           true
         end
