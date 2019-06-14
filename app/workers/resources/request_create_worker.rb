@@ -50,7 +50,7 @@ module Resources
         end
       },
       'Resources::LoggingDashboard' => {
-        'loki' => lambda do |resource, agent, config|
+        'loki' => lambda do |resource, agent, _config|
           query_expression = '{namespace=\"' + resource.name + '\"}'
 
           result = agent.create_logging_dashboard query_expression
