@@ -30,7 +30,7 @@ module Resources
         end
       },
       'Resources::LoggingDashboard' => {
-        'loki' => lambda do |resource, agent, _config|
+        'loki' => lambda do |_resource, _agent, _config|
           true
         end
       }

@@ -3,7 +3,7 @@ class LokiAgent
     @grafana_url = grafana_url
   end
 
-  def create_logging_dashboard(name, query_expression)
+  def create_logging_dashboard(query_expression)
     logging_view_uri = 'explore?left=[' \
                           '"now-6h",' \
                           '"now",' \

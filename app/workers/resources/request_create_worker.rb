@@ -53,7 +53,7 @@ module Resources
         'loki' => lambda do |resource, agent, config|
           query_expression = '{namespace=\"' + resource.name + '\"}'
 
-          result = agent.create_logging_dashboard resource.name, query_expression
+          result = agent.create_logging_dashboard query_expression
 
           resource.url = result
 
