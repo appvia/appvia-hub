@@ -16,6 +16,8 @@ module ResourcesHelper
       icon 'cloud'
     when Resources::MonitoringDashboard, 'Resources::MonitoringDashboard', 'MonitoringDashboard'
       icon 'tachometer-alt'
+    when Resources::LoggingDashboard, 'Resources::LoggingDashboard', 'LoggingDashboard'
+      icon 'stream'
     else
       icon 'cogs'
     end
