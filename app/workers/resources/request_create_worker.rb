@@ -52,7 +52,7 @@ module Resources
       'Resources::LoggingDashboard' => {
         'loki' => lambda do |resource, agent, config|
           grafana_url = config['grafana_url']
-          query_expression = '{"namespace":\"' + resource.name + '\"}'
+          query_expression = '{namespace=\"' + resource.name + '\"}'
 
           result = agent.create_logging_dashboard resource.name, query_expression, grafana_url: grafana_url
 

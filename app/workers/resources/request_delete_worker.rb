@@ -30,8 +30,7 @@ module Resources
         end
       },
       'Resources::LoggingDashboard' => {
-        'grafana' => lambda do |resource, agent, _config|
-          agent.delete_logging_dashboard resource.name
+        'loki' => lambda do |resource, agent, _config|
           true
         end
       }
