@@ -35,7 +35,7 @@ RSpec.describe 'Logging Dashboards – Loki' do
     let :agent_create_method_call_success do
       lambda do |agent, resource|
         expect(agent).to receive(:create_logging_dashboard)
-          .with('{namespace=\"' + resource.name + '\}')
+          .with('{namespace=\"' + resource.name + '\"}')
           .and_return(agent_create_response)
       end
     end
