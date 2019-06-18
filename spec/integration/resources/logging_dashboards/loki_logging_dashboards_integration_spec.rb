@@ -82,6 +82,5 @@ RSpec.describe 'Logging Dashboards – Loki' do
           .and_raise('Something broked')
       end
     end
-
   end
 end
