@@ -29,7 +29,9 @@ RSpec.describe 'Logging Dashboards – Loki' do
     end
 
     let :agent_create_response do
-      "http://grafana/explore%3Fleft%3D%5B%22now-6h%22%2C%22now%22%2C%22Loki%22%2C%7B%22expr%22%3A%22%7Bnamespace%3D%5C%22#{resource.name}%5C%22%7D%22%7D%2C%7B%22ui%22%3A%5Btrue%2Ctrue%2Ctrue%2C%22none%22%5D%7D%5D"
+      'http://grafana/explore%3Fleft%3D%5B%22now-6h%22%2C%22now%22%2C%22Loki%22%2C%7B%22' \
+      "expr%22%3A%22%7Bnamespace%3D%5C%22#{resource.name}%5C%22%7D%22%7D%2C%7B%22ui%22%3A" \
+      '%5Btrue%2Ctrue%2Ctrue%2C%22none%22%5D%7D%5D'
     end
 
     let :agent_create_method_call_success do
