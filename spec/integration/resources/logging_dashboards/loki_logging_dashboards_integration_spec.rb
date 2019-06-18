@@ -44,7 +44,7 @@ RSpec.describe 'Logging Dashboards – Loki' do
 
     let :request_create_finished_success_expectations do
       lambda do |updated|
-        expect(updated.url).to eq agent_create_response.url
+        expect(updated).to eq agent_create_response
       end
     end
 
@@ -58,7 +58,7 @@ RSpec.describe 'Logging Dashboards – Loki' do
 
     let :request_create_finished_error_expectations do
       lambda do |updated|
-        expect(updated.url).to eq nil
+        expect(updated).to eq nil
       end
     end
 
