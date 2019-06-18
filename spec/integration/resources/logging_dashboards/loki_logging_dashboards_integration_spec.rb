@@ -51,14 +51,14 @@ RSpec.describe 'Logging Dashboards – Loki' do
     let :agent_create_method_call_error do
       lambda do |agent, resource|
         expect(agent).to receive(:create_logging_dashboard)
-          .with(resource.name)
+          .with('{namespace=\"' + resource.name + '\"}')
           .and_raise('Something broked')
       end
     end
 
     let :request_create_finished_error_expectations do
       lambda do |updated|
-        expect(updated).to eq nil
+        expect(updated.url).to eq nil
       end
     end
 
@@ -69,12 +69,19 @@ RSpec.describe 'Logging Dashboards – Loki' do
 
     let :agent_delete_method_call_success do
       lambda do |agent, resource|
+        expect(agent).to receive(:delete_logging_dashboard)
+          .with(resource.name)
+          .and_return(true)
       end
     end
 
     let :agent_delete_method_call_error do
       lambda do |agent, resource|
+        expect(agent).to receive(:delete_logging_dashboard)
+          .with(resource.name)
+          .and_raise('Something broked')
       end
     end
+
   end
 end

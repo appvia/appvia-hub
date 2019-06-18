@@ -21,4 +21,8 @@ class LokiAgent
       @grafana_url + '/' + CGI.escape(logging_view_uri)
     end
   end
+
+  def delete_logging_dashboard(_name)
+    true
+  end
 end
