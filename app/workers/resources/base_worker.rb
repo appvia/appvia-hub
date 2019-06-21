@@ -54,7 +54,8 @@ module Resources
       end,
       'loki' => lambda do |config|
         LokiAgent.new(
-          grafana_url: config['grafana_url']
+          grafana_url: config['grafana_url'],
+          loki_data_source_name: config['loki_data_source_name']
         )
       end
     }.freeze

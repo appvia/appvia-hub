@@ -179,5 +179,10 @@
         title: Grafana URL
         description: The URL to a Grafana instance with the Loki data source configured.
         type: string
+      loki_data_source_name:
+        title: Loki data source name
+        description: Name of the Grafana data source used for Loki
+        type: string
     required:
       - grafana_url
+      - loki_data_source_name

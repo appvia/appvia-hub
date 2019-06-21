@@ -6,7 +6,8 @@ RSpec.describe 'Logging Dashboards – Loki' do
 
     let :integration_config do
       {
-        'grafana_url' => 'http://grafana'
+        'grafana_url' => 'http://grafana',
+        'loki_data_source_name' => 'Loki'
       }
     end
 
@@ -24,7 +25,8 @@ RSpec.describe 'Logging Dashboards – Loki' do
     let(:agent_class) { LokiAgent }
     let :agent_initializer_params do
       {
-        grafana_url: integration_config['grafana_url']
+        grafana_url: integration_config['grafana_url'],
+        loki_data_source_name: integration_config['loki_data_source_name']
       }
     end
 
