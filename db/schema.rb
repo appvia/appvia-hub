@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_21_123220) do
+ActiveRecord::Schema.define(version: 2019_06_14_115742) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -49,6 +49,21 @@ ActiveRecord::Schema.define(version: 2019_05_21_123220) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_hash_records_on_slug", unique: true
+  end
+
+  create_table "identities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.uuid "integration_id", null: false
+    t.string "external_id", null: false
+    t.string "external_username"
+    t.string "external_name"
+    t.string "external_email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["integration_id", "external_id"], name: "index_identities_on_integration_id_and_external_id", unique: true
+    t.index ["integration_id"], name: "index_identities_on_integration_id"
+    t.index ["user_id", "integration_id"], name: "index_identities_on_user_id_and_integration_id", unique: true
+    t.index ["user_id"], name: "index_identities_on_user_id"
   end
 
   create_table "integration_overrides", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

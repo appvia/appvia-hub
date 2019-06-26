@@ -6,10 +6,14 @@
         title: Your GitHub organisation
         description: "The organisation on GitHub to manage repos for. This should be the 'login' value as specified in https://developer.github.com/v3/orgs/."
         type: string
+      all_team_id:
+        title: Team ID for all users
+        description: "The numeric ID of the org's main team in which to place all hub users in and grant repos admin access to. This should be the 'id' value from https://developer.github.com/v3/teams/#list-teams – see also http://fabian-kostadinov.github.io/2015/01/16/how-to-find-a-github-team-id/"
+        type: integer
       app_id:
         title: Your GitHub App ID
         description: "The app ID for the [GitHub App](https://developer.github.com/apps/about-apps/) you have set up."
-        type: string
+        type: integer
       app_private_key:
         title: Your GitHub App private key
         description: "A private key for the [GitHub App](https://developer.github.com/apps/about-apps/) you have set up."
@@ -18,7 +22,16 @@
       app_installation_id:
         title: Your GitHub App installation on your org
         description: "The specific installation of your GitHub App within your GitHub organisation."
+        type: integer
+      app_client_id:
+        title: Your GitHub App's Client ID
+        description: "The Client ID from the App's settings page."
         type: string
+      app_client_secret:
+        title: Your GitHub App's Client Secret
+        description: "The Client Secret from the App's settings page."
+        type: string
+        masked: true
       enforce_best_practices:
         title: Enforce best practices
         description: "If enabled, all repositories created will have their master branches protected for all users (including admins) with: require pull request reviews before merging and require branches to be up to date before merging."
@@ -26,9 +39,12 @@
         overridable: true
     required:
       - org
+      - all_team_id
       - app_id
       - app_private_key
       - app_installation_id
+      - app_client_id
+      - app_client_secret
 
 - id: ecr
   name: ECR

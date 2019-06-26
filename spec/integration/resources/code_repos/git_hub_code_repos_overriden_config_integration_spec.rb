@@ -9,10 +9,13 @@ RSpec.describe 'Code Repo - GitHub - with overriden config option' do
 
   let :integration_config do
     {
-      'app_id' => 'foo_app',
-      'app_private_key' => 'foo_private_key',
-      'app_installation_id' => 'foo_installation',
       'org' => 'foo',
+      'all_team_id' => 1000,
+      'app_id' => 12_345,
+      'app_private_key' => 'foo_private_key',
+      'app_installation_id' => 1_010_101,
+      'app_client_id' => 'app client id',
+      'app_client_secret' => 'supersecret',
       'enforce_best_practices' => true
     }
   end
@@ -39,7 +42,12 @@ RSpec.describe 'Code Repo - GitHub - with overriden config option' do
   let(:agent_class) { GitHubAgent }
 
   let :agent_initializer_params do
-    integration_config.symbolize_keys.except(:enforce_best_practices)
+    integration_config.symbolize_keys.except(
+      :all_team_id,
+      :enforce_best_practices,
+      :app_client_id,
+      :app_client_secret
+    )
   end
 
   let :agent do
@@ -66,7 +74,7 @@ RSpec.describe 'Code Repo - GitHub - with overriden config option' do
   describe 'request create' do
     it 'agent should receive the overriden config option' do
       expect(agent).to receive(:create_repository)
-        .with(resource.name, best_practices: !integration_config['enforce_best_practices'])
+        .with(resource.name, team_id: 1000, best_practices: !integration_config['enforce_best_practices'])
         .and_return(agent_create_response)
 
       expect do

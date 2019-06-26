@@ -3,9 +3,12 @@ module Resources
     HANDLERS = {
       'Resources::CodeRepo' => {
         'git_hub' => lambda do |resource, agent, config|
+          all_team_id = config['all_team_id']
           enforce_best_practices = config['enforce_best_practices']
 
-          result = agent.create_repository resource.name, best_practices: enforce_best_practices
+          result = agent.create_repository resource.name,
+            team_id: all_team_id,
+            best_practices: enforce_best_practices
 
           resource.private = result.private
           resource.full_name = result.full_name

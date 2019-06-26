@@ -21,8 +21,12 @@ RUN yarn install --frozen-lockfile --no-cache --production
 COPY . /app
 
 # precompile assets
-RUN SECRET_KEY_BASE=foo SECRET_SALT=bar DATABASE_URL=postgresql://user:pass@127.0.0.1/dbname bin/rails assets:precompile \
- && rm -rf node_modules tmp/cache app/webpack
+RUN BASE_URL=noop \
+  SECRET_KEY_BASE=foo \
+  SECRET_SALT=bar \
+  DATABASE_URL=postgresql://user:pass@127.0.0.1/dbname \
+  bin/rails assets:precompile \
+  && rm -rf node_modules tmp/cache app/webpack
 
 ##############################################################
 # Stage: final

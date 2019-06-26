@@ -16,6 +16,16 @@
       },
       { class: 'selectpicker' }
   %>
+<%- when 'integer'  %>
+  <%=
+    form.number_field name,
+      value: current_value,
+      required: is_required,
+      label: label_with_tooltip(
+        config_field_title(name, property_spec),
+        property_spec['description']
+      )
+  %>
 <%- else -%>
   <%=
     form.text_field name,

@@ -36,8 +36,9 @@ module ApplicationHelper
       data: data_attrs
   end
 
-  def icon_with_tooltip(text, icon_name: 'question-circle')
+  def icon_with_tooltip(text, icon_name: 'question-circle', css_class: [])
     icon icon_name,
+      css_class: css_class,
       title: text,
       data_attrs: {
         toggle: 'tooltip'

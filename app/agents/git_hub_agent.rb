@@ -8,7 +8,7 @@ class GitHubAgent
     setup_client
   end
 
-  def create_repository(name, private: false, best_practices: false)
+  def create_repository(name, team_id:, private: false, best_practices: false)
     client = app_installation_client
 
     resource = find_or_create_repo(
@@ -20,6 +20,8 @@ class GitHubAgent
 
     apply_best_practices client, resource.full_name if best_practices
 
+    client.add_team_repository team_id, resource.full_name, permission: 'admin'
+
     resource
   end
 
@@ -29,13 +31,27 @@ class GitHubAgent
     app_installation_client.delete_repository(full_name)
   end
 
+  def add_user_to_team(team_id, username)
+    app_installation_client.add_team_membership(
+      team_id,
+      username
+    )
+  end
+
+  def remove_user_from_team(team_id, username)
+    app_installation_client.remove_team_member(
+      team_id,
+      username
+    )
+  end
+
   private
 
   def setup_client
     payload = {
       iat: Time.now.to_i,
       exp: Time.now.to_i + (10 * 60), # Max is 10 mins
-      iss: @app_id
+      iss: @app_id.to_s
     }
 
     jwt = JWT.encode payload, @app_private_key, 'RS256'

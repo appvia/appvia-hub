@@ -46,35 +46,6 @@ module ResourcesHelper
       role: 'button'
   end
 
-  def global_credentials_for(resource)
-    config = resource.integration.config
-    case resource
-    when Resources::DockerRepo
-      case resource.integration.provider_id
-      when 'quay'
-        {
-          'Robot name' => config['global_robot_name'],
-          'Robot token' => config['global_robot_token']
-        }
-      when 'ecr'
-        {
-          'Robot Username' => config['global_robot_name'],
-          'Robot Access ID' => config['global_robot_access_id'],
-          'Robot Secret' => config['global_robot_token']
-        }
-      end
-    when Resources::KubeNamespace
-      case resource.integration.provider_id
-      when 'kubernetes'
-        {
-          'Kube API' => config['api_url'],
-          'CA cert' => config['ca_cert'],
-          'Token' => config['global_service_account_token']
-        }
-      end
-    end
-  end
-
   def group_resources_by_resource_type(resources)
     return [] if resources.blank?
 

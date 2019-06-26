@@ -1,4 +1,4 @@
-class ResourceTypesService
+module ResourceTypesService
   class UnknownResourceType < StandardError
     attr_reader :id
 
@@ -63,6 +63,10 @@ class ResourceTypesService
 
     def for_provider(provider_id)
       all.find { |e| e[:providers].include? provider_id }
+    end
+
+    def for_integration(integration)
+      for_provider integration.provider_id
     end
 
     def integrations_for(id)

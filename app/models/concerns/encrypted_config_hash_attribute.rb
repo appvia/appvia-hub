@@ -38,7 +38,7 @@ module EncryptedConfigHashAttribute
     return if config.blank?
 
     with_config_schema do |schema|
-      self.config = JsonSchemaHelpers.ensure_booleans(config, schema)
+      self.config = JsonSchemaHelpers.ensure_data_types(config, schema)
     end
   end
 

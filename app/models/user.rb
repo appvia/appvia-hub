@@ -16,6 +16,9 @@ class User < ApplicationRecord
 
   default_value_for :role, 'user'
 
+  has_many :identities,
+    dependent: :destroy
+
   def descriptor
     email
   end

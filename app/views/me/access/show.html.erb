@@ -1,0 +1,113 @@
+<h1>Access</h1>
+
+<section class="my-access">
+  <% @groups.each do |group| %>
+    <div class="integrations-group py-2">
+      <h3 class="my-3">
+        <%= resource_icon group[:id] %>
+        <%= group[:name] %>
+      </h3>
+
+      <% if group[:entries].empty? %>
+        <p class="lead none-text">
+          No integrations are currently available for this resource type - a hub admin can set up a new integration if required.
+        </p>
+      <% else %>
+        <% group[:entries].each do |entry| %>
+          <% integration = entry[:integration] %>
+          <% identity = entry[:identity] %>
+          <% requires_identity = ProviderIdentitiesService.requires_identity? integration.provider_id %>
+          <% global_credentials = global_credentials_for integration %>
+
+          <div class="card shadow-sm mb-4">
+            <div class="card-header">
+              <strong>
+                <%= integration.name %>
+              </strong>
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <% if requires_identity %>
+                  <% if identity.present? %>
+                    <p>
+                      <%= icon 'check-circle', css_class: 'green' %>
+                      Connected
+                    </p>
+
+                    <div class="card p-2 bg-light">
+                      <dl class="row mb-0">
+                        <% data = identity.external_info %>
+                        <% data.each do |(k, v)| %>
+                          <dt class="col-sm-3"><%= k -%></dt>
+                          <dd class="col-sm-9"><%= v -%></dd>
+                        <% end %>
+                      </dl>
+
+                      <div>
+                        <%=
+                          link_to(
+                            'Disconnect',
+                            me_identity_path(integration_id: integration.id),
+                            method: :delete,
+                            class: 'btn btn-primary float-right ml-4',
+                            role: 'button',
+                            data: {
+                              confirm: 'Are you sure you want to disconnect your GitHub identity from this integration? This will remove you from any relevant teams within the org, so you may lose access to repositories.',
+                              title: "Disconnect GitHub identity for this integration and lose access",
+                              verify: 'yes',
+                              verify_text: "Type 'yes' to confirm"
+                            }
+                          )
+                        %>
+                      </div>
+                    </div>
+                  <% else %>
+                    <p class="mb-0">
+                      <%- case integration.provider_id -%>
+                      <%- when 'git_hub' -%>
+                        <%=
+                          link_to(
+                            'Connect your GitHub identity',
+                            me_identity_flow_git_hub_start_path(integration_id: integration.id),
+                            class: 'btn btn-primary float-right ml-4',
+                            role: 'button'
+                          )
+                        %>
+                      <%- end -%>
+
+                      <%= icon 'exclamation-triangle', css_class: 'yellow' %>
+
+                      <span>
+                        Not connected
+                      </span>
+                    </p>
+                  <% end %>
+                <% else %>
+                  <p class="mb-0">
+                    <%= icon 'info-circle', css_class: 'light-gray' %>
+                    The hub doesn't manage personal access for this integration – you may need to speak to your admin to give you access.
+                  </p>
+                <% end %>
+              </li>
+              <li class="list-group-item">
+                <% if global_credentials.present? %>
+                  <%=
+                    render partial: 'integrations/global_credentials',
+                      locals: {
+                        integration: integration
+                      }
+                  %>
+                <% else %>
+                  <p class="mb-0">
+                    <%= icon 'info-circle', css_class: 'light-gray' %>
+                    No robot access available for this resource.
+                  </p>
+                <% end %>
+              </li>
+            </ul>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</section>

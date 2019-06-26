@@ -5,10 +5,6 @@ class Integration < ApplicationRecord
 
   enum provider_id: PROVIDERS_REGISTRY.ids.each_with_object({}) { |id, acc| acc[id] = id }
 
-  has_many :resources,
-    dependent: :restrict_with_exception,
-    inverse_of: :integration
-
   validates :name,
     presence: true,
     uniqueness: true
@@ -18,6 +14,15 @@ class Integration < ApplicationRecord
   validates :config, presence: true
 
   attr_readonly :provider_id
+
+  has_many :resources,
+    dependent: :restrict_with_exception,
+    inverse_of: :integration
+
+  has_many :user_identities,
+    class_name: 'Identity',
+    dependent: :restrict_with_exception,
+    inverse_of: :integration
 
   def provider
     return if provider_id.blank?
