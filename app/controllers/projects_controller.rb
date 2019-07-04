@@ -10,7 +10,7 @@ class ProjectsController < ApplicationController
       next nil unless rt[:top_level]
 
       integrations = ResourceTypesService.integrations_for rt[:id]
-      resources = @project.send rt[:id].tableize
+      resources = @project.send(rt[:id].tableize).order(:name)
       rt.merge integrations: integrations, resources: resources
     end.compact
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Code Repo - GitHub - with overriden config option' do
+RSpec.describe 'Code Repo - GitHub - using a template' do
   let! :provisioning_service do
     ResourceProvisioningService.new
   end
@@ -26,17 +26,12 @@ RSpec.describe 'Code Repo - GitHub - with overriden config option' do
       config: integration_config
   end
 
-  let! :resource do
-    create :code_repo, integration: integration
-  end
+  let(:template_url) { 'template_url' }
 
-  let! :integration_override do
-    create :integration_override,
-      project: resource.project,
+  let! :resource do
+    create :code_repo,
       integration: integration,
-      config: {
-        'enforce_best_practices' => false
-      }
+      template_url: template_url
   end
 
   let(:agent_class) { GitHubAgent }
@@ -62,6 +57,15 @@ RSpec.describe 'Code Repo - GitHub - with overriden config option' do
     )
   end
 
+  let(:user_auth_token) { 'user_auth_token' }
+
+  let! :identity do
+    create :identity,
+      user: resource.requested_by,
+      integration: integration,
+      access_token: user_auth_token
+  end
+
   before do
     expect(agent_class).to receive(:new)
       .with(**agent_initializer_params)
@@ -69,6 +73,13 @@ RSpec.describe 'Code Repo - GitHub - with overriden config option' do
 
     allow(ResourceProvisioningService).to receive(:new)
       .and_return(provisioning_service)
+
+    wait = double
+    allow(Wait).to receive(:new)
+      .with(anything)
+      .and_return(wait)
+    allow(wait).to receive(:until)
+      .and_return(true)
   end
 
   describe 'request create' do
@@ -76,6 +87,18 @@ RSpec.describe 'Code Repo - GitHub - with overriden config option' do
       expect(agent).to receive(:create_repository)
         .with(resource.name, team_id: 1000, auto_init: false)
         .and_return(agent_create_response)
+
+      expect(agent).to receive(:apply_best_practices)
+        .with(agent_create_response.full_name)
+        .and_return(true)
+
+      expect(agent).to receive(:import_from_template)
+        .with(
+          agent_create_response.full_name,
+          template_url,
+          user_auth_token: user_auth_token
+        )
+        .and_return({})
 
       expect do
         provisioning_service.request_create resource
@@ -91,10 +114,8 @@ RSpec.describe 'Code Repo - GitHub - with overriden config option' do
 
       expect(updated.name).to eq resource.name
       expect(updated.status).to eq Resource.statuses[:active]
-      expect(updated.private).to eq agent_create_response.private
-      expect(updated.full_name).to eq agent_create_response.full_name
-      expect(updated.url).to eq agent_create_response.html_url
-      expect(updated.enforce_best_practices).to eq !integration_config['enforce_best_practices']
+      expect(updated.enforce_best_practices).to eq true
+      expect(updated.template_url).to eq template_url
     end
   end
 end

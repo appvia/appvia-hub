@@ -1,0 +1,82 @@
+<% is_array = local_assigns.fetch :is_array, false %>
+
+<% spec['properties'].each do |(name, property_spec)| %>
+  <% fields_for_options = is_array ? { index: nil } : {} %>
+  <%= form.fields_for namespace, fields_for_options do |fields_form| %>
+    <% if property_spec['type'] == 'array' %>
+
+      <div data-controller="form-nested-list">
+        <template data-target="form-nested-list.template">
+          <%=
+            render partial: 'form_fields_array_item',
+              locals: {
+                form: fields_form,
+                name: name,
+                property_spec: property_spec,
+                item: {}
+              }
+          %>
+        </template>
+
+        <h6>
+          <%=
+            label_with_tooltip(
+              config_field_title(name, property_spec),
+              property_spec['description']
+            )
+          %>
+        </h6>
+
+        <div>
+          <% Array(current[name]).each do |item| %>
+            <%=
+              render partial: 'form_fields_array_item',
+                locals: {
+                  form: fields_form,
+                  name: name,
+                  property_spec: property_spec,
+                  item: item || {}
+                }
+            %>
+          <% end %>
+
+          <div class="mb-3" data-target="form-nested-list.links">
+            <%= link_to "Add", "#", class: "btn btn-sm btn-outline-primary", data: { action: "click->form-nested-list#add" } %>
+          </div>
+        </div>
+      </div>
+
+    <% else %>
+
+      <% if property_spec['type'] == 'object' %>
+
+        <%=
+          render partial: 'form_fields_nested_object',
+            locals: {
+              form: fields_form,
+              name: name,
+              spec: property_spec,
+              current: current[name] || {},
+              is_array: false
+            }
+        %>
+
+      <% else %>
+
+        <%=
+          render partial: 'application/forms/json_schema_field',
+            locals: {
+              form: fields_form,
+              name: name,
+              property_spec: property_spec,
+              is_required: spec['required'].include?(name),
+              current_value: current[name],
+              include_blank: false
+            }
+        %>
+
+      <% end %>
+
+    <% end %>
+  <% end %>
+<% end %>

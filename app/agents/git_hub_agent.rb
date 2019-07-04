@@ -8,27 +8,73 @@ class GitHubAgent
     setup_client
   end
 
-  def create_repository(name, team_id:, private: false, best_practices: false)
+  def create_repository(name, team_id:, team_permission: 'admin', private: false, auto_init: false)
     client = app_installation_client
 
     resource = find_or_create_repo(
       client,
       name,
       private: private,
-      auto_init: best_practices
+      auto_init: auto_init
     )
 
-    apply_best_practices client, resource.full_name if best_practices
-
-    client.add_team_repository team_id, resource.full_name, permission: 'admin'
+    client.add_team_repository team_id, resource.full_name, permission: team_permission
 
     resource
   end
 
-  def delete_repository(full_name)
-    return unless app_installation_client.repository? full_name
+  def import_from_template(repo, template_url, user_auth_token:)
+    client = app_installation_client
+    client.access_token = user_auth_token
 
-    app_installation_client.delete_repository(full_name)
+    return unless client.repository? repo
+
+    response = client.start_source_import repo, template_url
+
+    {
+      response: response,
+      client: client
+    }
+  end
+
+  def apply_best_practices(repo)
+    client = app_installation_client
+
+    # Only apply best practices if the `master` branch exists
+
+    # Will raise a `Octokit::NotFound` error if branch doesn't exist
+    client.branch repo, 'master'
+
+    # https://github.community/t5/GitHub-API-Development-and/REST-API-v3-wildcard-branch-protection/td-p/14547
+    client.protect_branch(
+      repo,
+      'master',
+      enforce_admins: true,
+      required_status_checks: {
+        contexts: [],
+        strict: true
+      },
+      required_pull_request_reviews: {
+        dismiss_stale_reviews: true,
+        require_code_owner_reviews: true
+      }
+    )
+  rescue Octokit::NotFound
+    Rails.logger.warn [
+      '[GitHub Agent]',
+      'cannot apply best practices to repo:',
+      repo,
+      'because \'master\' branch does not exist'
+    ].join(' ')
+    false
+  end
+
+  def delete_repository(repo)
+    client = app_installation_client
+
+    return unless client.repository? repo
+
+    client.delete_repository(repo)
   end
 
   def add_user_to_team(team_id, username)
@@ -72,34 +118,5 @@ class GitHubAgent
       organization: @org,
       private: private,
       auto_init: auto_init
-  end
-
-  def apply_best_practices(client, repo_full_name)
-    # Only apply best practices if the `master` branch exists
-
-    # Will raise a `Octokit::NotFound` error if branch doesn't exist
-    client.branch repo_full_name, 'master'
-
-    # https://github.community/t5/GitHub-API-Development-and/REST-API-v3-wildcard-branch-protection/td-p/14547
-    client.protect_branch(
-      repo_full_name,
-      'master',
-      enforce_admins: true,
-      required_status_checks: {
-        contexts: [],
-        strict: true
-      },
-      required_pull_request_reviews: {
-        dismiss_stale_reviews: true,
-        require_code_owner_reviews: true
-      }
-    )
-  rescue Octokit::NotFound
-    Rails.logger.warn [
-      '[GitHub Agent]',
-      'cannot apply best practices to repo:',
-      repo_full_name,
-      'because \'master\' branch does not exist'
-    ].join(' ')
   end
 end

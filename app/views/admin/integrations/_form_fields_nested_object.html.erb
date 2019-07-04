@@ -1,0 +1,24 @@
+<% if spec['title'] %>
+  <h6>
+    <%=
+      label_with_tooltip(
+        config_field_title(name, spec),
+        spec['description']
+      )
+    %>
+  </h6>
+<% end %>
+<%= tag.div class: 'indented ml-2 mb-3 nested-object' do %>
+  <%=
+    render partial: 'form_fields',
+      locals: {
+        form: form,
+        namespace: name,
+        spec: spec,
+        current: current,
+        is_array: is_array
+      }
+  %>
+
+  <%= yield if block_given? %>
+<% end %>

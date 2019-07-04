@@ -17,6 +17,11 @@ module IsAResourceExamples
         it { is_expected.to have_readonly_attribute(:integration_id) }
       end
 
+      describe '#requested_by' do
+        it { is_expected.to belong_to(:requested_by).class_name('User') }
+        it { is_expected.to have_readonly_attribute(:requested_by_id) }
+      end
+
       describe '#status' do
         it { is_expected.to define_enum_for(:status).backed_by_column_of_type(:string) }
         it { is_expected.to validate_presence_of(:status) }
