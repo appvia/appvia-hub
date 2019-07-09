@@ -19,7 +19,7 @@
           <% requires_identity = ProviderIdentitiesService.requires_identity? integration.provider_id %>
           <% global_credentials = global_credentials_for integration %>
 
-          <div class="card shadow-sm mb-4">
+          <div id="<%= integration.id -%>" class="card shadow-sm mb-4">
             <div class="card-header">
               <strong>
                 <%= integration.name %>
