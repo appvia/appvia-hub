@@ -1,5 +1,10 @@
 {
-  "extends": ["eslint-config-airbnb-base", "prettier"],
+  "extends": [
+    "eslint-config-airbnb-base",
+    "plugin:vue/recommended",
+    "plugin:prettier/recommended",
+    "prettier/vue"
+  ],
 
   "plugins": ["prettier"],
 
@@ -8,17 +13,22 @@
   },
 
   "rules": {
-    "prettier/prettier": "error"
+    "prettier/prettier": "error",
+    "class-methods-use-this": "off",
+    "no-param-reassign": ["error", { "props": false }]
   },
 
-  "parser": "babel-eslint",
+  "parserOptions": {
+    "parser": "babel-eslint"
+  },
 
   "settings": {
     "import/resolver": {
       "webpack": {
         "config": {
           "resolve": {
-            "modules": ["app/webpack/**", "node_modules"]
+            "modules": ["app/webpack/**", "node_modules"],
+            "extensions": [".js", ".vue"]
           }
         }
       }

@@ -2,19 +2,15 @@
   "name": "appvia-hub",
   "private": true,
   "scripts": {
-    "lint": "eslint config/webpack/**/*.js app/webpack/**/*.js",
+    "lint": "eslint config/webpack/**/*.js app/webpack/**/*.{js,vue}",
     "lint-staged": "$(yarn bin)/lint-staged"
   },
   "lint-staged": {
     "config/webpack/**/*.js": [
-      "prettier --write",
-      "eslint",
-      "git add"
+      "eslint"
     ],
-    "app/webpack/**/*.js": [
-      "prettier --write",
-      "eslint",
-      "git add"
+    "app/webpack/**/*.{js,vue}": [
+      "eslint"
     ]
   },
   "pre-commit": [
@@ -30,20 +26,23 @@
     "popper.js": "^1.14.7",
     "rails-erb-loader": "^5.5.2",
     "rails-ujs": "^5.2.3",
+    "stimulus": "^1.1.1",
     "turbolinks": "^5.2.0",
     "vue": "^2.6.10",
     "vue-loader": "^15.7.0",
     "vue-template-compiler": "^2.6.10",
-    "webpack": "^4.35.0"
+    "vue-turbolinks": "^2.0.4",
+    "webpack": "^4.35.2"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.2",
-    "eslint": "^6.0.1",
-    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.2.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-import-resolver-webpack": "^0.11.0",
     "eslint-plugin-import": "^2.18.0",
     "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-vue": "^5.2.2",
     "lint-staged": "^8.2.1",
     "pre-commit": "^1.2.2",
     "prettier": "^1.18.2",

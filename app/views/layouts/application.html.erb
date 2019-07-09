@@ -30,6 +30,10 @@
       </nav>
 
       <main role="main">
+        <% if @autorefresh %>
+          <%= render 'autorefresh' %>
+        <% end %>
+
         <% if show_requires_setup? %>
           <%= render 'requires_setup' %>
         <% end %>

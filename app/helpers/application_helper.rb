@@ -22,6 +22,10 @@ module ApplicationHelper
       Integration.count.zero?
   end
 
+  def params_without(param)
+    request.params.dup.merge("#{param}": nil)
+  end
+
   def icon(name, size: '1x', css_class: [], title: nil, data_attrs: nil)
     tag.i '',
       class: ['fas', "fa-#{name}", "fa-#{size}"] + Array(css_class),

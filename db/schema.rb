@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_14_115742) do
+ActiveRecord::Schema.define(version: 2019_07_04_143604) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -60,6 +60,7 @@ ActiveRecord::Schema.define(version: 2019_06_14_115742) do
     t.string "external_email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "access_token"
     t.index ["integration_id", "external_id"], name: "index_identities_on_integration_id_and_external_id", unique: true
     t.index ["integration_id"], name: "index_identities_on_integration_id"
     t.index ["user_id", "integration_id"], name: "index_identities_on_user_id_and_integration_id", unique: true

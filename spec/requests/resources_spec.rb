@@ -127,7 +127,7 @@ RSpec.describe 'Project resources', type: :request do
             it 'creates a new Resource with the given params, requests creation and redirects to the project page' do
               expect do
                 make_request
-                expect(response).to redirect_to(@project)
+                expect(response).to redirect_to(project_path(@project, autorefresh: true))
                 resource = assigns(:resource)
                 expect(resource).to be_persisted
                 expect(resource).to be_a Resources::CodeRepo
@@ -208,7 +208,7 @@ RSpec.describe 'Project resources', type: :request do
           delete project_resource_path(@project, resource)
         end.not_to change(Resource, :count)
 
-        expect(response).to redirect_to(project_url(@project))
+        expect(response).to redirect_to(project_path(@project, autorefresh: true))
       end
     end
   end

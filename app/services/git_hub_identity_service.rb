@@ -36,7 +36,8 @@ class GitHubIdentityService
         external_id: github_user.id,
         external_username: github_user.login,
         external_name: github_user.name,
-        external_email: github_user.email
+        external_email: github_user.email,
+        access_token: access_token
       )
     elsif identity.user_id != user.id
       raise MismatchWithExistingUser
@@ -45,7 +46,8 @@ class GitHubIdentityService
       identity.update!(
         external_username: github_user.login,
         external_name: github_user.name,
-        external_email: github_user.email
+        external_email: github_user.email,
+        access_token: access_token
       )
     end
 

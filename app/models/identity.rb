@@ -13,6 +13,11 @@ class Identity < ApplicationRecord
     presence: true,
     uniqueness: { scope: :integration_id }
 
+  crypt_keeper :access_token,
+    encryptor: :active_support,
+    key: Rails.application.secrets.secret_key_base,
+    salt: Rails.application.secrets.secret_salt
+
   after_create_commit :trigger_created_worker
   after_destroy_commit :trigger_deleted_worker
 

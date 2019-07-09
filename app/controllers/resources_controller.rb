@@ -16,7 +16,8 @@ class ResourcesController < ApplicationController
     if @resource.save
       ResourceProvisioningService.new.request_create @resource
 
-      redirect_to @project, notice: 'Resource has been requested.'
+      notice_message = 'Resource has been requested. The page will now refresh automatically to update the status of resources.'
+      redirect_to project_path(@project, autorefresh: true), notice: notice_message
     else
       render :new
     end
@@ -24,7 +25,9 @@ class ResourcesController < ApplicationController
 
   def destroy
     ResourceProvisioningService.new.request_delete @resource
-    redirect_to @project, notice: 'Deletion of resource has been requested.'
+
+    notice_message = 'Deletion of resource has been requested. The page will now refresh automatically to update the status of resources.'
+    redirect_to project_path(@project, autorefresh: true), notice: notice_message
   end
 
   def prepare_bootstrap
