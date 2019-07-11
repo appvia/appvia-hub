@@ -1,0 +1,66 @@
+<% integration = resource.integration %>
+
+<div class="<%= container_css_class if local_assigns.key? :container_css_class -%>">
+  <% panel_id = "getting-started-#{SecureRandom.hex(10)}" %>
+  <%=
+    tag.a(
+      href: '#',
+      data: {
+        toggle: 'collapse',
+        target: "##{panel_id}"
+      },
+      aria: {
+        controls: panel_id
+      }
+    ) do
+  %>
+    <%= icon 'book' %>
+    Getting started
+    <%= icon 'caret-down', css_class: 'ml-1' %>
+  <% end %>
+  <%=
+    tag.div(
+      id: panel_id,
+      class: 'collapse'
+    ) do
+  %>
+    <div class="mt-2 card p-2 bg-light overflow-auto">
+      <%- case integration.provider_id -%>
+      <%- when 'git_hub' %>
+        <pre class="mb-0" style="white-space:normal;">
+          <code>
+            $ git clone <%= resource.url %>.git
+          </code>
+        </pre>
+        <% documentation_url = 'https://guides.github.com/' %>
+      <%- when 'kubernetes' -%>
+        <pre class="mb-0" style="white-space:normal;">
+          <code>
+            $ kubectl get pods --namespace <%= resource.name %>
+          </code>
+        </pre>
+        <% documentation_url = 'https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands' %>
+      <%- when 'ecr' -%>
+        <pre class="mb-0" style="white-space:normal;">
+          <code>
+            $ docker build -t <%= resource.base_uri %><br>
+            $ docker push <%= resource.base_uri -%>
+          </code>
+        </pre>
+        <% documentation_url = 'https://docs.aws.amazon.com/AmazonECR/latest/userguide/ECR_AWSCLI.html' %>
+      <%- when 'quay' -%>
+        <pre class="mb-0" style="white-space:normal;">
+          <code>
+            $ docker build -t <%= resource.base_uri %><br>
+            $ docker push <%= resource.base_uri -%>
+          </code>
+        </pre>
+        <% documentation_url = 'https://docs.quay.io/solution/getting-started.html' %>
+      <%- end -%>
+    </div>
+
+    <div class="mt-2">
+      <%= link_to 'Further docs', documentation_url, target: '_blank' %>
+    </div>
+  <% end %>
+</div>

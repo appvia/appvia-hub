@@ -48,10 +48,17 @@
       <%- end -%>
     </div>
 
+    <div class="indented mt-3">
+      <%= link_to me_access_path(anchor: resource.integration.id) do %>
+        <%= icon 'key' %>
+        Setup access
+      <% end %>
+    </div>
+
     <%=
-      render partial: 'integrations/global_credentials',
+      render partial: 'resources/getting_started',
         locals: {
-          integration: resource.integration,
+          resource: resource,
           container_css_class: 'indented mt-3'
         }
     %>
