@@ -7,11 +7,24 @@ class ResourcesController < ApplicationController
   before_action :find_resource, only: [:destroy]
 
   def new
-    @resource = @project.resources.new type: @resource_type[:class]
+    @resource = @project.resources.new(
+      type: @resource_type[:class],
+      integration_id: @integrations.first.id
+    )
   end
 
   def create
     @resource = @project.resources.new resource_params
+
+    @resource.requested_by = current_user
+
+    # Integration specific params
+    if @resource.integration.present?
+      case @resource.integration.provider_id
+      when 'git_hub'
+        @resource.template_url = params['resource']['git_hub']['template_url'].presence if params['resource'].key?('git_hub')
+      end
+    end
 
     if @resource.save
       ResourceProvisioningService.new.request_create @resource
@@ -40,7 +53,9 @@ class ResourcesController < ApplicationController
   end
 
   def bootstrap
-    result = ProjectResourcesBootstrapService.new(@project).bootstrap
+    result = ProjectResourcesBootstrapService
+      .new(@project)
+      .bootstrap(requested_by: current_user)
 
     notice = ('A default set of resources have been requested for this space' if result)
 

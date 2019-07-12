@@ -37,6 +37,22 @@
         description: "If enabled, all repositories created will have their master branches protected for all users (including admins) with: require pull request reviews before merging and require branches to be up to date before merging."
         type: boolean
         overridable: true
+      templates:
+        title: Repository templates
+        description: "A list of Git repositories that can be used as templates for new repositories created using this integration. Must be publically accessible, or accessible by the org (if on GitHub)."
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              title: Name
+              type: string
+            repo_url:
+              title: Repository URL
+              type: string
+          required:
+            - name
+            - repo_url
     required:
       - org
       - all_team_id

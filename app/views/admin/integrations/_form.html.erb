@@ -19,22 +19,15 @@
       Config
     </div>
     <div class="card-body">
-      <%= form.fields_for :config do |config_fields| %>
-        <% spec = integration.provider['config_spec'] %>
-        <% spec['properties'].each do |(name, property_spec)| %>
-          <%=
-            render partial: 'application/forms/json_schema_field',
-              locals: {
-                form: config_fields,
-                name: name,
-                property_spec: property_spec,
-                is_required: spec['required'].include?(name),
-                current_value: integration.config[name],
-                include_blank: false
-              }
-          %>
-        <% end %>
-      <% end %>
+      <%=
+        render partial: 'form_fields',
+          locals: {
+            form: form,
+            namespace: :config,
+            spec: integration.provider['config_spec'],
+            current: integration.config || {}
+          }
+      %>
     </div>
   </div>
 

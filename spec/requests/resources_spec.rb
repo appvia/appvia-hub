@@ -113,7 +113,10 @@ RSpec.describe 'Project resources', type: :request do
               {
                 type: 'Resources::CodeRepo',
                 integration_id: integration.id,
-                name: 'foo'
+                name: 'foo',
+                git_hub: {
+                  template_url: 'template_url'
+                }
               }
             end
 
@@ -132,8 +135,10 @@ RSpec.describe 'Project resources', type: :request do
                 expect(resource).to be_persisted
                 expect(resource).to be_a Resources::CodeRepo
                 expect(resource.integration).to eq integration
+                expect(resource.requested_by).to eq current_user
                 expect(resource.name).to eq params[:name]
                 expect(resource.created_at.to_i).to eq now.to_i
+                expect(resource.template_url).to eq 'template_url'
               end.to change { Resource.count }.by(1)
             end
 
@@ -259,6 +264,7 @@ RSpec.describe 'Project resources', type: :request do
           .with(@project)
           .and_return(project_bootstrap_service)
         expect(project_bootstrap_service).to receive(:bootstrap)
+          .with(requested_by: current_user)
       end
 
       it 'calls the ProjectResourcesBootstrapService as expected and redirects to the project page' do

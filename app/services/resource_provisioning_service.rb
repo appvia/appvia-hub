@@ -34,6 +34,7 @@ class ResourceProvisioningService
     resource_class = resource_type[:class].constantize
     dependent_resource = resource_class.create!(
       integration: integrations.first,
+      requested_by: parent_resource.requested_by,
       parent: parent_resource,
       project: parent_resource.project,
       name: parent_resource.name

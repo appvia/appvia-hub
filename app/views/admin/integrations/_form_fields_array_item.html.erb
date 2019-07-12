@@ -1,0 +1,14 @@
+<%=
+  render(
+    'form_fields_nested_object',
+    form: form,
+    name: name,
+    spec: property_spec['items'],
+    current: item,
+    is_array: true
+  ) do
+%>
+  <div>
+    <%= link_to "Remove", "#", class: "btn btn-sm btn-outline-primary", data: { action: "click->form-nested-list#remove" } %>
+  </div>
+<% end %>

@@ -4,7 +4,12 @@
     scope: :resource,
     url: project_resources_path(resource.project, type: resource_type[:id]),
     method: :post,
-    local: true
+    local: true,
+    class: 'resource-form',
+    data: {
+      controller: 'resource-form',
+      'resource-form-integration-id': @resource.integration_id
+    }
   ) do |form|
 %>
   <%= form.alert_message "Please fix the issues below:" %>
@@ -21,7 +26,12 @@
         ),
         required: true
       },
-      { class: 'selectpicker' }
+      {
+        class: 'selectpicker',
+        data: {
+          action: 'resource-form#setCurrentIntegration'
+        }
+      }
   %>
 
   <%=
@@ -29,6 +39,73 @@
       help: Resource::SLUG_FORMAT_TEXT.capitalize,
       pattern: "^#{Resource::SLUG_FORMAT_REGEX}$"
   %>
+
+  <% integrations.each do |i| %>
+    <div data-target="resource-form.section" data-integration-id="<%= i.id -%>">
+      <%- case i.provider_id -%>
+      <%- when 'git_hub' -%>
+        <% enabled = current_user.identities.exists?(integration_id: i.id) %>
+        <%=
+          tag.fieldset(
+            class: 'form-group my-4',
+            disabled: !enabled
+          ) do
+        %>
+          <legend>Initialise from a template?</legend>
+
+          <% unless enabled %>
+            <div class="card bg-light mb-3">
+              <div class="card-body p-2">
+                You can only use templates once you've
+                <%= link_to 'connected up your GitHub identity', me_access_path(anchor: i.id) %>.
+                This is because we use the
+                <%= link_to 'GitHub Source Imports API', 'https://developer.github.com/v3/migrations/source_imports/' %>
+                which requires a User-to-Server auth token.
+              </div>
+            </div>
+          <% else %>
+            <%= form.fields_for :git_hub do |integration_form| %>
+              <% templates = i.config['templates'] %>
+              <% if templates.present? %>
+                <%=
+                  integration_form.select :template_url,
+                    templates.map { |t|
+                      [
+                        "#{t['name']} (#{t['repo_url']})",
+                        t['repo_url']
+                      ]
+                    },
+                    {
+                      label: label_with_tooltip(
+                        'Choose from existing options',
+                        'These are set up by a hub admin'
+                      ),
+                      include_blank: true
+                    },
+                    {
+                      class: 'selectpicker',
+                      disabled: !enabled
+                    }
+                %>
+
+                <p class="font-weight-bold">
+                  OR
+                </p>
+              <% end %>
+
+              <%=
+                integration_form.url_field :template_url,
+                  value: nil,
+                  disabled: !enabled,
+                  label: 'Specify a custom template repo URL',
+                  help: "Needs to be compatible with #{link_to('the GitHub Source Imports API', 'https://developer.github.com/v3/migrations/source_imports/', target: '_blank')}".html_safe
+              %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <%- end -%>
+    </div>
+  <% end %>
 
   <%= form.primary 'Request' %>
 <% end %>

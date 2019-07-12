@@ -42,8 +42,12 @@ RSpec.describe 'Code Repos - GitHub' do
     let :agent_create_method_call_success do
       lambda do |agent, resource|
         expect(agent).to receive(:create_repository)
-          .with(resource.name, team_id: 1000, best_practices: true)
+          .with(resource.name, team_id: 1000, auto_init: true)
           .and_return(agent_create_response)
+
+        expect(agent).to receive(:apply_best_practices)
+          .with(agent_create_response.full_name)
+          .and_return(true)
       end
     end
 
@@ -59,7 +63,7 @@ RSpec.describe 'Code Repos - GitHub' do
     let :agent_create_method_call_error do
       lambda do |agent, resource|
         expect(agent).to receive(:create_repository)
-          .with(resource.name, team_id: 1000, best_practices: true)
+          .with(resource.name, team_id: 1000, auto_init: true)
           .and_raise('Something broked')
       end
     end

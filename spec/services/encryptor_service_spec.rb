@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe EncryptorService, type: :service do
+RSpec.describe EncryptorService, type: :service do
   let(:secret_key_base) { SecureRandom.base64(100) }
   let(:string) { 'my secret string' }
 

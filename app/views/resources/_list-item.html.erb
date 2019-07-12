@@ -16,6 +16,7 @@
     </span>
     <%= resource_status_badge resource.status, css_class: 'ml-2' %>
   </h3>
+
   <% unless resource.pending? %>
     <div class="mb-2">
       <%- case resource -%>
@@ -36,6 +37,14 @@
               <%= resource.enforce_best_practices %>
             </span>
           </div>
+
+          <% if resource.template_url.present? %>
+            <div class="indented mt-3">
+              From template
+              <br />
+              <%= link_to resource.template_url, resource.template_url, target: '_blank' %>
+            </div>
+          <% end %>
         <% end %>
       <%- when Resources::DockerRepo -%>
         <span class="badge badge-secondary mr-1">
@@ -87,4 +96,8 @@
       <% end %>
     <% end %>
   <% end %>
+
+  <p class="small mb-0 mt-3">
+    Requested by: <%= resource.requested_by.email %>
+  </p>
 </div>
