@@ -1,5 +1,5 @@
 <div id="autorefresh" class="text-center mb-3">
-  <div class="d-inline-block card px-3 py-2 bg-light">
+  <div class="d-inline-block card px-3 py-2 bg-warning text-light">
     <autorefresh
       v-bind:interval-secs="<%= @autorefresh_interval_secs -%>"
       stop-refresh-url="<%= url_for params_without(:autorefresh) %>">
