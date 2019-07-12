@@ -42,7 +42,8 @@ LABEL source="https://github.com/appvia/appvia-hub"
 
 ENV APP_PATH="/app" \
     NODE_ENV="production" \
-    RAILS_ENV="production"
+    RAILS_ENV="production" \
+    BUNDLE_PATH__SYSTEM="false"
 
 RUN apk add --update --no-cache bash curl postgresql-client tzdata && \
     rm -rf /var/cache/apk/*
@@ -61,6 +62,9 @@ ENV HOME $APP_PATH
 ENV PORT 3001
 ENV RAILS_LOG_TO_STDOUT true
 ENV RAILS_SERVE_STATIC_FILES true
+
+RUN bundle -v && \
+    bundle config --global disable_shared_gems true
 
 ENTRYPOINT ["bin/rails"]
 CMD ["server"]
