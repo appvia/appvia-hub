@@ -1,0 +1,73 @@
+<% spec['properties'].each do |(name, property_spec)| %>
+  <dl>
+    <dt>
+      <%= config_field_title name, property_spec %>
+      <%= icon_with_tooltip(property_spec['description']) if property_spec['description'].present? %>
+    </dt>
+    <dd>
+      <% value = data[name] %>
+
+      <% if value.blank? %>
+
+        <span class="none-text">
+          not set
+        </span>
+
+      <% else %>
+
+        <% if property_spec['type'] == 'array' %>
+
+          <% value.each do |item| %>
+            <div class="indented m-2">
+              <%=
+                render partial: 'config_fields',
+                  locals: {
+                    spec: property_spec['items'],
+                    data: item,
+                    group_id: group_id,
+                    integration_id: integration_id,
+                    unmask: unmask
+                  }
+              %>
+            </div>
+          <% end %>
+
+        <% elsif property_spec['type'] == 'object' %>
+
+          <div class="indented m-2">
+            <%=
+              render partial: 'config_fields',
+                locals: {
+                  spec: property_spec,
+                  data: value,
+                  group_id: group_id,
+                  integration_id: integration_id,
+                  unmask: unmask
+                }
+            %>
+          </div>
+
+        <% else %>
+
+          <% if !property_spec['masked'] || unmask %>
+            <%= value -%>
+          <% else %>
+            <span class="text-muted font-weight-light">
+              hidden
+            </span>
+            <%=
+              link_to 'show all hidden',
+                {
+                  expand: group_id,
+                  anchor: integration_id,
+                  unmask: true
+                },
+                class: 'ml-3'
+            %>
+          <% end %>
+
+        <% end %>
+      <% end %>
+    </dd>
+  </dl>
+<% end %>

@@ -16,6 +16,11 @@ class Resource < ApplicationRecord
     -> { readonly },
     inverse_of: :resources
 
+  belongs_to :requested_by,
+    -> { readonly },
+    class_name: 'User',
+    inverse_of: false
+
   enum status: {
     pending: 'pending',
     active: 'active',
@@ -30,7 +35,7 @@ class Resource < ApplicationRecord
     uniqueness: { scope: :integration_id },
     readonly: true
 
-  attr_readonly :project_id, :integration_id
+  attr_readonly :project_id, :integration_id, :requested_by_id
 
   default_value_for :status, :pending
 

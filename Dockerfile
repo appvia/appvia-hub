@@ -2,8 +2,10 @@
 # Stage: builder
 FROM ruby:2.5.5-alpine3.9 AS builder
 
-ENV RAILS_ENV production
-ENV NODE_ENV production
+ENV APP_PATH="/app" \
+    NODE_ENV="production" \
+    RAILS_ENV="production" \
+    BUNDLE_PATH__SYSTEM="false"
 
 WORKDIR /app
 
@@ -11,7 +13,10 @@ RUN apk add --update --no-cache bash curl make gcc libc-dev postgresql-client po
 
 # install gems
 COPY Gemfile Gemfile.lock ./
-RUN bundle install --jobs 20 --retry 5 --deployment --without development test
+RUN bundle -v && \
+    bundle config --global disable_shared_gems true && \
+    bundle install --jobs 20 --retry 5 --deployment --frozen --without development test --force && \
+    cat /usr/local/bundle/config
 
 # install yarn packages
 COPY package.json yarn.lock ./
@@ -35,9 +40,10 @@ FROM ruby:2.5.5-alpine3.9
 LABEL maintainer="info@appvia.io"
 LABEL source="https://github.com/appvia/appvia-hub"
 
-ENV RAILS_ENV production
-ENV NODE_ENV production
-ENV APP_PATH /app
+ENV APP_PATH="/app" \
+    NODE_ENV="production" \
+    RAILS_ENV="production" \
+    BUNDLE_PATH__SYSTEM="false"
 
 RUN apk add --update --no-cache bash curl postgresql-client tzdata && \
     rm -rf /var/cache/apk/*
@@ -56,6 +62,9 @@ ENV HOME $APP_PATH
 ENV PORT 3001
 ENV RAILS_LOG_TO_STDOUT true
 ENV RAILS_SERVE_STATIC_FILES true
+
+RUN bundle -v && \
+    bundle config --global disable_shared_gems true
 
 ENTRYPOINT ["bin/rails"]
 CMD ["server"]

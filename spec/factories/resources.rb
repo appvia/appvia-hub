@@ -5,6 +5,7 @@ FactoryBot.define do
     sequence :name do |n|
       "resource-#{n}"
     end
+    association :requested_by, factory: :user
 
     factory :code_repo, class: 'Resources::CodeRepo' do
     end

@@ -10,39 +10,16 @@
       <%= pluralize integration.resources.count, 'resource' %>
     </p>
 
-    <% config_spec['properties'].each do |(name, property_spec)| %>
-      <dl>
-        <dt>
-          <%= config_field_title name, property_spec %>
-          <%= icon_with_tooltip property_spec['description'] %>
-        </dt>
-        <dd>
-          <% value = integration.config[name] %>
-          <% if value.nil? || value == '' %>
-            <span class="none-text">
-              not set
-            </span>
-          <% else %>
-            <% if !property_spec['masked'] || unmask %>
-              <%= value -%>
-            <% else %>
-              <span class="text-muted font-weight-light">
-                hidden
-              </span>
-              <%=
-                link_to 'show all hidden',
-                  {
-                    expand: group[:id],
-                    anchor: integration.id,
-                    unmask: true
-                  },
-                  class: 'ml-3'
-              %>
-            <% end %>
-          <% end %>
-        </dd>
-      </dl>
-    <% end %>
+    <%=
+      render partial: 'config_fields',
+        locals: {
+          spec: config_spec,
+          data: integration.config,
+          group_id: group[:id],
+          integration_id: integration.id,
+          unmask: unmask
+        }
+    %>
   </div>
   <div class="card-footer">
     <%= link_to 'Edit', edit_admin_integration_path(integration), class: 'btn btn-primary' %>

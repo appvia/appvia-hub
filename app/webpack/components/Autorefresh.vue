@@ -1,7 +1,10 @@
 <template>
   <div>
     Refreshing in {{ remainingSecs }}s…
-    <a :href="stopRefreshUrl" class="ml-2">Stop</a>
+    <a href="#" class="btn btn-info btn-sm ml-2" @click="refreshNow">
+      Refresh now
+    </a>
+    <a :href="stopRefreshUrl" class="btn btn-danger btn-sm ml-2">Stop</a>
   </div>
 </template>
 
@@ -38,11 +41,14 @@ export default {
   methods: {
     tick() {
       if (this.remainingSecs === 0) {
-        Turbolinks.visit(window.location.toString(), { action: 'replace' });
+        this.refreshNow();
         // At this point the component will be destroyed and recreated in the new page load
       } else {
         this.remainingSecs -= 1;
       }
+    },
+    refreshNow() {
+      Turbolinks.visit(window.location.toString(), { action: 'replace' });
     }
   }
 };

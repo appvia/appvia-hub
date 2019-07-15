@@ -54,7 +54,7 @@ module ApplicationHelper
     raw(
       [
         label,
-        icon_with_tooltip(tooltip_text)
+        (icon_with_tooltip(tooltip_text) if tooltip_text.present?)
       ].join(' ')
     )
     # rubocop:enable Rails/OutputSafety

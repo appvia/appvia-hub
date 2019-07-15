@@ -1,0 +1,17 @@
+fieldset {
+  @extend .p-3;
+  border: 1px solid $border-color;
+  position: relative;
+  border-radius: $border-radius;
+}
+
+legend {
+  @extend .py-2;
+  @extend .px-3;
+  font-size: 1em;
+  font-weight: bold;
+  margin-bottom: 0;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  width: auto;
+}

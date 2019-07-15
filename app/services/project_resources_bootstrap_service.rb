@@ -19,7 +19,7 @@ class ProjectResourcesBootstrapService
     end.compact
   end
 
-  def bootstrap
+  def bootstrap(requested_by:)
     prepare_results = prepare_bootstrap
 
     return prepare_results if prepare_results.blank?
@@ -38,6 +38,7 @@ class ProjectResourcesBootstrapService
 
       resource = @project.send(i[:id].tableize).create!(
         integration: integration,
+        requested_by: requested_by,
         name: i[:resource][:name]
       )
 
