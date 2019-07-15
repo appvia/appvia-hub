@@ -18,13 +18,7 @@ class ResourcesController < ApplicationController
 
     @resource.requested_by = current_user
 
-    # Integration specific params
-    if @resource.integration.present?
-      case @resource.integration.provider_id
-      when 'git_hub'
-        @resource.template_url = params['resource']['git_hub']['template_url'].presence if params['resource'].key?('git_hub')
-      end
-    end
+    set_from_integration_specific_params @resource, params
 
     if @resource.save
       ResourceProvisioningService.new.request_create @resource
@@ -87,5 +81,21 @@ class ResourcesController < ApplicationController
 
   def resource_params
     params.require(:resource).permit(:type, :integration_id, :name)
+  end
+
+  def set_from_integration_specific_params(resource, params)
+    return if resource.integration.blank?
+
+    integration_specific_params = params['resource'][@resource.integration.provider_id]
+
+    return if integration_specific_params.blank?
+
+    case @resource.integration.provider_id
+    when 'git_hub'
+      template_url = integration_specific_params['template_url_custom'].presence ||
+                     integration_specific_params['template_url'].presence
+
+      resource.template_url = template_url
+    end
   end
 end
