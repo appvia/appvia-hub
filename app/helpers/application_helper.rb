@@ -26,23 +26,26 @@ module ApplicationHelper
     request.params.dup.merge("#{param}": nil)
   end
 
-  def icon(name, size: '1x', css_class: [], title: nil, data_attrs: nil)
+  def icon(name, size: '1x', css_class: [], style: '', title: nil, data_attrs: nil)
     tag.i '',
       class: ['fas', "fa-#{name}", "fa-#{size}"] + Array(css_class),
+      style: style,
       title: title,
       data: data_attrs
   end
 
-  def brand_icon(name, size: '1x', css_class: [], title: nil, data_attrs: nil)
+  def brand_icon(name, size: '1x', css_class: [], style: '', title: nil, data_attrs: nil)
     tag.i '',
       class: ['fab', "fa-#{name}", "fa-#{size}"] + Array(css_class),
+      style: style,
       title: title,
       data: data_attrs
   end
 
-  def icon_with_tooltip(text, icon_name: 'question-circle', css_class: [])
+  def icon_with_tooltip(text, icon_name: 'question-circle', css_class: [], style: '')
     icon icon_name,
       css_class: css_class,
+      style: style,
       title: text,
       data_attrs: {
         toggle: 'tooltip'
