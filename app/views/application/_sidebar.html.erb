@@ -1,0 +1,49 @@
+<nav id="sidebar" class="sidebar col-3 bg-light">
+  <div class="sidebar-sticky">
+    <div class="sidebar-item">
+      <%= nav_item 'Home', root_path %>
+    </div>
+
+    <hr />
+
+    <div class="sidebar-item">
+      <%= link_to 'New', new_project_path, class: 'btn btn-sm btn-primary float-right mr-3' %>
+      <%= nav_item 'Spaces', projects_path %>
+    </div>
+    <ul class="nav flex-column mb-3">
+      <% Project.order(:name).each do |project| %>
+        <%= nav_list_item project.name, project_path(project), icon_name: 'cube' %>
+      <% end %>
+    </ul>
+
+    <hr />
+
+    <div class="sidebar-item">
+      <%= nav_item 'Access', me_access_path %>
+    </div>
+
+    <hr />
+
+    <div class="sidebar-item">
+      <%= nav_item 'Users', users_path %>
+    </div>
+
+    <% if current_user.admin? %>
+      <hr />
+
+      <div class="sidebar-heading">
+        Admin
+      </div>
+
+      <div class="sidebar-item">
+        <%= nav_item 'Integrations', admin_integrations_path %>
+      </div>
+
+      <div class="sidebar-item">
+        <%= nav_item 'Settings', admin_settings_path %>
+      </div>
+    <% end %>
+
+    <hr />
+  </div>
+</nav>
