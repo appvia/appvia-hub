@@ -43,6 +43,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get '/healthz', to: 'healthcheck#show'
+
   root to: 'home#show'
   mount Sidekiq::Web => '/sidekiq'
 end

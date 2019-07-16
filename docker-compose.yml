@@ -47,6 +47,7 @@ services:
       - --enable-json-logging=false
       - --verbose=false
       - --resources=uri=/me/identity_flows/{integrationID:\w+}/git_hub/callback|white-listed=true|methods=GET
+      - --resources=uri=/healthz|white-listed=true|methods=GET
       - --resources=uri=/*
     ports:
       - 3000:3000
