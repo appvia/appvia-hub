@@ -23,11 +23,7 @@
     <%= render 'header' %>
 
     <div>
-      <nav id="sidebar" class="col-3 bg-light">
-        <div class="sidebar-sticky">
-          <%= render 'sidebar-content' %>
-        </div>
-      </nav>
+      <%= render 'sidebar' %>
 
       <main role="main">
         <% if @autorefresh %>
