@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_08_145925) do
+ActiveRecord::Schema.define(version: 2019_07_17_134327) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -95,14 +95,6 @@ ActiveRecord::Schema.define(version: 2019_07_08_145925) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_projects_on_slug", unique: true
-  end
-
-  create_table "resource_hierarchies", id: false, force: :cascade do |t|
-    t.uuid "ancestor_id", null: false
-    t.uuid "descendant_id", null: false
-    t.integer "generations", null: false
-    t.index ["ancestor_id", "descendant_id", "generations"], name: "resource_anc_desc_idx", unique: true
-    t.index ["descendant_id"], name: "resource_desc_idx"
   end
 
   create_table "resources", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
