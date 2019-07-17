@@ -191,7 +191,7 @@
         masked: true
       ca_cert:
         title: CA certificate
-        description: MUST be base64 encoded. This is the CA bundle (pem format) for requests to the Grafana API.
+        description: "MUST be base64 encoded. This is the CA bundle (pem format) for requests to the Grafana API. If none is required, you can set this to a dummy value (e.g. 'noop')"
         type: string
         masked: true
       template_url:
@@ -201,6 +201,7 @@
     required:
       - url
       - api_key
+      - ca_cert
       - template_url
 
 - id: loki

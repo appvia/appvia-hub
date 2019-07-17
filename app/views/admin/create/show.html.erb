@@ -1,0 +1,128 @@
+<h2>Create a new Kubernetes cluster</h2>
+
+<div class="card-columns">
+  <% @options.each do |o| %>
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        <h5 class="card-title">
+          <%= o['name'] %>
+        </h5>
+        <p class="card-text">
+          <%= o['description'] %>
+        </p>
+        <%= link_to 'New', new_admin_task_path(type: 'CreateKubeCluster', cluster_creator: o['id']), class: 'card-link btn btn-primary' %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<hr class="my-4" />
+
+<h2>Existing Kubernetes cluster tasks</h2>
+
+<% if @tasks.empty? %>
+  <p class="none-text">
+    No tasks yet
+  </p>
+<% else %>
+  <table class="table table-bordered">
+    <thead class="thead-light text-center">
+      <tr>
+        <th scope="col">Created</th>
+        <th scope="col">Cluster Name</th>
+        <th scope="col">Config & Integrations</th>
+        <th scope="col">Status</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @tasks.each do |t| %>
+        <tr>
+          <td class="text-center">
+            <strong>At:</strong>
+            <%= t.created_at %>
+
+            <br />
+
+            <strong>By:</strong>
+            <%= t.created_by.email %>
+          </td>
+          <td class="text-center">
+            <%= t.provision_options['name'] %>
+          </td>
+          <td>
+            <% integrations = admin_task_integrations(t) %>
+            <% if integrations.present? %>
+              <div class="card p-2 mb-2 bg-light">
+                Integrations made:
+                <ul class="mb-0">
+                  <% integrations.each do |i| %>
+                    <li>
+                      <%= i[:type] %>:
+                      <% if i[:integration].blank? %>
+                        <span class="none-text">not found - may have been deleted!</span>
+                      <% else %>
+                        <%= link_to i[:name], i[:path] %>
+                      <% end %>
+                    </li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <% admin_task_config_data_panels(t).each do |p| %>
+              <div>
+                <%=
+                  tag.a(
+                    href: '#',
+                    data: {
+                      toggle: 'collapse',
+                      target: "##{p[:id]}"
+                    },
+                    aria: {
+                      controls: p[:id]
+                    }
+                  ) do
+                %>
+                  <%= p[:text] %>
+                  <%= icon 'caret-down', css_class: 'my-2' %>
+                <% end %>
+                <%=
+                  tag.div(
+                    id: p[:id],
+                    class: 'collapse'
+                  ) do
+                %>
+                  <pre><%= JSON.pretty_generate p[:data] -%></pre>
+                <% end %>
+              </div>
+            <% end %>
+          </td>
+          <td class="text-center">
+            <%= admin_task_status_badge t.status %>
+            <% if t.failed? %>
+              <%= icon_with_tooltip(t.error, icon_name: 'exclamation-triangle', css_class: 'text-warning') %>
+            <% end %>
+
+            <% if t.started_at.present? %>
+              <br />
+              <strong>Started at:</strong>
+              <%= t.started_at %>
+            <% end %>
+
+            <% if t.finished_at.present? %>
+              <br />
+              <strong>Finished at:</strong>
+              <%= t.finished_at %>
+            <% end %>
+          </td>
+          <td>
+            <% if t.deleteable? %>
+              <%= delete_admin_task_link t, css_class: 'btn btn-sm btn-primary' %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

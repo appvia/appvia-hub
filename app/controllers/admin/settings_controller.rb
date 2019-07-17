@@ -1,5 +1,5 @@
 module Admin
-  class SettingsController < Admin::BaseController
+  class SettingsController < BaseController
     # GET /admin/settings
     def show
       @settings = SettingsService.all
