@@ -1,4 +1,13 @@
 module IntegrationsHelper
+  def admin_integrations_path_with_selected(integration)
+    resource_type = ResourceTypesService.for_provider integration.provider_id
+
+    admin_integrations_path(
+      expand: resource_type[:id],
+      anchor: integration.id
+    )
+  end
+
   def config_field_title(name, spec)
     if spec
       spec['title']

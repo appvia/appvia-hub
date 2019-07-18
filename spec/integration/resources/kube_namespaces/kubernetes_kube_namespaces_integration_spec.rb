@@ -31,12 +31,12 @@ RSpec.describe 'Kube Namespaces – Kubernetes' do
       }
     end
 
-    let :grafana_integration do
-      create_mocked_integration provider_id: 'grafana'
+    let! :grafana_integration do
+      create_mocked_integration provider_id: 'grafana', parent_ids: [integration.id]
     end
 
-    let :loki_integration do
-      create_mocked_integration provider_id: 'loki'
+    let! :loki_integration do
+      create_mocked_integration provider_id: 'loki', parent_ids: [integration.id]
     end
 
     let :dependents do

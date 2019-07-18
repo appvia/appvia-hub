@@ -11,9 +11,12 @@ RSpec.describe 'Logging Dashboards – Loki' do
       }
     end
 
+    let :parent_integration do
+      create_mocked_integration provider_id: 'kubernetes'
+    end
+
     let! :parent do
-      kubernetes_integration = create_mocked_integration provider_id: 'kubernetes'
-      create :kube_namespace, integration: kubernetes_integration
+      create :kube_namespace, integration: parent_integration
     end
 
     let! :resource do

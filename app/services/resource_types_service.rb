@@ -12,41 +12,45 @@ module ResourceTypesService
     extend Memoist
     # rubocop:disable Metrics/MethodLength
     def all
+      # IMPORTANT: currently we expect a 1:1 mapping between a provider ID and a
+      # Resource Type - i.e. a provider can only ever be for one resource type.
       [
         {
           id: 'CodeRepo',
           class: 'Resources::CodeRepo',
           name: 'Code Repositories',
-          top_level: true,
-          providers: %w[git_hub].freeze
+          providers: %w[git_hub].freeze,
+          top_level: true
         },
         {
           id: 'DockerRepo',
           class: 'Resources::DockerRepo',
           name: 'Docker Repositories',
-          top_level: true,
-          providers: %w[ecr quay].freeze
+          providers: %w[ecr quay].freeze,
+          top_level: true
         },
         {
           id: 'KubeNamespace',
           class: 'Resources::KubeNamespace',
           name: 'Kubernetes Namespaces',
-          top_level: true,
-          providers: %w[kubernetes].freeze
+          providers: %w[kubernetes].freeze,
+          top_level: true
         },
         {
           id: 'MonitoringDashboard',
           class: 'Resources::MonitoringDashboard',
           name: 'Monitoring Dashboards',
+          providers: %w[grafana].freeze,
           top_level: false,
-          providers: %w[grafana].freeze
+          depends_on: %w[kubernetes].freeze
         },
         {
           id: 'LoggingDashboard',
           class: 'Resources::LoggingDashboard',
           name: 'Logging Dashboard',
+          providers: %w[loki].freeze,
           top_level: false,
-          providers: %w[loki].freeze
+          depends_on: %w[kubernetes].freeze
         }
       ].map(&:freeze).freeze
     end
