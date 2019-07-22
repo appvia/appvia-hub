@@ -170,4 +170,127 @@ RSpec.describe Integration, type: :model do
       end
     end
   end
+
+  context 'when parent(s) are required' do
+    let(:parent_provider_id) { Integration.provider_ids.keys.first }
+    let(:provider_id) { Integration.provider_ids.keys.second }
+    let(:config) { { 'foo' => 'bar' } }
+
+    let :resource_type do
+      {
+        top_level: false,
+        depends_on: [parent_provider_id]
+      }
+    end
+
+    let :parent_integration do
+      create_mocked_integration provider_id: parent_provider_id
+    end
+
+    let :integration do
+      build :integration,
+        provider_id: provider_id,
+        config: config,
+        parent_ids: parent_ids
+    end
+
+    before do
+      mock_provider_config_schema provider_id
+
+      allow(ResourceTypesService).to receive(:for_integration)
+        .with(anything)
+        .and_return(top_level: true)
+
+      allow(ResourceTypesService).to receive(:for_integration)
+        .with(integration)
+        .and_return(resource_type)
+    end
+
+    context 'when a valid parent is set' do
+      let(:parent_ids) { [parent_integration.id] }
+
+      before do
+        integration.save!
+      end
+
+      it 'loads parents' do
+        expect(integration.parents.entries).to contain_exactly parent_integration
+      end
+
+      it 'loads children' do
+        expect(parent_integration.children.entries).to contain_exactly integration
+      end
+    end
+
+    context 'when no parents have been set' do
+      let(:parent_ids) { [] }
+
+      it 'is not valid' do
+        expect(integration).not_to be_valid
+        expect(integration.errors).to_not be_empty
+        expect(integration.errors[:parent_ids]).to be_present
+      end
+    end
+
+    context 'when an invalid ID is set in parent_ids' do
+      let(:parent_ids) { ['huh?'] }
+
+      it 'is not valid' do
+        expect(integration).not_to be_valid
+        expect(integration.errors).to_not be_empty
+        expect(integration.errors[:parent_ids]).to contain_exactly(
+          'an unknown Integration ID has been found in the parent IDs'
+        )
+      end
+    end
+
+    context 'when a parent is set that isn\'t supposed to be' do
+      let(:other_provider_id) { Integration.provider_ids.keys.third }
+
+      let! :other_integration do
+        create_mocked_integration provider_id: other_provider_id
+      end
+
+      before do
+        mock_provider_config_schema other_provider_id
+      end
+
+      let(:parent_ids) { [other_integration.id] }
+
+      it 'is not valid' do
+        expect(integration).not_to be_valid
+        expect(integration.errors).to_not be_empty
+        expect(integration.errors[:parent_ids]).to contain_exactly(
+          'an invalid parent has been detected'
+        )
+      end
+    end
+
+    context 'when trying to link an integration to a parent that already has a child integration of the same type as the new one' do
+      let :existing_integration do
+        build :integration,
+          provider_id: provider_id,
+          config: config,
+          parent_ids: [parent_integration.id]
+      end
+
+      before do
+        allow(ResourceTypesService).to receive(:for_integration)
+          .with(existing_integration)
+          .and_return(resource_type)
+
+        existing_integration.save!
+      end
+
+      let(:parent_ids) { [parent_integration.id] }
+
+      it 'is not valid' do
+        expect(integration).not_to be_valid
+        expect(integration.errors).to_not be_empty
+        expect(integration.errors[:parent_ids]).to contain_exactly(
+          'cannot link this to a parent as it already has a child integration of the same type'
+        )
+      end
+    end
+  end
 end

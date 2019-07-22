@@ -26,14 +26,17 @@ class ResourceProvisioningService
   end
 
   def request_dependent_create(parent_resource, resource_type_id)
+    dependent_integration = DependentIntegrationsService.find_dependent_for(
+      parent_resource.integration,
+      resource_type_id
+    )
+
+    return if dependent_integration.blank?
+
     resource_type = ResourceTypesService.get resource_type_id
-    integrations = ResourceTypesService.integrations_for(resource_type[:id])
-
-    return if integrations.empty?
-
     resource_class = resource_type[:class].constantize
     dependent_resource = resource_class.create!(
-      integration: integrations.first,
+      integration: dependent_integration,
       requested_by: parent_resource.requested_by,
       parent: parent_resource,
       project: parent_resource.project,

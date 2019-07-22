@@ -9,10 +9,25 @@
 %>
   <%= form.alert_message "Please fix the issues below:" %>
 
-  <h5>For: <%= integration.provider['name'] -%></h5>
+  <h5>Provider: <%= integration.provider['name'] -%></h5>
   <%= form.hidden_field :provider_id %>
 
   <%= form.text_field :name, layout: :default, input_group_class: 'input-group-lg' %>
+
+  <% if @potential_parents.present? %>
+    <%=
+      form.select :parent_ids,
+        @potential_parents.transform_values { |l| l.map { |i| [i.name, i.id] }},
+        {
+          label: 'Link with parent(s)',
+          layout: :default
+        },
+        {
+          class: 'selectpicker',
+          multiple: true
+        }
+    %>
+  <% end %>
 
   <div class="card mb-3">
     <div class="card-header">

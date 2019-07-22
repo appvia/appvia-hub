@@ -28,8 +28,10 @@ module Resources
         'kubernetes' => lambda do |resource, agent, _config|
           agent.create_namespace resource.name
 
-          ResourceProvisioningService.new.request_dependent_create resource, 'MonitoringDashboard'
-          ResourceProvisioningService.new.request_dependent_create resource, 'LoggingDashboard'
+          provisioning_service = ResourceProvisioningService.new
+
+          provisioning_service.request_dependent_create resource, 'MonitoringDashboard'
+          provisioning_service.request_dependent_create resource, 'LoggingDashboard'
 
           true
         end
