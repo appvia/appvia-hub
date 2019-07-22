@@ -1,4 +1,6 @@
-require: rubocop-performance
+require:
+  - rubocop-performance
+  - rubocop-rails
 
 AllCops:
   DisplayCopNames: true
@@ -50,9 +52,6 @@ Metrics/ModuleLength:
 
 Metrics/ParameterLists:
   Enabled: false
-
-Rails:
-  Enabled: true
 
 Rails/Delegate:
   Enabled: false

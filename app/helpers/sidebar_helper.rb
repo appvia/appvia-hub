@@ -1,6 +1,6 @@
 module SidebarHelper
   def nav_item(text, path, icon_name: nil)
-    link_classes = ['nav-link', 'text-nowrap']
+    link_classes = %w[nav-link text-nowrap]
     is_active = current_page? path
     link_classes << 'active' if is_active
 
