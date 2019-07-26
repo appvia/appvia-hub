@@ -6,6 +6,21 @@
 
 Please refer to https://appvia.github.io/appvia-hub/ for the documentation.
 
+## Preview / QA
+
+These instructions allow you to quickly run the Hub in docker.
+
+**Note** the container is built locally and the hub is run with the production rails environment so this isn't suitable for development.
+
+**Note** for development, you will need to run the steps for [Dev](#dev) below.
+
+Run the command:
+```shell
+docker-compose -f docker-compose.yml -f docker-compose-app-preview.yml up
+```
+
+The hub should then be available at http://localhost:3000
+
 ## Dev
 
 ### Prerequisites
