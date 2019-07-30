@@ -1,0 +1,109 @@
+version: '3.7'
+
+services:
+
+  postgres:
+    image: 'postgres:10.6-alpine'
+    network_mode: host
+    volumes:
+      - 'pgdata:/var/lib/postgresql/data'
+    environment:
+      - POSTGRES_USER=ahub
+      - POSTGRES_PASSWORD=ahub_password
+    ports:
+      - 5432:5432
+
+  mock_user_service:
+    image: quay.io/appvia/mock-oidc-user-server:v0.0.2
+    network_mode: host
+    environment:
+      - PORT=9000
+      - CLIENT_ID=ahub-client
+      - CLIENT_SECRET=ahub-secret
+      - CLIENT_REDIRECT_URI=http://localhost:3000/oauth/callback
+    ports:
+      - 9000:9000
+
+  auth_proxy:
+    image: keycloak/keycloak-gatekeeper:5.0.0
+    network_mode: host
+    depends_on:
+      - mock_user_service
+    environment:
+      - PROXY_DISCOVERY_URL=http://localhost:9000
+      - PROXY_CLIENT_ID=ahub-client
+      - PROXY_CLIENT_SECRET=ahub-secret
+      - PROXY_REDIRECTION_URL=http://localhost:3000
+      - PROXY_LISTEN=0.0.0.0:3000
+      - PROXY_ENABLE_SECURITY_FILTER=false
+      - PROXY_ENCRYPTION_KEY=2B982C6C-E310-4D77-8745-FA958EDF
+      - PROXY_UPSTREAM_URL=http://127.0.0.1:3001
+    command:
+      - --upstream-timeout=5m
+      - --enable-refresh-tokens=true
+      - --preserve-host=true
+      - --openid-provider-proxy=http://localhost:9000
+      - --secure-cookie=false
+      - --cookie-access-name=auth-access
+      - --cookie-refresh-name=auth-refresh
+      - --enable-logging=true
+      - --enable-json-logging=false
+      - --verbose=false
+      - --resources=uri=/me/identity_flows/{integrationID:\w+}/git_hub/callback|white-listed=true|methods=GET
+      - --resources=uri=/healthz|white-listed=true|methods=GET
+      - --resources=uri=/*
+    ports:
+      - 3000:3000
+
+  sidekiq_redis:
+    image: redis:5.0.3-alpine
+    network_mode: host
+    ports:
+      - 6379:6379
+
+  quay_agent:
+    image: quay.io/appvia/hub-quay-agent:v0.0.1
+    network_mode: host
+    environment:
+      - DEBUG=true
+      - HTTP_PORT=10001
+      - LISTEN=0.0.0.0
+      - AUTH_TOKEN=secret-quay-agent-token
+    ports:
+      - 10001:10001
+
+  kube_agent:
+    image: quay.io/appvia/hub-kubernetes-agent:v0.0.1
+    network_mode: host
+    environment:
+      - DEBUG=true
+      - HTTP_PORT=10002
+      - LISTEN=0.0.0.0
+      - AUTH_TOKEN=secret-kube-agent-token
+    ports:
+      - 10002:10002
+
+  ecr_agent:
+    image: quay.io/appvia/hub-ecr-agent:v0.0.2
+    network_mode: host
+    environment:
+      - DEBUG=true
+      - HTTP_PORT=10003
+      - LISTEN=0.0.0.0
+      - AUTH_TOKEN=secret-ecr-agent-token
+    ports:
+      - 10003:10003
+
+  grafana_agent:
+    image: quay.io/appvia/hub-grafana-agent:v0.0.1
+    network_mode: host
+    environment:
+      - DEBUG=true
+      - HTTP_PORT=10004
+      - LISTEN=0.0.0.0
+      - AUTH_TOKEN=secret-grafana-agent-token
+    ports:
+      - 10004:10004
+
+volumes:
+  pgdata:

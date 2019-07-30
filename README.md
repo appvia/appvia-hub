@@ -4,7 +4,7 @@
 
 ## Docs
 
-Please refer to https://appvia.github.io/appvia-hub/ for the documentation. 
+Please refer to https://appvia.github.io/appvia-hub/ for the documentation.
 
 ## Dev
 
@@ -19,6 +19,7 @@ Please refer to https://appvia.github.io/appvia-hub/ for the documentation.
 ### Dependent services
 
 A database, mock user service and auth proxy can all be run locally using Docker Compose, using the provided `docker-compose.yml`.
+Note for linux users you can use `docker-compose-linux.yml` and simply add the `docker-compute -f docker-compose-linux.yml <commands>`
 
 To start them all up (running in the background):
 
