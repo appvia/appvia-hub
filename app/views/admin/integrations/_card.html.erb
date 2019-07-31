@@ -3,6 +3,8 @@
 <div id="<%= integration.id -%>" class="card mb-3">
   <div class="card-body">
     <h5 class="card-title">
+      <%= delete_integration_link integration, css_class: 'float-right btn btn-sm btn-danger' %>
+
       Name: <%= integration.name %>
       <%= link_to admin_integrations_path_with_selected(integration) do %>
         <%= icon 'link', css_class: ['ml-1', 'text-muted'] %>

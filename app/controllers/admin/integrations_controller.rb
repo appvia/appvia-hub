@@ -1,6 +1,6 @@
 module Admin
   class IntegrationsController < Admin::BaseController
-    before_action :find_integration, only: %i[edit update]
+    before_action :find_integration, only: %i[edit update destroy]
 
     # GET /admin/integrations
     def index
@@ -67,6 +67,12 @@ module Admin
         @potential_parents = find_potential_parents @integration.provider_id
         render :edit
       end
+    end
+
+    # DELETE /admin/integrations/:id
+    def destroy
+      @integration.destroy
+      redirect_to admin_integrations_path, notice: 'Integration was successfully deleted.'
     end
 
     private
