@@ -291,6 +291,32 @@ RSpec.describe Integration, type: :model do
           'cannot link this to a parent as it already has a child integration of the same type'
         )
       end
+
+      it 'still allows editing of the existing integration' do
+        expect do
+          existing_integration.update! name: 'Updated name'
+        end.not_to raise_error
+      end
+
+      it 'still allows changing the parent' do
+        other_parent_provider_id = Integration.provider_ids.keys.third
+        other_parent_integration = create_mocked_integration provider_id: other_parent_provider_id
+        mock_provider_config_schema other_parent_provider_id
+
+        resource_type = {
+          top_level: false,
+          depends_on: [other_parent_provider_id]
+        }
+        allow(ResourceTypesService).to receive(:for_integration)
+          .with(existing_integration)
+          .and_return(resource_type)
+
+        expect do
+          existing_integration.update! parent_ids: [other_parent_integration.id]
+        end.not_to raise_error
+
+        expect(existing_integration.reload.parents).to contain_exactly other_parent_integration
+      end
     end
   end
 end
