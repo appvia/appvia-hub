@@ -32,7 +32,7 @@
               <% is_overriden = overridden_config.key? name %>
               <% overridden_value = overridden_config[name] %>
               <%=
-                render partial: 'application/forms/json_schema_field',
+                render partial: 'application/forms/json_schema/field',
                   locals: {
                     form: integration_fields,
                     name: name,

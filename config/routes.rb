@@ -5,6 +5,10 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :integrations, except: %i[show]
     resource :settings, only: %i[show update]
+
+    get '/create', to: 'create#show', as: 'create'
+
+    resources :tasks, only: %i[new create destroy]
   end
 
   resources :projects, path: 'spaces' do

@@ -8,7 +8,7 @@
       <div data-controller="form-nested-list">
         <template data-target="form-nested-list.template">
           <%=
-            render partial: 'form_fields_array_item',
+            render partial: 'application/forms/json_schema/fields_array_item',
               locals: {
                 form: fields_form,
                 name: name,
@@ -30,7 +30,7 @@
         <div>
           <% Array(current[name]).each do |item| %>
             <%=
-              render partial: 'form_fields_array_item',
+              render partial: 'application/forms/json_schema/fields_array_item',
                 locals: {
                   form: fields_form,
                   name: name,
@@ -51,7 +51,7 @@
       <% if property_spec['type'] == 'object' %>
 
         <%=
-          render partial: 'form_fields_nested_object',
+          render partial: 'application/forms/json_schema/fields_nested_object',
             locals: {
               form: fields_form,
               name: name,
@@ -64,7 +64,7 @@
       <% else %>
 
         <%=
-          render partial: 'application/forms/json_schema_field',
+          render partial: 'application/forms/json_schema/field',
             locals: {
               form: fields_form,
               name: name,

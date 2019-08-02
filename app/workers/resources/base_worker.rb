@@ -2,6 +2,8 @@ module Resources
   class BaseWorker
     include Sidekiq::Worker
 
+    sidekiq_options queue: 'resources'
+
     def perform(resource_id)
       with_resource(resource_id) do |resource|
         config = config_for resource.integration, resource.project

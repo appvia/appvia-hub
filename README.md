@@ -4,7 +4,7 @@
 
 ## Docs
 
-Please refer to https://appvia.github.io/appvia-hub/ for the documentation. 
+Please refer to https://appvia.github.io/appvia-hub/ for the documentation.
 
 ## Dev
 
@@ -50,6 +50,8 @@ Then you're ready to use the usual `rails` commands (like `bin/rails serve`) to 
 
 ### Running the app locally
 
+#### Web app server
+
 Start up the Rails server with:
 
 ```shell
@@ -60,11 +62,19 @@ This serves the entire app, including all frontend assets (bundled using [Webpac
 
 You can **also** run `bin/webpack-dev-server` in a separate terminal shell if you want live reloading (in your browser) of CSS and JavaScript changes (note: only changes made within the `app/webpack` folder will cause live reloads).
 
-Start up the background processor with:
+#### Background workers
 
-```shell
-bundle exec sidekiq -c 1
-```
+Certain tasks – such as resource provisioning – are carried out in background jobs using [Sidekiq](https://github.com/mperham/sidekiq).
+
+There are different background workers for different types of jobs:
+
+- One for **resource provisioning** specifically:
+  - **IMPORTANT:** MUST run with a concurrency of 1 (`-c 1`) to ensure proper FIFO processing.
+  - `bundle exec sidekiq -q resources -c 1`
+- One for **admin tasks** specifically:
+  - `bundle exec sidekiq -q admin_tasks -c 2`
+- And one for everything else:
+  - `bundle exec sidekiq -q default -c 5`
 
 ### Dev tips
 

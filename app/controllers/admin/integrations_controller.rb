@@ -1,5 +1,5 @@
 module Admin
-  class IntegrationsController < Admin::BaseController
+  class IntegrationsController < BaseController
     before_action :find_integration, only: %i[edit update destroy]
 
     # GET /admin/integrations
