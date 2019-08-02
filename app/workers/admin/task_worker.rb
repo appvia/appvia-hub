@@ -38,6 +38,9 @@ module Admin
 
         grafana_url = results[:services][:grafana][:url]
 
+        grafana_provider = PROVIDERS_REGISTRY.get 'grafana'
+        grafana_template_url = grafana_provider['config_spec']['properties']['template_url']['default']
+
         grafana_integration = Integration.create!(
           provider_id: 'grafana',
           parent_ids: [kube_integration.id],
@@ -46,9 +49,12 @@ module Admin
             'url' => grafana_url,
             'api_key' => results[:services][:grafana][:api_key],
             'ca_cert' => 'noop',
-            'template_url' => 'http://s3-eu-west-2.amazonaws.com/appvia-hub-demo-grafana-templates-store/kubernetes-prometheus.json.tmpl'
+            'template_url' => grafana_template_url
           }
         )
+
+        loki_provider = PROVIDERS_REGISTRY.get 'loki'
+        loki_data_source_name = loki_provider['config_spec']['properties']['data_source_name']['default']
 
         loki_integration = Integration.create!(
           provider_id: 'loki',
@@ -56,7 +62,7 @@ module Admin
           name: "Loki for #{kube_integration.name}",
           config: {
             'grafana_url' => grafana_url,
-            'data_source_name' => 'Loki'
+            'data_source_name' => loki_data_source_name
           }
         )
 
