@@ -1,5 +1,3 @@
-require 'base64'
-
 class GrafanaAgent
   include AgentHttpClient
 
