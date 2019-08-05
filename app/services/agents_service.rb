@@ -45,6 +45,8 @@ module AgentsService
           agent_base_url: Rails.configuration.agents.grafana.base_url,
           agent_token: Rails.configuration.agents.grafana.token,
           grafana_url: config['url'],
+          grafana_admin_username: config['admin_username'],
+          grafana_admin_password: config['admin_password'],
           grafana_api_key: config['api_key'],
           grafana_ca_cert: config['ca_cert']
         )

@@ -9,7 +9,9 @@ RSpec.describe 'Monitoring Dashboards – Grafana' do
         'url' => 'http://grafana',
         'api_key' => 'this is an API key, no really',
         'ca_cert' => 'ca cert base64 encoded',
-        'template_url' => 'http://url.to.my.template/foo'
+        'template_url' => 'http://url.to.my.template/foo',
+        'admin_username' => 'admin',
+        'admin_password' => 'this is an admin password, I promise'
       }
     end
 
@@ -34,7 +36,9 @@ RSpec.describe 'Monitoring Dashboards – Grafana' do
         agent_token: Rails.configuration.agents.grafana.token,
         grafana_url: integration_config['url'],
         grafana_api_key: integration_config['api_key'],
-        grafana_ca_cert: integration_config['ca_cert']
+        grafana_ca_cert: integration_config['ca_cert'],
+        grafana_admin_username: integration_config['admin_username'],
+        grafana_admin_password: integration_config['admin_password']
       }
     end
 
