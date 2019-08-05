@@ -1,3 +1,14 @@
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <%= link_to team_path(@project.team) do %>
+          <%= icon 'angle-left' %>
+          <%= @project.team.name %>
+        <% end %>
+      </li>
+    </ol>
+  </nav>
+
 <div class="btn-group float-right" role="group" aria-label="Space actions">
   <button id="projectActionsGroupDropdown" type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     Actions
@@ -11,7 +22,7 @@
 </div>
 
 <h1>
-  <%= icon 'cube' %>
+  <%= project_icon %>
   <%= @project.name %>
 </h1>
 

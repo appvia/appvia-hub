@@ -1,5 +1,6 @@
 FactoryBot.define do
   factory :project do
+    team
     sequence :name do |n|
       "Project #{n}"
     end

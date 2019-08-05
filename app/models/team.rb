@@ -13,6 +13,11 @@ class Team < ApplicationRecord
 
   validates :name, presence: true
 
+  has_many :projects,
+    -> { order(:name) },
+    dependent: :restrict_with_exception,
+    inverse_of: :team
+
   def descriptor
     slug
   end

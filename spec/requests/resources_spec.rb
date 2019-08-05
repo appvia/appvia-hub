@@ -31,7 +31,7 @@ RSpec.describe 'Project resources', type: :request do
 
   shared_examples 'fails when no integrations are available for the resource type' do
     context 'when no integrations are available for the resource type' do
-      it 'redirects to the home page with an error flash message' do
+      it 'redirects to the home page with a warning flash message' do
         make_request
         expect(response).to redirect_to(root_path)
         expect(flash[:warning]).not_to be_empty
@@ -147,6 +147,7 @@ RSpec.describe 'Project resources', type: :request do
               resource = assigns(:resource)
               audit = resource.audits.order(:created_at).last
               expect(audit.action).to eq 'create'
+              expect(audit.associated).to eq @project
               expect(audit.user_email).to eq auth_email
               expect(audit.created_at.to_i).to eq now.to_i
             end
