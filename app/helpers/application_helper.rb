@@ -4,12 +4,19 @@ module ApplicationHelper
 
     return if crisp_website_id.blank?
 
+    set_user_script = if current_user?
+                        "window.$crisp.push(['set', 'user:email', '#{current_user.email}']);"
+                      else
+                        ''
+                      end
+
     safe_join(
       [
         raw( # rubocop:disable Rails/OutputSafety
           <<-SCRIPT
           <script type="text/javascript">
             window.$crisp=[];window.CRISP_WEBSITE_ID="#{crisp_website_id}";(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();
+            #{set_user_script}
           </script>
           SCRIPT
         )

@@ -1,0 +1,99 @@
+<%=
+  bootstrap_form_with(
+    model: admin_task,
+    scope: :admin_task,
+    url: admin_tasks_path,
+    method: :post,
+    local: true,
+    layout: :horizontal,
+    label_col: 'col-md-3',
+    control_col: 'col-md-9'
+  ) do |form|
+%>
+  <%= form.alert_message "Please fix the issues below:" %>
+
+  <%= form.hidden_field :type %>
+
+  <%= form.fields_for :type_params do |type_params| %>
+    <%- case admin_task.type -%>
+    <%- when 'Admin::Tasks::CreateKubeCluster' -%>
+      <%= type_params.hidden_field :cluster_creator, value: admin_task.cluster_creator %>
+
+      <% cluster_creator_spec = admin_task.cluster_creator_spec %>
+
+      <div class="card mb-3">
+        <div class="card-header">
+          Configure how to access the account
+        </div>
+        <div class="card-body">
+          <%=
+            render partial: 'application/forms/json_schema/fields',
+              locals: {
+                form: type_params,
+                namespace: :init_options,
+                spec: cluster_creator_spec['init_options'],
+                current: admin_task.init_options || {}
+              }
+          %>
+        </div>
+      </div>
+
+      <%
+        provision_options_default, provision_options_advanced = split_provision_options_property_spec(cluster_creator_spec['provision_options'])
+      %>
+
+      <div class="card mb-3">
+        <div class="card-header">
+          Configure your new cluster
+        </div>
+        <div class="card-body">
+          <%=
+            render partial: 'application/forms/json_schema/fields',
+              locals: {
+                form: type_params,
+                namespace: :provision_options,
+                spec: provision_options_default,
+                current: admin_task.provision_options || {}
+              }
+          %>
+
+          <% advanced_panel_id = 'advanced-options' %>
+          <%=
+            tag.a(
+              href: '#',
+              class: 'mt-2',
+              data: {
+                toggle: 'collapse',
+                target: "##{advanced_panel_id}"
+              },
+              aria: {
+                controls: advanced_panel_id
+              }
+            ) do
+          %>
+            Advanced
+            <%= icon 'caret-down', css_class: 'my-2' %>
+          <% end %>
+          <%=
+            tag.div(
+              id: advanced_panel_id,
+              class: 'collapse'
+            ) do
+          %>
+          <%=
+            render partial: 'application/forms/json_schema/fields',
+              locals: {
+                form: type_params,
+                namespace: :provision_options,
+                spec: provision_options_advanced,
+                current: admin_task.provision_options || {}
+              }
+          %>
+          <% end %>
+        </div>
+      </div>
+    <%- end -%>
+  <% end %>
+
+  <%= form.primary 'Create' %>
+<% end %>

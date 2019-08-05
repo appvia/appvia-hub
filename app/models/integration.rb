@@ -75,12 +75,22 @@ class Integration < ApplicationRecord
   def check_parents
     return if parent_ids.blank?
 
+    ensure_parents_exist
+
+    ensure_correct_parent_types
+
+    ensure_parent_child_limits
+  end
+
+  def ensure_parents_exist
     # Ensure that the parent_ids actually point to real integrations
     all_exist = parent_ids.all? do |id|
       self.class.exists? id
     end
     errors.add(:parent_ids, 'an unknown Integration ID has been found in the parent IDs') unless all_exist
+  end
 
+  def ensure_correct_parent_types
     # Ensure only the correct types of integrations can be linked together
     with_resource_type do |resource_type|
       all_allowed_provider_ids = parents.all? do |i|
@@ -88,14 +98,20 @@ class Integration < ApplicationRecord
       end
       errors.add(:parent_ids, 'an invalid parent has been detected') unless all_allowed_provider_ids
     end
+  end
 
+  def ensure_parent_child_limits
     # Ensure that a particular parent integration only has one of a particular
     # child integration type
     has_existing_child = parents.any? do |i|
       if i.children.size.zero?
         false
       else
-        i.children.any? { |c| c.provider_id == provider_id }
+        i.children.any? do |c|
+          # Ignore the current integration
+          is_self = c.id == id
+          !is_self && c.provider_id == provider_id
+        end
       end
     end
     errors.add(:parent_ids, 'cannot link this to a parent as it already has a child integration of the same type') if has_existing_child

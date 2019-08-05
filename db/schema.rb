@@ -10,11 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_17_151518) do
+ActiveRecord::Schema.define(version: 2019_07_22_153945) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "admin_tasks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "type", null: false
+    t.uuid "created_by_id", null: false
+    t.string "status", null: false
+    t.jsonb "data", default: {}, null: false
+    t.text "encrypted_data", null: false
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.text "error"
+    t.string "lock_version"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_admin_tasks_on_created_by_id"
+    t.index ["data"], name: "index_admin_tasks_on_data", using: :gin
+    t.index ["type"], name: "index_admin_tasks_on_type"
+  end
 
   create_table "audits", force: :cascade do |t|
     t.string "auditable_type"
@@ -126,6 +143,7 @@ ActiveRecord::Schema.define(version: 2019_07_17_151518) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  add_foreign_key "admin_tasks", "users", column: "created_by_id"
   add_foreign_key "integration_overrides", "integrations"
   add_foreign_key "integration_overrides", "projects"
   add_foreign_key "resources", "integrations"

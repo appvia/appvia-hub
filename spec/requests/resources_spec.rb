@@ -269,7 +269,7 @@ RSpec.describe 'Project resources', type: :request do
 
       it 'calls the ProjectResourcesBootstrapService as expected and redirects to the project page' do
         post bootstrap_project_resources_path(@project)
-        expect(response).to redirect_to(@project)
+        expect(response).to redirect_to(project_path(@project, autorefresh: true))
       end
     end
   end

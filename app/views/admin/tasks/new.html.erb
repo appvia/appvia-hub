@@ -1,0 +1,13 @@
+<h1>
+  New
+  <%- case @admin_task.type -%>
+  <%- when 'Admin::Tasks::CreateKubeCluster' -%>
+    Kubernetes cluster
+    <br />
+    <span class="small text-muted">
+      For <%= @admin_task.cluster_creator_spec['name'] %>
+    </span>
+  <%- end -%>
+</h1>
+
+<%= render 'form', admin_task: @admin_task %>
