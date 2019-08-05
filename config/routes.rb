@@ -11,6 +11,8 @@ Rails.application.routes.draw do
     resources :tasks, only: %i[new create destroy]
   end
 
+  resources :teams
+
   resources :projects, path: 'spaces' do
     resources :resources, only: %i[new create destroy] do
       collection do
