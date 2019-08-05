@@ -7,12 +7,24 @@
     <hr />
 
     <div class="sidebar-item">
+      <%= link_to 'New', new_team_path, class: 'btn btn-sm btn-primary float-right mr-3' %>
+      <%= nav_item 'Teams', teams_path %>
+    </div>
+    <ul class="nav flex-column mb-3">
+      <% Team.order(:name).each do |team| %>
+        <%= nav_list_item team.name, team_path(team), icon: team_icon %>
+      <% end %>
+    </ul>
+
+    <hr />
+
+    <div class="sidebar-item">
       <%= link_to 'New', new_project_path, class: 'btn btn-sm btn-primary float-right mr-3' %>
       <%= nav_item 'Spaces', projects_path %>
     </div>
     <ul class="nav flex-column mb-3">
       <% Project.order(:name).each do |project| %>
-        <%= nav_list_item project.name, project_path(project), icon_name: 'cube' %>
+        <%= nav_list_item project.name, project_path(project), icon: project_icon %>
       <% end %>
     </ul>
 

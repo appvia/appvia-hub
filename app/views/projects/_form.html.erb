@@ -1,6 +1,25 @@
 <%= bootstrap_form_with(model: project, local: true) do |form| %>
   <%= form.alert_message "Please fix the issues below:" %>
 
+  <% if project.new_record? %>
+    <%=
+      form.select :team_id,
+        teams.map { |i| [i.name, i.id] },
+        {
+          label: 'Team',
+          required: true
+        },
+        { class: 'selectpicker' }
+    %>
+  <% else %>
+    <%= form.hidden_field :team_id %>
+    <%=
+      form.static_control :team_name,
+        value: project.team.name,
+        label: 'Team'
+    %>
+  <% end %>
+
   <%= form.text_field :name %>
 
   <% if project.new_record? %>
