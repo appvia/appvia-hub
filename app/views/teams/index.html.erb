@@ -1,0 +1,31 @@
+<h1>Teams</h1>
+
+<% if @teams.blank? %>
+  <div class="alert alert-warning">
+    No teams created yet
+  </div>
+<% end %>
+
+<% @teams.each do |team| %>
+  <div class="card shadow-sm mb-3">
+    <div class="card-body">
+      <h5 class="card-title">
+        <%= icon 'user-friends' %>
+        <%= link_to team.name, team_path(team) %>
+
+        <small class="badge badge-info ml-2 text-monospace">
+          <%= team.slug %>
+        </small>
+      </h5>
+
+      <% if team.description.present? %>
+        <div class="card-text mt-3">
+          <%= simple_format team.description %>
+        </div>
+      <% end %>
+    </div>
+    <div class="card-footer text-muted">
+      <%= delete_team_link team, css_class: 'float-right btn btn-danger' %>
+    </div>
+  </div>
+<% end %>
