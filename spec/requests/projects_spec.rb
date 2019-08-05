@@ -65,12 +65,26 @@ RSpec.describe 'Projects', type: :request do
     end
 
     it_behaves_like 'authenticated' do
-      it 'loads the new project page' do
-        get new_project_path
-        expect(response).to be_successful
-        expect(response).to render_template(:new)
-        expect(assigns(:project)).to be_a Project
-        expect(assigns(:project)).to be_new_record
+      context 'when no teams exist' do
+        it 'redirects to the home page with a warning flash message' do
+          get new_project_path
+          expect(response).to redirect_to(root_path)
+          expect(flash[:warning]).not_to be_empty
+        end
+      end
+
+      context 'when teams do exist' do
+        before do
+          create_list :team, 3
+        end
+
+        it 'loads the new project page' do
+          get new_project_path
+          expect(response).to be_successful
+          expect(response).to render_template(:new)
+          expect(assigns(:project)).to be_a Project
+          expect(assigns(:project)).to be_new_record
+        end
       end
     end
   end
@@ -97,8 +111,11 @@ RSpec.describe 'Projects', type: :request do
   end
 
   describe 'create - POST /spaces' do
+    let!(:team) { create :team }
+
     let :params do
       {
+        team_id: team.id,
         name: 'Foo',
         slug: 'foo-1',
         description: 'fooooooo'
@@ -119,6 +136,7 @@ RSpec.describe 'Projects', type: :request do
             project = assigns(:project)
             expect(response).to redirect_to(project)
             expect(project).to be_persisted
+            expect(project.team).to eq team
             expect(project.name).to eq params[:name]
             expect(project.slug).to eq params[:slug]
             expect(project.description).to eq params[:description]
@@ -131,6 +149,7 @@ RSpec.describe 'Projects', type: :request do
           project = assigns(:project)
           audit = project.audits.order(:created_at).last
           expect(audit.action).to eq 'create'
+          expect(audit.associated).to eq team
           expect(audit.user_email).to eq auth_email
           expect(audit.created_at.to_i).to eq now.to_i
         end

@@ -1,4 +1,6 @@
 class ProjectsController < ApplicationController
+  before_action :load_and_check_presence_of_teams, only: %i[new edit create update]
+
   before_action :find_project, only: %i[show edit update destroy]
 
   def index
@@ -18,7 +20,7 @@ class ProjectsController < ApplicationController
   end
 
   def new
-    @project = Project.new
+    @project = Project.new team_id: params[:team_id]
   end
 
   def edit; end
@@ -48,11 +50,20 @@ class ProjectsController < ApplicationController
 
   private
 
+  def load_and_check_presence_of_teams
+    @teams = Team.all
+
+    if @teams.empty? # rubocop:disable Style/GuardClause
+      flash[:warning] = 'No teams have been created yet, so spaces cannot be created.'
+      redirect_back fallback_location: root_path, allow_other_host: false
+    end
+  end
+
   def find_project
     @project = Project.friendly.find params[:id]
   end
 
   def project_params
-    params.require(:project).permit(:name, :slug, :description)
+    params.require(:project).permit(:name, :slug, :description, :team_id)
   end
 end
