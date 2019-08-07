@@ -6,6 +6,13 @@ class UsersController < ApplicationController
     @users = User.order(:email)
   end
 
+  # GET /users/search
+  def search
+    query = params.require(:q)
+    users = User.search query
+    render json: users
+  end
+
   # PUT/PATCH /users/:user_id/role
   def update_role
     user = User.find params[:user_id]

@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_05_135446) do
+ActiveRecord::Schema.define(version: 2019_08_07_145601) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
@@ -135,6 +136,17 @@ ActiveRecord::Schema.define(version: 2019_08_05_135446) do
     t.index ["type"], name: "index_resources_on_type"
   end
 
+  create_table "team_memberships", id: false, force: :cascade do |t|
+    t.uuid "team_id", null: false
+    t.uuid "user_id", null: false
+    t.string "role"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id", "user_id"], name: "index_team_memberships_on_team_id_and_user_id", unique: true
+    t.index ["team_id"], name: "index_team_memberships_on_team_id"
+    t.index ["user_id"], name: "index_team_memberships_on_user_id"
+  end
+
   create_table "teams", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.string "slug", null: false
@@ -152,6 +164,8 @@ ActiveRecord::Schema.define(version: 2019_08_05_135446) do
     t.datetime "updated_at", null: false
     t.string "role", default: "user"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["email"], name: "users_search_email_idx", opclass: :gin_trgm_ops, using: :gin
+    t.index ["name"], name: "users_search_name_idx", opclass: :gin_trgm_ops, using: :gin
   end
 
   add_foreign_key "admin_tasks", "users", column: "created_by_id"
