@@ -1,4 +1,5 @@
 import '../stylesheets/application.scss';
+import '@trevoreyre/autocomplete-vue/dist/style.css';
 
 import Rails from 'rails-ujs';
 import Turbolinks from 'turbolinks';
@@ -16,6 +17,7 @@ import '../controllers';
 import Vue from 'vue/dist/vue.esm';
 import TurbolinksAdapter from 'vue-turbolinks';
 import Autorefresh from '../components/Autorefresh.vue';
+import AddUserToTeam from '../components/AddUserToTeam.vue';
 
 Rails.start();
 Turbolinks.start();
@@ -29,6 +31,11 @@ document.addEventListener('turbolinks:load', () => {
     {
       elementId: 'autorefresh',
       components: { Autorefresh },
+      data: {}
+    },
+    {
+      elementId: 'add-user-to-team',
+      components: { AddUserToTeam },
       data: {}
     }
   ];
@@ -52,6 +59,9 @@ document.addEventListener('turbolinks:load', () => {
   $(function tooltipActivation() {
     $('[data-toggle="tooltip"]').tooltip();
   });
+
+  const anchor = window.location.hash;
+  $(`a[href="${anchor}"]`).tab('show');
 
   // Make bootstrap-select work with Turbolinks
   $(window).trigger('load.bs.select.data-api');

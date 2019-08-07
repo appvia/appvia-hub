@@ -6,7 +6,7 @@
       <h5 class="card-title">
         <% if user.admin? %>
           <span class="badge badge-success float-right">
-            Admin
+            Hub admin
           </span>
         <% end %>
 
@@ -21,9 +21,9 @@
     <% if current_user.admin? %>
       <div class="card-footer text-muted">
         <% if user.admin? %>
-          <%= update_user_role_link 'Revoke Admin', user, :user %>
+          <%= update_user_role_link 'Revoke hub admin', user, :user %>
         <% else %>
-          <%= update_user_role_link 'Make Admin', user, :admin %>
+          <%= update_user_role_link 'Make hub admin', user, :admin %>
         <% end %>
       </div>
     <% end %>
