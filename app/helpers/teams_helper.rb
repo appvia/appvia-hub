@@ -1,4 +1,8 @@
 module TeamsHelper
+  def team_icon
+    icon 'user-friends'
+  end
+
   def delete_team_link(team, css_class: nil)
     link_to 'Delete',
       team_path(team),

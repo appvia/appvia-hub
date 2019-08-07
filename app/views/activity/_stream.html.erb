@@ -24,12 +24,12 @@
         <%- when 'Project' -%>
           <%- case a.action -%>
           <%- when 'create' -%>
-            <%= activity_entry icon('cube'), a.created_at do %>
+            <%= activity_entry project_icon, a.created_at do %>
               <%= a.user_email %> created a new space:
               <%= link_to a.auditable_descriptor, project_path(a.auditable_id), class: 'text-monospace' %>
             <% end %>
           <%- when 'destroy' -%>
-            <%= activity_entry icon('cube'), a.created_at do %>
+            <%= activity_entry project_icon, a.created_at do %>
               <%= a.user_email %> deleted space:
               <span class="text-monospace"><%= a.auditable_descriptor %></span>
             <% end %>
