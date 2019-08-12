@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  include PgSearch::Model
+
   audited
 
   enum role: {
@@ -18,6 +20,22 @@ class User < ApplicationRecord
 
   has_many :identities,
     dependent: :destroy
+
+  has_many :memberships,
+    class_name: 'TeamMembership',
+    dependent: :destroy
+
+  has_many :teams, through: :memberships
+
+  pg_search_scope :search,
+    against: {
+      name: 'A',
+      email: 'B'
+    },
+    using: {
+      tsearch: { prefix: true },
+      trigram: {}
+    }
 
   def descriptor
     email

@@ -3,6 +3,7 @@
       <li class="breadcrumb-item">
         <%= link_to team_path(@project.team) do %>
           <%= icon 'angle-left' %>
+          <%= team_icon %>
           <%= @project.team.name %>
         <% end %>
       </li>

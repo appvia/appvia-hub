@@ -18,6 +18,14 @@ class Team < ApplicationRecord
     dependent: :restrict_with_exception,
     inverse_of: :team
 
+  has_many :memberships,
+    class_name: 'TeamMembership',
+    dependent: :destroy
+
+  has_many :members,
+    through: :memberships,
+    source: :user
+
   def descriptor
     slug
   end

@@ -11,7 +11,9 @@ Rails.application.routes.draw do
     resources :tasks, only: %i[new create destroy]
   end
 
-  resources :teams
+  resources :teams do
+    resources :memberships, controller: 'team_memberships', only: %i[update destroy]
+  end
 
   resources :projects, path: 'spaces' do
     resources :resources, only: %i[new create destroy] do
@@ -25,6 +27,10 @@ Rails.application.routes.draw do
   end
 
   resources :users, only: %i[index] do
+    collection do
+      get :search, constraints: { format: 'json' }
+    end
+
     resource :role, only: %i[update], controller: 'users', action: :update_role
   end
 

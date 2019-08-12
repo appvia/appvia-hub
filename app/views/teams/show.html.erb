@@ -32,6 +32,9 @@
   <li class="nav-item">
     <a class="nav-link active" id="projects-tab" data-toggle="tab" href="#spaces" role="tab" aria-controls="projects" aria-selected="true">Spaces</a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" id="people-tab" data-toggle="tab" href="#people" role="tab" aria-controls="people" aria-selected="false">People</a>
+  </li>
 </ul>
 
 <div class="tab-content border border-top-0">
@@ -69,5 +72,22 @@
     <% end %>
 
     <%= render partial: 'projects', locals: { team: @team } %>
+  </div>
+
+  <div class="tab-pane" id="people" role="tabpanel" aria-labelledby="people-tab">
+    <div id="add-user-to-team" style="min-height: 82px;">
+      <add-user-to-team
+        team-id="<%= @team.id -%>"
+        team-url="<%= team_path(@team, anchor: 'people') -%>"
+      ></add-user-to-team>
+    </div>
+
+    <% if @team.members.count.zero? %>
+      <p class="none-text text-center p-3 mb-0">
+        No team members yet
+      </p>
+    <% end %>
+
+    <%= render partial: 'people', locals: { team: @team } %>
   </div>
 </div>
