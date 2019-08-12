@@ -3,6 +3,7 @@ class Team < ApplicationRecord
   include FriendlyId
 
   audited
+  has_associated_audits
 
   slugged_attribute :slug,
     presence: true,

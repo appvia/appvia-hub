@@ -1,5 +1,7 @@
 module Admin
   class SettingsController < BaseController
+    authorize_resource :settings, parent: false, class: false
+
     # GET /admin/settings
     def show
       @settings = SettingsService.all

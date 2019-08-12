@@ -4,6 +4,8 @@ module TeamsHelper
   end
 
   def delete_team_link(team, css_class: nil)
+    return unless can?(:destroy, team)
+
     link_to 'Delete',
       team_path(team),
       method: :delete,
@@ -42,8 +44,12 @@ module TeamsHelper
       class: css_class,
       data: {
         params: { role: role }.to_param,
+        'disable-with': 'Processing...',
         turbolinks: false,
-        'disable-with': 'Processing...'
+        confirm: 'Are you sure you want to update the role for this team member?',
+        title: "Update role for team member: #{user.email}",
+        verify: 'yes',
+        verify_text: "Type 'yes' to confirm"
       },
       role: 'button'
   end

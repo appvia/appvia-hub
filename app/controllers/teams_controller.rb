@@ -1,6 +1,10 @@
 class TeamsController < ApplicationController
   before_action :find_team, only: %i[show edit update destroy]
 
+  skip_authorization_check only: %i[index new create]
+
+  authorize_resource except: %i[index new create]
+
   # GET /teams
   def index
     @teams = Team.order(:name)

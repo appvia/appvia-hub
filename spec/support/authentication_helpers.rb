@@ -27,6 +27,11 @@ module AuthenticationHelpers
 
   RSpec.shared_examples 'authenticated' do
     include RequestHelpersAuthOverrides
+
+    before do
+      # Reset the current_user's role in case they were made a hub admin automatically
+      current_user.update! role: User.roles[:user]
+    end
   end
 
   module RequestHelpersAuthOverrides
