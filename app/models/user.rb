@@ -25,7 +25,9 @@ class User < ApplicationRecord
     class_name: 'TeamMembership',
     dependent: :destroy
 
-  has_many :teams, through: :memberships
+  has_many :teams,
+    -> { order(:name) },
+    through: :memberships
 
   pg_search_scope :search,
     against: {
