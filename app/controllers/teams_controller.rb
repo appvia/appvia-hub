@@ -22,6 +22,9 @@ class TeamsController < ApplicationController
     @team = Team.new team_params
 
     if @team.save
+      # Current user becomes an admin of the team
+      @team.memberships.create! user_id: current_user.id, role: 'admin'
+
       redirect_to @team, notice: 'Team was successfully created.'
     else
       render :new
