@@ -1,3 +1,7 @@
+- id: eks
+  name: AWS Kubernetes Service (EKS)
+  description: "Provisions a fully managed EKS cluster, with monitoring and logging services, and best practices enforced."
+
 - id: gke
   name: Google Kubernetes Engine (GKE)
   description: "Provisions a fully managed GKE cluster within GCP, with monitoring and logging services, and best practices enforced."

@@ -3,7 +3,7 @@ GIT
   revision: d759fef8e3bd17e5258c72fc54e9f7c8227cd683
   tag: v0.0.7
   specs:
-    hub-clusters-creator (0.0.7)
+    hub-clusters-creator (0.0.8)
       azure_mgmt_compute (~> 0.18.7)
       azure_mgmt_container_service (~> 0.18.5)
       azure_mgmt_dns (~> 0.17.4)
