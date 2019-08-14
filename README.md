@@ -12,6 +12,7 @@ Please refer to https://appvia.github.io/appvia-hub/ for the documentation.
 
 - Ruby 2.5.5
   - with Bundler v1.17+
+  - Postgres client ([platform lib required](https://stackoverflow.com/questions/6040583/cant-find-the-libpq-fe-h-header-when-trying-to-install-pg-gem?answertab=votes#tab-top))
 - NodeJS 10+
   - with Yarn 1.10+
 - Docker Compose v1.23+
