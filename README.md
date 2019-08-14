@@ -63,6 +63,14 @@ This serves the entire app, including all frontend assets (bundled using [Webpac
 
 You can **also** run `bin/webpack-dev-server` in a separate terminal shell if you want live reloading (in your browser) of CSS and JavaScript changes (note: only changes made within the `app/webpack` folder will cause live reloads).
 
+#### Tests
+
+To run the test suite:
+
+```shell
+bundle exec rspec
+```
+
 #### Background workers
 
 Certain tasks – such as resource provisioning – are carried out in background jobs using [Sidekiq](https://github.com/mperham/sidekiq).
