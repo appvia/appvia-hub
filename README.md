@@ -12,6 +12,7 @@ Please refer to https://appvia.github.io/appvia-hub/ for the documentation.
 
 - Ruby 2.5.5
   - with Bundler v1.17+
+  - Postgres client ([platform lib required](https://stackoverflow.com/questions/6040583/cant-find-the-libpq-fe-h-header-when-trying-to-install-pg-gem?answertab=votes#tab-top))
 - NodeJS 10+
   - with Yarn 1.10+
 - Docker Compose v1.23+
@@ -61,6 +62,14 @@ bin/rails server
 This serves the entire app, including all frontend assets (bundled using [Webpack](https://webpack.js.org/)).
 
 You can **also** run `bin/webpack-dev-server` in a separate terminal shell if you want live reloading (in your browser) of CSS and JavaScript changes (note: only changes made within the `app/webpack` folder will cause live reloads).
+
+#### Tests
+
+To run the test suite:
+
+```shell
+bundle exec rspec
+```
 
 #### Background workers
 
