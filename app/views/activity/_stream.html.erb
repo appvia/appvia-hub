@@ -21,16 +21,75 @@
               <% end %>
             <% end %>
           <%- end -%>
+        <%- when 'Team' -%>
+          <%- case a.action -%>
+          <%- when 'create' -%>
+            <%= activity_entry team_icon, a.created_at do %>
+              <%= a.user_email %> created a new team
+              <%= link_to a.auditable_descriptor, team_path(a.auditable_id), class: 'text-monospace' %>
+            <% end %>
+          <%- when 'destroy' -%>
+            <%= activity_entry team_icon, a.created_at do %>
+              <%= a.user_email %> deleted team
+              <span class="text-monospace"><%= a.auditable_descriptor %></span>
+            <% end %>
+          <%- end -%>
+        <%- when 'TeamMembership' -%>
+          <%- case a.action -%>
+          <%- when 'create' -%>
+            <%= activity_entry team_icon, a.created_at do %>
+              <%= a.user_email %> added
+              <% if a.auditable.present? %>
+                user <%= a.auditable.user.email %>
+              <% else %>
+                an unknown user (probably because they've since been removed)
+              <% end %>
+              to the team
+              <%= link_to a.associated_descriptor, team_path(a.associated_id), class: 'text-monospace' %>
+              <% if a.audited_changes['role'].present? %>
+                (as <strong><%= a.audited_changes['role'] %></strong>)
+              <% end %>
+            <% end %>
+          <%- when 'update' -%>
+            <% role_change = Array(a.audited_changes['role']).flatten %>
+            <% if role_change.uniq.size == 2 %>
+              <%= activity_entry team_icon, a.created_at do %>
+                <%= a.user_email %> changed role for
+                <% if a.auditable.present? %>
+                  user <%= a.auditable.user.email %>
+                <% else %>
+                  an unknown user (probably because they've since been removed)
+                <% end %>
+                in team
+                <%= link_to a.associated_descriptor, team_path(a.associated_id), class: 'text-monospace' %>
+                from <%= role_change.first || 'regular team member' %>
+                to <strong><%= role_change.second || 'regular team member' %></strong>
+              <% end %>
+            <% end %>
+          <%- when 'destroy' -%>
+            <%= activity_entry team_icon, a.created_at do %>
+              <%= a.user_email %> removed
+              <% if a.auditable.present? %>
+                user <%= a.auditable.user.email %>
+              <% else %>
+                an unknown user (probably because they've since been removed)
+              <% end %>
+              from the team
+              <%= link_to a.associated_descriptor, team_path(a.associated_id), class: 'text-monospace' %>
+            <% end %>
+          <%- end -%>
         <%- when 'Project' -%>
           <%- case a.action -%>
           <%- when 'create' -%>
             <%= activity_entry project_icon, a.created_at do %>
-              <%= a.user_email %> created a new space:
+              <%= a.user_email %> created a new space
               <%= link_to a.auditable_descriptor, project_path(a.auditable_id), class: 'text-monospace' %>
+              within team
+              <%= link_to a.associated_descriptor, team_path(a.associated_id), class: 'text-monospace' %>
             <% end %>
           <%- when 'destroy' -%>
             <%= activity_entry project_icon, a.created_at do %>
-              <%= a.user_email %> deleted space:
+              <%= a.user_email %> deleted space
               <span class="text-monospace"><%= a.auditable_descriptor %></span>
             <% end %>
           <%- end -%>
@@ -39,16 +98,16 @@
           <%- when 'request_create' -%>
             <%= activity_entry resource_icon(a.auditable_model_name), a.created_at do %>
               <% if a.user_email %>
-                <%= a.user_email %> requested a new resource:
+                <%= a.user_email %> requested a new resource
               <% else %>
-                A new resource has been requested:
+                A new resource has been requested
               <% end %>
               <span class="font-weight-bold">
                 <%= a.auditable_descriptor %>
               </span>
               <% status = 'pending' %>
               <%= resource_status_badge status %>
-              for space:
+              for space
               <%= link_to a.associated_descriptor, project_path(a.associated_id), class: 'text-monospace' %>
             <% end %>
           <%- when 'update' -%>
@@ -62,16 +121,16 @@
                 is now
                 <% status = a.audited_changes['status'].last %>
                 <%= resource_status_badge status %>
-                for space:
+                for space
                 <%= link_to a.associated_descriptor, project_path(a.associated_id), class: 'text-monospace' %>
               <% end %>
             <% end %>
           <%- when 'request_delete' -%>
             <%= activity_entry resource_icon(a.auditable_model_name), a.created_at do %>
               <% if a.user_email %>
-                <%= a.user_email %> requested deletion of resource:
+                <%= a.user_email %> requested deletion of resource
               <% else %>
-                A resource has been requested to be deleted:
+                A resource has been requested to be deleted
               <% end %>
               <%= a.user_email %>
               <span class="font-weight-bold">
@@ -79,21 +138,21 @@
               </span>
               <% status = 'deleting' %>
               <%= resource_status_badge status %>
-              for space:
+              for space
               <%= link_to a.associated_descriptor, project_path(a.associated_id), class: 'text-monospace' %>
             <% end %>
           <%- when 'destroy' -%>
             <%= activity_entry resource_icon(a.auditable_model_name), a.created_at do %>
               <% if a.user_email %>
-                <%= a.user_email %> deleted resource:
+                <%= a.user_email %> deleted resource
               <% else %>
-                A resource was deleted:
+                A resource was deleted
               <% end %>
               <%= a.user_email %>
               <span class="font-weight-bold">
                 <%= a.auditable_descriptor %>
               </span>
-              for space:
+              for space
               <%= link_to a.associated_descriptor, project_path(a.associated_id), class: 'text-monospace' %>
             <% end %>
           <%- end -%>

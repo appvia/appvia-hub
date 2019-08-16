@@ -37,6 +37,9 @@
   <li class="nav-item">
     <a class="nav-link" id="people-tab" data-toggle="tab" href="#people" role="tab" aria-controls="people" aria-selected="false">People</a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" id="activity-tab" data-toggle="tab" href="#activity" role="tab" aria-controls="activity" aria-selected="false">Activity</a>
+  </li>
 </ul>
 
 <div class="tab-content border border-top-0">
@@ -93,5 +96,9 @@
     <% end %>
 
     <%= render partial: 'people', locals: { team: @team } %>
+  </div>
+
+  <div class="tab-pane" id="activity" role="tabpanel" aria-labelledby="activity-tab">
+    <%= render partial: 'activity/stream', locals: { activity: @activity } %>
   </div>
 </div>

@@ -11,7 +11,9 @@ class TeamsController < ApplicationController
   end
 
   # GET /teams/1
-  def show; end
+  def show
+    @activity = ActivityService.new.for_team @team
+  end
 
   # GET /teams/new
   def new

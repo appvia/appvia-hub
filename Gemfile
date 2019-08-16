@@ -28,7 +28,6 @@ gem 'typhoeus', '~> 1.3', '>= 1.3.1'
 gem 'wait', '~> 0.5.3'
 gem 'hub-clusters-creator', github: 'appvia/hub-clusters-creator', tag: 'v0.0.7'
 gem 'pg_search', '~> 2.3'
-gem 'composite_primary_keys', '~> 11.2'
 gem 'active_model_serializers', '~> 0.10.10'
 gem 'cancancan', '~> 3.0', '>= 3.0.1'
 

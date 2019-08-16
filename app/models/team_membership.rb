@@ -1,8 +1,6 @@
 class TeamMembership < ApplicationRecord
   audited associated_with: :team
 
-  self.primary_keys = :team_id, :user_id
-
   enum role: {
     admin: 'admin'
   }
