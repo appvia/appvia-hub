@@ -1,5 +1,9 @@
 module Me
   class IdentitiesController < ApplicationController
+    # This controller should only ever act on the currently authenticated user,
+    # so we do not need to peform any authorization checks.
+    skip_authorization_check
+
     before_action :find_integration
 
     def destroy

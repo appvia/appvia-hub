@@ -1,4 +1,4 @@
-module HubAdminHelpers
+module HubAdminAuthorizationHelpers
   # The helpers here need to be used within the shared examples defined in
   # authentication_helpers, otherwise they won't work.
 
@@ -9,6 +9,7 @@ module HubAdminHelpers
 
     it 'redirects to the root page' do
       expect(response).to redirect_to root_path
+      expect(flash[:alert]).not_to be_empty
     end
   end
 

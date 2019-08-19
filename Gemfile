@@ -30,6 +30,7 @@ gem 'hub-clusters-creator', github: 'appvia/hub-clusters-creator', tag: 'v0.0.7'
 gem 'pg_search', '~> 2.3'
 gem 'composite_primary_keys', '~> 11.2'
 gem 'active_model_serializers', '~> 0.10.10'
+gem 'cancancan', '~> 3.0', '>= 3.0.1'
 
 group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
