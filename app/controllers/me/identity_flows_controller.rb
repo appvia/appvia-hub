@@ -5,6 +5,10 @@ module Me
       'git_hub_callback' => 'git_hub'
     }.freeze
 
+    # This controller should only ever act on the currently authenticated user,
+    # so we do not need to peform any authorization checks.
+    skip_authorization_check
+
     skip_before_action :require_authentication, only: :git_hub_callback
 
     before_action :find_integration

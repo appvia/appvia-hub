@@ -1,12 +1,14 @@
-<div class="btn-group float-right" role="group" aria-label="Team actions">
-  <button id="teamActionsGroupDropdown" type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Actions
-  </button>
-  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="teamActionsGroupDropdown">
-    <%= link_to 'Edit', edit_team_path(@team), class: 'dropdown-item' %>
-    <%= delete_team_link @team, css_class: 'dropdown-item' %>
+<% if can? :edit, @team %>
+  <div class="btn-group float-right" role="group" aria-label="Team actions">
+    <button id="teamActionsGroupDropdown" type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Actions
+    </button>
+    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="teamActionsGroupDropdown">
+      <%= link_to 'Edit', edit_team_path(@team), class: 'dropdown-item' %>
+      <%= delete_team_link @team, css_class: 'dropdown-item' %>
+    </div>
   </div>
-</div>
+<% end %>
 
 <h1>
   <%= team_icon %>
@@ -30,7 +32,7 @@
 
 <ul class="nav nav-tabs" role="tablist">
   <li class="nav-item">
-    <a class="nav-link active" id="projects-tab" data-toggle="tab" href="#spaces" role="tab" aria-controls="projects" aria-selected="true">Spaces</a>
+    <a class="nav-link active" id="spaces-tab" data-toggle="tab" href="#spaces" role="tab" aria-controls="spaces" aria-selected="true">Spaces</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" id="people-tab" data-toggle="tab" href="#people" role="tab" aria-controls="people" aria-selected="false">People</a>
@@ -38,7 +40,7 @@
 </ul>
 
 <div class="tab-content border border-top-0">
-  <div class="tab-pane active" id="projects" role="tabpanel" aria-labelledby="projects-tab">
+  <div class="tab-pane active" id="spaces" role="tabpanel" aria-labelledby="spaces-tab">
     <% if @team.projects.count.zero? %>
       <div class="p-3 border-bottom">
         <div class="card bg-light p-3 text-center">
@@ -75,12 +77,14 @@
   </div>
 
   <div class="tab-pane" id="people" role="tabpanel" aria-labelledby="people-tab">
-    <div id="add-user-to-team" style="min-height: 82px;">
-      <add-user-to-team
-        team-id="<%= @team.id -%>"
-        team-url="<%= team_path(@team, anchor: 'people') -%>"
-      ></add-user-to-team>
-    </div>
+    <% if can? :edit, @team %>
+      <div id="add-user-to-team" class="border-bottom" style="min-height: 82px;">
+        <add-user-to-team
+          team-id="<%= @team.id -%>"
+          team-url="<%= team_path(@team, anchor: 'people') -%>"
+        ></add-user-to-team>
+      </div>
+    <% end %>
 
     <% if @team.members.count.zero? %>
       <p class="none-text text-center p-3 mb-0">

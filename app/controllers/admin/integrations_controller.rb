@@ -2,6 +2,8 @@ module Admin
   class IntegrationsController < BaseController
     before_action :find_integration, only: %i[edit update destroy]
 
+    authorize_resource
+
     # GET /admin/integrations
     def index
       integrations_by_provider = Integration.all.group_by(&:provider_id)

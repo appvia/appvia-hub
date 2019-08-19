@@ -1,5 +1,9 @@
 module Me
   class AccessController < ApplicationController
+    # This controller should only ever act on the currently authenticated user,
+    # so we do not need to peform any authorization checks.
+    skip_authorization_check
+
     def show
       identities_by_integration = current_user
         .identities

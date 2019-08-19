@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :require_admin, only: [:update_role]
+  authorize_resource
 
   # GET /users
   def index
