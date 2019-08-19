@@ -1,6 +1,8 @@
 class ResourcesController < ApplicationController
   before_action :find_project
 
+  authorize_resource :project
+
   before_action :find_resource_type, only: %i[new create]
   before_action :find_integrations_for_resource_type, only: %i[new create]
 

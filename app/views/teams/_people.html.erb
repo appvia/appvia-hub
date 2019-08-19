@@ -1,22 +1,24 @@
 <div class="team-people">
-  <div class="list-group list-group-flush border-top">
+  <div class="list-group list-group-flush">
     <% team.memberships.each do |membership| %>
       <% user = membership.user %>
       <div class="list-group-item">
-        <div class="btn-group float-right" role="group" aria-label="Team membership actions">
-          <button id="user<%= user.id -%>ActionsGroupDropdown" type="button" class="btn btn-sm btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Actions
-          </button>
-          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="user<%= user.id -%>ActionsGroupDropdown">
-            <% if membership.admin? %>
-              <%= update_team_membership_role_link 'Revoke team admin', team, user, nil, css_class: 'dropdown-item' %>
-            <% else %>
-              <%= update_team_membership_role_link 'Make team admin', team, user, :admin, css_class: 'dropdown-item' %>
-            <% end %>
+        <% if can? :edit, @team %>
+          <div class="btn-group float-right" role="group" aria-label="Team membership actions">
+            <button id="user<%= user.id -%>ActionsGroupDropdown" type="button" class="btn btn-sm btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Actions
+            </button>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="user<%= user.id -%>ActionsGroupDropdown">
+              <% if membership.admin? %>
+                <%= update_team_membership_role_link 'Revoke team admin', team, user, nil, css_class: 'dropdown-item' %>
+              <% else %>
+                <%= update_team_membership_role_link 'Make team admin', team, user, :admin, css_class: 'dropdown-item' %>
+              <% end %>
 
-            <%= delete_team_membership_link team, user, css_class: 'dropdown-item' %>
+              <%= delete_team_membership_link team, user, css_class: 'dropdown-item' %>
+            </div>
           </div>
-        </div>
+        <% end %>
 
         <h3 class="h6 mb-0">
           <%= user.email %>

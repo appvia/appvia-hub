@@ -7,16 +7,24 @@
 <% end %>
 
 <% @teams.each do |team| %>
-  <div class="card shadow-sm mb-3">
+  <% can_access = can? :show, team %>
+  <% can_delete = can? :destroy, team %>
+
+  <div class="card shadow-sm mb-3 <%= can_access ? nil : 'bg-light' -%>">
     <div class="card-body">
       <h5 class="card-title">
         <%= team_icon %>
-        <%= link_to team.name, team_path(team) %>
 
-        <small class="badge badge-info ml-2 text-monospace">
-          <%= team.slug %>
-        </small>
+        <% if can_access  %>
+          <%= link_to team.name, team_path(team) %>
+        <% else %>
+          <%= team.name %>
+        <% end %>
       </h5>
+
+      <small class="badge badge-info text-monospace">
+        <%= team.slug %>
+      </small>
 
       <% if team.description.present? %>
         <div class="card-text mt-3">
@@ -24,8 +32,10 @@
         </div>
       <% end %>
     </div>
-    <div class="card-footer text-muted">
-      <%= delete_team_link team, css_class: 'float-right btn btn-danger' %>
-    </div>
+    <% if can_delete %>
+      <div class="card-footer text-muted">
+        <%= delete_team_link team, css_class: 'float-right btn btn-danger' %>
+      </div>
+    <% end %>
   </div>
 <% end %>

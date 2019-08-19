@@ -1,7 +1,13 @@
 class ProjectsController < ApplicationController
   before_action :load_and_check_presence_of_teams, only: %i[new edit create update]
 
+  before_action :check_team_param_is_allowed, only: %i[new edit create update]
+
   before_action :find_project, only: %i[show edit update destroy]
+
+  skip_authorization_check only: %i[index]
+
+  authorize_resource except: %i[index]
 
   def index
     @projects = Project.order(:name)
@@ -44,19 +50,34 @@ class ProjectsController < ApplicationController
   end
 
   def destroy
+    team_id = @project.team_id
+
     @project.destroy
-    redirect_to projects_url, notice: 'Space was successfully deleted.'
+
+    redirect_to team_path(team_id), notice: 'Space was successfully deleted.'
   end
 
   private
 
   def load_and_check_presence_of_teams
-    @teams = Team.all
+    @teams = current_user.admin? ? Team.all : current_user.teams
 
     if @teams.empty? # rubocop:disable Style/GuardClause
-      flash[:warning] = 'No teams have been created yet, so spaces cannot be created.'
+      flash[:warning] = 'No teams available.'
       redirect_back fallback_location: root_path, allow_other_host: false
     end
+  end
+
+  def check_team_param_is_allowed
+    return if current_user.admin?
+
+    team_id = params[:team_id] || (params.key?(:project) && params[:project][:team_id])
+
+    return if team_id.blank?
+
+    is_allowed_team = @teams.any? { |t| t.id == team_id }
+
+    access_denied('not allowed access to the team specified') unless is_allowed_team
   end
 
   def find_project

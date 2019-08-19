@@ -1,7 +1,10 @@
 class TeamMembershipsController < ApplicationController
   before_action :find_team
 
+  # PUT /teams/:team_id/memberships/:id
   def update
+    authorize! :edit, @team
+
     @team_membership = team_membership_scope.first_or_initialize
 
     @team_membership.role = params[:role] if params.key?(:role)
@@ -17,7 +20,10 @@ class TeamMembershipsController < ApplicationController
     end
   end
 
+  # DELETE /teams/:team_id/memberships/:id
   def destroy
+    authorize! :edit, @team
+
     @team_membership = team_membership_scope.first
 
     @team_membership&.destroy
