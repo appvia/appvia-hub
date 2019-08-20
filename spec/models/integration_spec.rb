@@ -266,6 +266,34 @@ RSpec.describe Integration, type: :model do
       end
     end
 
+    context 'linking multiple parents' do
+      let :second_parent_integration do
+        create_mocked_integration provider_id: parent_provider_id
+      end
+
+      let(:parent_ids) { [parent_integration.id, second_parent_integration.id] }
+
+      context 'when provider is service_broker' do
+        before do
+          integration.provider_id = 'service_broker'
+        end
+
+        it 'is not valid' do
+          expect(integration).not_to be_valid
+          expect(integration.errors).to_not be_empty
+          expect(integration.errors[:parent_ids]).to contain_exactly(
+            'this integration must be linked to a single parent'
+          )
+        end
+      end
+
+      context 'other providers' do
+        it 'is valid' do
+          expect(integration).to be_valid
+        end
+      end
+    end
+
     context 'when trying to link an integration to a parent that already has a child integration of the same type as the new one' do
       let :existing_integration do
         build :integration,

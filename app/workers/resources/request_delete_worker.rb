@@ -34,6 +34,15 @@ module Resources
           agent.delete_logging_dashboard resource.name
           true
         end
+      },
+      'Resources::ServiceBrokerInstance' => {
+        'service_broker' => lambda do |resource, agent, _config|
+          agent.delete_resource(
+            namespace: resource.parent.name,
+            name: resource.name
+          )
+          true
+        end
       }
     }.freeze
 

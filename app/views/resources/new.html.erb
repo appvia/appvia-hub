@@ -4,4 +4,11 @@
   for <%= @project.name -%> space
 </h1>
 
-<%= render 'form', resource_type: @resource_type, integrations: @integrations, resource: @resource %>
+<%= render 'form',
+    resource_type: @resource_type,
+    integrations: @integrations,
+    resource: @resource,
+    service_classes: @service_classes,
+    service_plans: @service_plans || nil,
+    service_plan_schema: @service_plan_schema || nil
+%>

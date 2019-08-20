@@ -57,6 +57,19 @@ module Resources
 
           true
         end
+      },
+      'Resources::ServiceBrokerInstance' => {
+        'service_broker' => lambda do |resource, agent, _config|
+          result = agent.create_resource(
+            namespace: resource.parent.name,
+            cluster_service_class_external_name: resource.class_external_name,
+            cluster_service_plan_external_name: resource.plan_external_name,
+            name: resource.name,
+            parameters: resource.create_parameters
+          )
+          resource.service_instance = result.to_hash
+          true
+        end
       }
     }.freeze
 

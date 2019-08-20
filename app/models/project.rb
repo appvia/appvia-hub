@@ -27,6 +27,10 @@ class Project < ApplicationRecord
     class_name: 'Resources::KubeNamespace',
     dependent: :restrict_with_exception
 
+  has_many :service_broker_instances,
+     class_name: 'Resources::ServiceBrokerInstance',
+     dependent: :restrict_with_exception
+
   slugged_attribute :slug,
     presence: true,
     uniqueness: true,

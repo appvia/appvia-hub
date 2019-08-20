@@ -74,27 +74,40 @@
 
     <% grouped_resources = group_resources_by_resource_type resource.children %>
     <% grouped_resources.each do |group| %>
-      <% group[:resources].each do |r| %>
-        <div class="indented mt-3">
-          <%= resource_icon r %>
-          <span class="mr-1">
-            <%= group[:name].singularize -%>:
-          </span>
-          <% if r.active? %>
-            <%= link_to r.name, r.url, target: '_blank' %>
-          <% else %>
-            <%= r.name %>
-          <% end %>
-          <span class="text-muted ml-1">
-            on <%= r.integration.name %>
-          </span>
-          <%= resource_status_badge r.status, css_class: 'ml-2' %>
-          <small class="ml-3">
-            <%= delete_resource_link r.project_id, r %>
-          </small>
-        </div>
+      <% if group[:class] != 'Resources::ServiceBrokerInstance' %>
+        <% group[:resources].each do |r| %>
+          <div class="indented mt-3">
+            <%= resource_icon r %>
+            <span class="mr-1">
+              <%= group[:name].singularize -%>:
+            </span>
+            <% if r.active? %>
+              <%= link_to r.name, r.url, target: '_blank' %>
+            <% else %>
+              <%= r.name %>
+            <% end %>
+            <span class="text-muted ml-1">
+              on <%= r.integration.name %>
+            </span>
+            <%= resource_status_badge r.status, css_class: 'ml-2' %>
+            <small class="ml-3">
+              <%= delete_resource_link r.project_id, r %>
+            </small>
+          </div>
+        <% end %>
       <% end %>
     <% end %>
+
+    <% if resource.integration.children.map(&:provider_id).include? 'service_broker' %>
+      <%=
+        render partial: 'resources/service_broker_instance_list',
+          locals: {
+            resource: resource,
+            grouped_resources: grouped_resources
+          }
+      %>
+    <% end %>
+
   <% end %>
 
   <p class="small mb-0 mt-3">
