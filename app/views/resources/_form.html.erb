@@ -8,31 +8,43 @@
     class: 'resource-form',
     data: {
       controller: 'resource-form',
-      'resource-form-integration-id': @resource.integration_id
+      'resource-form-integration-id': @resource.integration_id,
+      target: 'resource-form.form'
     }
   ) do |form|
 %>
   <%= form.alert_message "Please fix the issues below:" %>
 
   <%= form.hidden_field :type %>
+  <%= form.hidden_field :parent_id %>
 
-  <%=
-    form.select :integration_id,
-      integrations.transform_values { |l| l.map { |i| [i.name, i.id] } },
-      {
-        label: label_with_tooltip(
-          'For integration',
-          'These are set up and allocated by a hub admin'
-        ),
-        required: true
-      },
-      {
-        class: 'selectpicker',
-        data: {
-          action: 'resource-form#setCurrentIntegration'
+  <% if resource_type[:id] == 'ServiceBrokerInstance' %>
+    <%= form.hidden_field :integration_id %>
+    <div>
+      <p>
+        For integration: <%= icon_with_tooltip 'These are set up and allocated by a hub admin' -%>
+        <%= resource.integration.name %>
+      </p>
+    </div>
+  <% else %>
+    <%=
+      form.select :integration_id,
+        integrations.transform_values { |l| l.map { |i| [i.name, i.id] } },
+        {
+          label: label_with_tooltip(
+            'For integration',
+            'These are set up and allocated by a hub admin'
+          ),
+          required: true
+        },
+        {
+          class: 'selectpicker',
+          data: {
+            action: 'resource-form#setCurrentIntegration'
+          }
         }
-      }
-  %>
+    %>
+  <% end %>
 
   <%=
     form.text_field :name,
@@ -101,6 +113,64 @@
                     label: 'Specify a custom template repo URL',
                     help: "Needs to be compatible with #{link_to('the GitHub Source Imports API', 'https://developer.github.com/v3/migrations/source_imports/', target: '_blank')}".html_safe
                 %>
+              <% end %>
+            </div>
+          </div>
+        <%- when 'service_broker' -%>
+          <div class="card my-4">
+            <div class="card-header">
+              Instance details
+            </div>
+            <div class="card-body">
+              <%= form.fields_for :service_broker do |service_broker_form| %>
+                <%=
+                  service_broker_form.select :service_class,
+                    get_service_broker_classes(service_classes),
+                    {
+                      label: label_with_tooltip(
+                        'Type',
+                        'The type of cloud resource you would like to request'
+                      ),
+                      selected: params.dig('resource', 'service_broker', 'service_class'),
+                      include_blank: true,
+                      required: true
+                    },
+                    data: {
+                      action: 'resource-form#submitForm'
+                    }
+                %>
+
+                <%=
+                  service_broker_form.select :service_plan,
+                    get_service_broker_class_plans(service_plans),
+                    {
+                      label: label_with_tooltip(
+                        'Plan',
+                        'The plan for the selected type'
+                      ),
+                      selected: params.dig('resource', 'service_broker', 'service_plan'),
+                      include_blank: true,
+                      required: true,
+                    },
+                    {
+                      disabled: service_plans.nil?,
+                      data: {
+                        action: 'resource-form#submitForm'
+                      }
+                    }
+                %>
+
+                <% if service_plan_schema %>
+                  <%=
+                    render partial: 'application/forms/json_schema/fields',
+                      locals: {
+                        form: service_broker_form,
+                        namespace: :plan_parameters,
+                        spec: service_plan_schema,
+                        current: params.dig('resource', 'service_broker', 'plan_parameters') || {}
+                      }
+                  %>
+                <% end %>
               <% end %>
             </div>
           </div>

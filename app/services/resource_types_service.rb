@@ -51,6 +51,14 @@ module ResourceTypesService
           providers: %w[loki].freeze,
           top_level: false,
           depends_on: %w[kubernetes].freeze
+        },
+        {
+          id: 'ServiceBrokerInstance',
+          class: 'Resources::ServiceBrokerInstance',
+          name: 'Service Broker Instance',
+          providers: %w[service_broker].freeze,
+          top_level: false,
+          depends_on: %w[kubernetes].freeze
         }
       ].map(&:freeze).freeze
     end

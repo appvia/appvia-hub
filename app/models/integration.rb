@@ -36,6 +36,8 @@ class Integration < ApplicationRecord
     dependent: :restrict_with_exception,
     inverse_of: :integration
 
+  validate :ensure_only_one_parent, if: ->(i) { i.provider_id == 'service_broker' }
+
   validate :check_parents
 
   validate :check_teams
@@ -125,6 +127,10 @@ class Integration < ApplicationRecord
       end
     end
     errors.add(:parent_ids, 'cannot link this to a parent as it already has a child integration of the same type') if has_existing_child
+  end
+
+  def ensure_only_one_parent
+    errors.add(:parent_ids, 'this integration must be linked to a single parent') if parents.count > 1
   end
 
   def check_teams

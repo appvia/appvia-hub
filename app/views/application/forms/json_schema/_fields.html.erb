@@ -69,7 +69,7 @@
               form: fields_form,
               name: name,
               property_spec: property_spec,
-              is_required: spec['required'].include?(name),
+              is_required: !spec['required'].nil? && spec['required'].include?(name),
               current_value: current[name],
               include_blank: false
             }

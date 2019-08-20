@@ -4,7 +4,7 @@
 import { Controller } from 'stimulus';
 
 export default class extends Controller {
-  static targets = ['section'];
+  static targets = ['section', 'form'];
 
   initialize() {
     this.showCurrentSection();
@@ -30,5 +30,9 @@ export default class extends Controller {
   set integrationId(value) {
     this.data.set('integrationId', value);
     this.showCurrentSection();
+  }
+
+  submitForm() {
+    this.formTarget.submit();
   }
 }

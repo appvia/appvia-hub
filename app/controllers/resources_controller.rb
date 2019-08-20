@@ -8,11 +8,20 @@ class ResourcesController < ApplicationController
 
   before_action :find_resource, only: [:destroy]
 
+  before_action :find_parent_resource, only: [:new]
+
   def new
+    integration = @integrations.values.first.first.id
     @resource = @project.resources.new(
       type: @resource_type[:class],
-      integration_id: @integrations.values.first.first.id
+      integration_id: integration.id
     )
+    @resource.parent_id = @parent_resource&.id
+
+    if @resource_type[:id] == 'ServiceBrokerInstance' # rubocop:disable Style/GuardClause
+      agent = get_provider_agent integration, @project
+      @service_classes = agent.get_options
+    end
   end
 
   def create
@@ -22,7 +31,7 @@ class ResourcesController < ApplicationController
 
     set_from_integration_specific_params @resource, params
 
-    if @resource.save
+    if integration_specific_prechecks(@resource, params) && @resource.save
       ResourceProvisioningService.new.request_create @resource
 
       notice_message = 'Resource has been requested. The page will now refresh automatically to update the status of resources.'
@@ -69,8 +78,10 @@ class ResourcesController < ApplicationController
   end
 
   def find_integrations
+    parent_id = params[:parent_id] || (params.key?(:resource) && params[:resource][:parent_id])
+    is_a_dependent_resource = parent_id.present?
     @integrations = TeamIntegrationsService
-      .get(@project.team)
+      .get(@project.team, include_dependents: is_a_dependent_resource)
       .select { |i| @resource_type[:providers].include? i.provider_id }
       .group_by { |i| i.provider['name'] }
 
@@ -87,10 +98,15 @@ class ResourcesController < ApplicationController
     @resource = @project.resources.find params[:id]
   end
 
-  def resource_params
-    params.require(:resource).permit(:type, :integration_id, :name)
+  def find_parent_resource
+    @parent_resource = @project.resources.find params['parent_id'] if params['parent_id']
   end
 
+  def resource_params
+    params.require(:resource).permit(:type, :integration_id, :name, :parent_id)
+  end
+
+  # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def set_from_integration_specific_params(resource, params)
     return if resource.integration.blank?
 
@@ -104,6 +120,47 @@ class ResourcesController < ApplicationController
                      integration_specific_params['template_url'].presence
 
       resource.template_url = template_url
+    when 'service_broker'
+      if integration_specific_params['service_class'].present?
+        service_class = integration_specific_params['service_class'].split('|')
+        resource.class_name = service_class.first
+        resource.class_external_name = service_class.second
+        resource.class_display_name = service_class.third
+      end
+      if integration_specific_params['service_plan'].present?
+        service_plan = integration_specific_params['service_plan'].split('|')
+        resource.plan_name = service_plan.first
+        resource.plan_external_name = service_plan.second
+        resource.plan_display_name = service_plan.third
+      end
+      resource.create_parameters = integration_specific_params['plan_parameters'] || {}
     end
+  end
+  # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+
+  def integration_specific_prechecks(resource, params)
+    provider = (resource.integration&.provider_id)
+    case provider
+    when 'service_broker'
+      # this checks that the stages in the multi-step class/plan/parameters selection process are completed
+      # to be complete, the class must be selected first, then the plan and then the form submitted using the "Request" button
+      agent = get_provider_agent resource.integration, @project
+      @service_classes = agent.get_options
+      return false unless resource.class_name
+
+      selected_class = @service_classes.find { |o| o.metadata.name == resource.class_name }
+      @service_plans = selected_class.plans
+      return false unless resource.plan_name
+
+      selected_plan = @service_plans.find { |p| p.metadata.name == resource.plan_name }
+      @service_plan_schema = selected_plan.spec.instanceCreateParameterSchema unless selected_plan.nil?
+      return false unless params[:commit]
+    end
+    true
+  end
+
+  def get_provider_agent(integration, project)
+    config = IntegrationOverridesService.new.effective_config_for integration, project
+    AgentsService.get integration.provider_id, config
   end
 end

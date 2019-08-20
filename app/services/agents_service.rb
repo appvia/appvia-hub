@@ -54,6 +54,13 @@ module AgentsService
           grafana_url: config['grafana_url'],
           data_source_name: config['data_source_name']
         )
+      end,
+      'service_broker' => lambda do |config|
+        ServiceBrokerAgent.new(
+          kube_api_url: config['api_url'],
+          kube_ca_cert: config['ca_cert'],
+          kube_token: config['token']
+        )
       end
     }.freeze
 
