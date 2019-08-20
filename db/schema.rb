@@ -136,7 +136,7 @@ ActiveRecord::Schema.define(version: 2019_08_07_145601) do
     t.index ["type"], name: "index_resources_on_type"
   end
 
-  create_table "team_memberships", id: false, force: :cascade do |t|
+  create_table "team_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "team_id", null: false
     t.uuid "user_id", null: false
     t.string "role"
@@ -173,4 +173,6 @@ ActiveRecord::Schema.define(version: 2019_08_07_145601) do
   add_foreign_key "integration_overrides", "projects"
   add_foreign_key "resources", "integrations"
   add_foreign_key "resources", "projects"
+  add_foreign_key "team_memberships", "teams"
+  add_foreign_key "team_memberships", "users"
 end

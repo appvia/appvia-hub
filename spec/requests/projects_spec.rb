@@ -45,16 +45,6 @@ RSpec.describe 'Projects', type: :request do
     end
 
     it_behaves_like 'authenticated' do
-      let(:activity_service) { instance_double('ActivityService') }
-
-      before do
-        allow(ActivityService).to receive(:new)
-          .and_return(activity_service)
-        allow(activity_service).to receive(:for_project)
-          .with(@project)
-          .and_return([])
-      end
-
       it_behaves_like 'not a hub admin so not allowed' do
         before do
           get project_path(@project)
@@ -67,7 +57,7 @@ RSpec.describe 'Projects', type: :request do
         expect(response).to render_template(:show)
         expect(assigns(:project)).to eq project
         expect(assigns(:grouped_resources)).to be_present
-        expect(assigns(:activity)).to eq []
+        expect(assigns(:activity)).not_to be_empty
       end
 
       it_behaves_like 'a hub admin' do
