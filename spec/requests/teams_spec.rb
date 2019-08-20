@@ -55,6 +55,7 @@ RSpec.describe 'Teams', type: :request do
         expect(response).to be_successful
         expect(response).to render_template(:show)
         expect(assigns(:team)).to eq team
+        expect(assigns(:activity)).not_to be_empty
       end
 
       it_behaves_like 'a hub admin' do
