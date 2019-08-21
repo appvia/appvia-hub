@@ -7,10 +7,15 @@ class ProjectResourcesBootstrapService
   def prepare_bootstrap
     return false if @project.resources.count.positive?
 
+    project_integrations = TeamIntegrationsService.get @project.team
+
     ResourceTypesService.all.map do |rt|
       next nil unless rt[:top_level]
 
-      integration = ResourceTypesService.integrations_for(rt[:id]).first
+      integration = project_integrations.find do |i|
+        rt[:providers].include? i.provider_id
+      end
+
       resource = {
         name: @project.slug,
         integration: integration

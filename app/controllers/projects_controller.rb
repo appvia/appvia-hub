@@ -14,11 +14,19 @@ class ProjectsController < ApplicationController
   end
 
   def show
+    integrations_by_provider = TeamIntegrationsService
+      .get(@project.team)
+      .group_by(&:provider_id)
+
     @grouped_resources = ResourceTypesService.all.map do |rt|
       next nil unless rt[:top_level]
 
-      integrations = ResourceTypesService.integrations_for rt[:id]
+      integrations = rt[:providers].reduce([]) do |acc, p|
+        acc + Array(integrations_by_provider[p])
+      end
+
       resources = @project.send(rt[:id].tableize).order(:name)
+
       rt.merge integrations: integrations, resources: resources
     end.compact
 

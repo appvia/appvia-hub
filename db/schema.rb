@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_07_145601) do
+ActiveRecord::Schema.define(version: 2019_08_20_151439) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -32,6 +32,18 @@ ActiveRecord::Schema.define(version: 2019_08_07_145601) do
     t.index ["created_by_id"], name: "index_admin_tasks_on_created_by_id"
     t.index ["data"], name: "index_admin_tasks_on_data", using: :gin
     t.index ["type"], name: "index_admin_tasks_on_type"
+  end
+
+  create_table "allocations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "allocatable_type", null: false
+    t.uuid "allocatable_id", null: false
+    t.string "allocation_receivable_type", null: false
+    t.uuid "allocation_receivable_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["allocatable_type", "allocatable_id", "allocation_receivable_type", "allocation_receivable_id"], name: "index_allocations_on_al_and_al_rec_unique", unique: true
+    t.index ["allocatable_type", "allocatable_id"], name: "index_allocations_on_al_type_and_al_id"
+    t.index ["allocation_receivable_type", "allocation_receivable_id"], name: "index_allocations_on_al_rec_type_and_al_rec_id"
   end
 
   create_table "audits", force: :cascade do |t|

@@ -1,7 +1,8 @@
 class IntegrationOverridesService
-  def overrideable_integrations
-    Integration
-      .order(:provider_id)
+  def overrideable_integrations(project)
+    TeamIntegrationsService
+      .get(project.team)
+      .sort_by(&:provider_id)
       .each_with_object([]) do |i, acc|
         provider = i.provider
 

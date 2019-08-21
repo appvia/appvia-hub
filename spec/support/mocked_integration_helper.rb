@@ -17,10 +17,10 @@ module MockedIntegrationHelper
     end
 
     def create_mocked_integration(provider_id: Integration.provider_ids.keys.first, config: { 'foo' => 'bar' }, schema: nil, parent_ids: [])
-      mock_provider_config_schema provider_id, schema: schema
+      mock_provider_config_schema provider_id.to_s, schema: schema
 
       create :integration,
-        provider_id: provider_id,
+        provider_id: provider_id.to_s,
         config: config,
         parent_ids: parent_ids
     end
