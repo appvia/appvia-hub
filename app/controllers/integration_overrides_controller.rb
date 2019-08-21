@@ -1,8 +1,10 @@
 class IntegrationOverridesController < ApplicationController
   before_action :find_project
 
+  authorize_resource :project
+
   def show
-    @overrideables = integration_overrides_service.overrideable_integrations
+    @overrideables = integration_overrides_service.overrideable_integrations(@project)
 
     @overrides_by_integration_id = @project
       .integration_overrides

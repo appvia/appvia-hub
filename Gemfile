@@ -57,6 +57,7 @@ group :test do
   gem 'rspec_junit_formatter', '~> 0.4.1'
   gem 'timecop', '~> 0.9.1'
   gem 'shoulda-matchers', '~> 4.1', '>= 4.1.2'
+  gem 'with_model', '~> 2.1', '>= 2.1.2'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

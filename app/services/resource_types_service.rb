@@ -72,13 +72,5 @@ module ResourceTypesService
     def for_integration(integration)
       for_provider integration.provider_id
     end
-
-    def integrations_for(id)
-      entry = get id
-
-      Integration
-        .where(provider_id: entry[:providers])
-        .order(:created_at)
-    end
   end
 end

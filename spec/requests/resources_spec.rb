@@ -52,12 +52,16 @@ RSpec.describe 'Project resources', type: :request do
 
     it_behaves_like 'authenticated' do
       def expect_new_resource_page(project, resource_type, integration)
+        expected_integrations = {
+          integration.provider['name'] => [integration]
+        }
+
         get new_project_resource_path(project, type: resource_type)
         expect(response).to be_successful
         expect(response).to render_template(:new)
         expect(assigns(:project)).to eq project
         expect(assigns(:resource_type)[:id]).to eq 'CodeRepo'
-        expect(assigns(:integrations)).to eq [integration]
+        expect(assigns(:integrations)).to eq expected_integrations
         expect(assigns(:resource)).to be_a Resource
         expect(assigns(:resource)).to be_new_record
       end

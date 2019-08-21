@@ -1,7 +1,10 @@
 class Integration < ApplicationRecord
   include EncryptedConfigHashAttribute
+  include Allocatable
 
   audited
+
+  allocatable
 
   enum provider_id: PROVIDERS_REGISTRY.ids.each_with_object({}) { |id, acc| acc[id] = id }
 
@@ -19,6 +22,11 @@ class Integration < ApplicationRecord
     presence: true,
     if: :requires_a_parent?
 
+  has_many :teams,
+    through: :allocations,
+    source: :allocation_receivable,
+    source_type: Team.name
+
   has_many :resources,
     dependent: :restrict_with_exception,
     inverse_of: :integration
@@ -29,6 +37,8 @@ class Integration < ApplicationRecord
     inverse_of: :integration
 
   validate :check_parents
+
+  validate :check_teams
 
   def provider
     return if provider_id.blank?
@@ -115,5 +125,19 @@ class Integration < ApplicationRecord
       end
     end
     errors.add(:parent_ids, 'cannot link this to a parent as it already has a child integration of the same type') if has_existing_child
+  end
+
+  def check_teams
+    # Shouldn't be able to allocate teams to this integration if it's meant to be a dependent
+    return unless requires_a_parent?
+    return if team_ids.blank?
+
+    errors.add(
+      :teams,
+      [
+        'not allowed to be allocated to any teams as this is meant to be a',
+        'dependent integration that inherits it\'s allocations from it\'s parent(s)'
+      ].join(' ')
+    )
   end
 end
