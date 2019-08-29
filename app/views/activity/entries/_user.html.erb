@@ -1,0 +1,17 @@
+<%- case a.action -%>
+<%- when 'create' -%>
+  <%= activity_entry icon('user-plus'), a.created_at do %>
+    <%= a.user_email %> joined the hub
+  <% end %>
+<%- when 'update' -%>
+  <% if a.audited_changes.key? 'role' %>
+    <%= activity_entry icon('user-cog'), a.created_at do %>
+      <%= a.user_email %>
+      <% if a.audited_changes['role'] == ['admin', 'user'] %>
+        removed <%= a.auditable_descriptor %> as a hub admin
+      <% elsif a.audited_changes['role'] == ['user', 'admin'] %>
+        made <%= a.auditable_descriptor %> a hub admin
+      <% end %>
+    <% end %>
+  <% end %>
+<%- end -%>

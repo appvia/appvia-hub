@@ -1,0 +1,31 @@
+<%- case a.action -%>
+<%- when 'create' -%>
+  <%= activity_entry team_icon, a.created_at do %>
+    <%= a.user_email %> added
+    <%= activity_team_membership_user a %>
+    to the team
+    <%= link_to a.associated_descriptor, team_path(a.associated_id), class: 'text-monospace' %>
+    <% if a.audited_changes['role'].present? %>
+      (as <strong><%= a.audited_changes['role'] %></strong>)
+    <% end %>
+  <% end %>
+<%- when 'update' -%>
+  <% role_change = Array(a.audited_changes['role']).flatten %>
+  <% if role_change.uniq.size == 2 %>
+    <%= activity_entry team_icon, a.created_at do %>
+      <%= a.user_email %> changed role for
+      <%= activity_team_membership_user a %>
+      in team
+      <%= link_to a.associated_descriptor, team_path(a.associated_id), class: 'text-monospace' %>
+      from <%= role_change.first || 'regular team member' %>
+      to <strong><%= role_change.second || 'regular team member' %></strong>
+    <% end %>
+  <% end %>
+<%- when 'destroy' -%>
+  <%= activity_entry team_icon, a.created_at do %>
+    <%= a.user_email %> removed
+    <%= activity_team_membership_user a %>
+    from the team
+    <%= link_to a.associated_descriptor, team_path(a.associated_id), class: 'text-monospace' %>
+  <% end %>
+<%- end -%>
