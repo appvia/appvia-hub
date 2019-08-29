@@ -32,10 +32,16 @@
 
 <ul class="nav nav-tabs" role="tablist">
   <li class="nav-item">
-    <a class="nav-link active" id="spaces-tab" data-toggle="tab" href="#spaces" role="tab" aria-controls="spaces" aria-selected="true">Spaces</a>
+    <a class="nav-link active" id="spaces-tab" data-toggle="tab" href="#spaces" role="tab" aria-controls="spaces" aria-selected="true">
+      Spaces
+      <%= count_badge @team.projects.count %>
+    </a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" id="people-tab" data-toggle="tab" href="#people" role="tab" aria-controls="people" aria-selected="false">People</a>
+    <a class="nav-link" id="people-tab" data-toggle="tab" href="#people" role="tab" aria-controls="people" aria-selected="false">
+      People
+      <%= count_badge @team.members.count %>
+    </a>
   </li>
   <li class="nav-item">
     <a class="nav-link" id="activity-tab" data-toggle="tab" href="#activity" role="tab" aria-controls="activity" aria-selected="false">Activity</a>

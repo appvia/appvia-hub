@@ -4,18 +4,20 @@
       <%= nav_item 'Home', root_path %>
     </div>
 
-    <hr />
+    <% if current_user.teams.count > 0 %>
+      <hr />
 
-    <ul class="nav flex-column">
-      <% current_user.teams.each do |team| %>
-        <%= nav_list_item team.name, team_path(team), icon: team_icon %>
-        <ul class="nav flex-column indented">
-          <% team.projects.each do |project| %>
-            <%= nav_list_item project.name, project_path(project), icon: project_icon %>
-          <% end %>
-        </ul>
-      <% end %>
-    </ul>
+      <ul class="nav flex-column">
+        <% current_user.teams.each do |team| %>
+          <%= nav_list_item team.name, team_path(team), icon: team_icon %>
+          <ul class="nav flex-column indented">
+            <% team.projects.each do |project| %>
+              <%= nav_list_item project.name, project_path(project), icon: project_icon %>
+            <% end %>
+          </ul>
+        <% end %>
+      </ul>
+    <% end %>
 
     <hr />
 
@@ -25,7 +27,9 @@
     </div>
 
     <div class="sidebar-item">
-      <%= link_to 'New', new_project_path, class: 'btn btn-sm btn-primary float-right mr-3' %>
+      <% if current_user.teams.count > 0 %>
+        <%= link_to 'New', new_project_path, class: 'btn btn-sm btn-primary float-right mr-3' %>
+      <% end %>
       <%= nav_item 'All Spaces', projects_path %>
     </div>
 
