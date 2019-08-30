@@ -15,30 +15,51 @@
       <%= pluralize integration.resources.count, 'resource' %>
     </p>
 
+    <div class="card bg-light p-3 mb-3">
+      <% if group[:top_level] %>
+        <% teams = integration.teams %>
+        <% if teams.present? %>
+          <h6 class="font-weight-bold">Allocated to team(s)</h6>
+          <% teams.each do |t| %>
+            <div class="indented mb-1">
+              <%= link_to t.name, team_path(t) %>
+            </div>
+          <% end %>
+        <% else %>
+          <p class="mb-0">
+            Not allocated to any specific teams
+            <strong>so will be available to ALL teams</strong>
+          </p>
+        <% end %>
+      <% else %>
+        <p class="mb-0">
+          Allocation of this integration is based on it's parent(s) allocation
+        </p>
+      <% end %>
+    </div>
+
     <% parents = integration.parents %>
     <% children = integration.children %>
     <% if parents.present? || children.present? %>
-      <hr />
-
-      <% if parents.present? %>
-        <h6 class="font-weight-bold">Depends on</h6>
-        <% parents.each do |p| %>
-          <div class="indented mb-1">
-            <%= link_to p.name, admin_integrations_path_with_selected(p) %>
-          </div>
+      <div class="card bg-light p-3 mb-3">
+        <% if parents.present? %>
+          <h6 class="font-weight-bold">Depends on</h6>
+          <% parents.each do |p| %>
+            <div class="indented mb-1">
+              <%= link_to p.name, admin_integrations_path_with_selected(p) %>
+            </div>
+          <% end %>
         <% end %>
-      <% end %>
 
-      <% if children.present? %>
-        <h6 class="font-weight-bold">Has dependents</h6>
-        <% children.each do |c| %>
-          <div class="indented mb-1">
-            <%= link_to c.name, admin_integrations_path_with_selected(c) %>
-          </div>
+        <% if children.present? %>
+          <h6 class="font-weight-bold">Has dependents</h6>
+          <% children.each do |c| %>
+            <div class="indented mb-1">
+              <%= link_to c.name, admin_integrations_path_with_selected(c) %>
+            </div>
+          <% end %>
         <% end %>
-      <% end %>
-
-      <hr />
+      </div>
     <% end %>
 
     <%=

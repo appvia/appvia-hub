@@ -4,14 +4,14 @@ class ResourcesController < ApplicationController
   authorize_resource :project
 
   before_action :find_resource_type, only: %i[new create]
-  before_action :find_integrations_for_resource_type, only: %i[new create]
+  before_action :find_integrations, only: %i[new create]
 
   before_action :find_resource, only: [:destroy]
 
   def new
     @resource = @project.resources.new(
       type: @resource_type[:class],
-      integration_id: @integrations.first.id
+      integration_id: @integrations.values.first.first.id
     )
   end
 
@@ -68,11 +68,17 @@ class ResourcesController < ApplicationController
     @resource_type = ResourceTypesService.get params.require(:type)
   end
 
-  def find_integrations_for_resource_type
-    @integrations = ResourceTypesService.integrations_for @resource_type[:id]
+  def find_integrations
+    @integrations = TeamIntegrationsService
+      .get(@project.team)
+      .select { |i| @resource_type[:providers].include? i.provider_id }
+      .group_by { |i| i.provider['name'] }
 
     if @integrations.empty? # rubocop:disable Style/GuardClause
-      flash[:warning] = 'No integrations are available for the resource type - ask a hub admin to configure an appropriate integration'
+      flash[:warning] = [
+        'No integrations are available for the space for the specified resource type',
+        '- ask a hub admin to configure and allocate an appropriate integration to the team'
+      ].join(' ')
       redirect_back fallback_location: root_path, allow_other_host: false
     end
   end

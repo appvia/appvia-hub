@@ -1,6 +1,7 @@
 class Team < ApplicationRecord
   include SluggedAttribute
   include FriendlyId
+  include AllocationReceivable
 
   audited
   has_associated_audits
@@ -12,7 +13,14 @@ class Team < ApplicationRecord
 
   friendly_id :slug
 
+  allocation_receivable
+
   validates :name, presence: true
+
+  has_many :integrations,
+    through: :allocations,
+    source: :allocatable,
+    source_type: Integration.name
 
   has_many :projects,
     -> { order(:name) },

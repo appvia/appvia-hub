@@ -5,7 +5,7 @@ module DependentIntegrationsService
         .for_provider(provider_id)
         .fetch(:depends_on, [])
         .map { |parent_provider_id| ResourceTypesService.for_provider parent_provider_id }
-        .map { |resource_type| ResourceTypesService.integrations_for resource_type[:id] }
+        .map { |resource_type| Integration.where provider_id: resource_type[:providers] }
         .flatten
         .group_by { |i| i.provider['name'] }
     end

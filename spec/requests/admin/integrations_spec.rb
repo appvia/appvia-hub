@@ -61,6 +61,8 @@ RSpec.describe 'Admin - Integrations', type: :request do
             expect(response).to render_template(:new)
             expect(assigns(:integration)).to be_a Integration
             expect(assigns(:integration)).to be_new_record
+            expect(assigns(:potential_parents)).not_to be nil
+            expect(assigns(:potential_teams)).not_to be nil
           end
         end
       end
@@ -91,6 +93,8 @@ RSpec.describe 'Admin - Integrations', type: :request do
           expect(response).to be_successful
           expect(response).to render_template(:edit)
           expect(assigns(:integration)).to eq @integration
+          expect(assigns(:potential_parents)).not_to be nil
+          expect(assigns(:potential_teams)).not_to be nil
         end
       end
     end
@@ -141,6 +145,9 @@ RSpec.describe 'Admin - Integrations', type: :request do
               expect(integration.config).to eq params[:config].stringify_keys
               expect(integration.created_at.to_i).to eq now.to_i
             end.to change { Integration.count }.by(1)
+
+            expect(assigns(:potential_parents)).to be nil
+            expect(assigns(:potential_teams)).to be nil
           end
 
           it 'logs an Audit' do
@@ -163,6 +170,9 @@ RSpec.describe 'Admin - Integrations', type: :request do
             expect(integration).not_to be_persisted
             expect(integration.errors).to_not be_empty
             expect(integration.errors[:name]).to be_present
+
+            expect(assigns(:potential_parents)).not_to be nil
+            expect(assigns(:potential_teams)).not_to be nil
           end
         end
       end
@@ -210,6 +220,9 @@ RSpec.describe 'Admin - Integrations', type: :request do
               expect(integration.config).to eq @integration.config
               expect(integration.updated_at.to_i).to eq now.to_i
             end.to change { Integration.count }.by(0)
+
+            expect(assigns(:potential_parents)).to be nil
+            expect(assigns(:potential_teams)).to be nil
           end
 
           it 'logs an Audit' do
@@ -231,6 +244,9 @@ RSpec.describe 'Admin - Integrations', type: :request do
             integration = assigns(:integration)
             expect(integration.errors).to_not be_empty
             expect(integration.errors[:name]).to be_present
+
+            expect(assigns(:potential_parents)).not_to be nil
+            expect(assigns(:potential_teams)).not_to be nil
           end
         end
 

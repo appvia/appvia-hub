@@ -1,14 +1,14 @@
 <nav aria-label="breadcrumb" class="mb-3">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item">
-        <%= link_to team_path(@project.team) do %>
-          <%= icon 'angle-left' %>
-          <%= team_icon %>
-          <%= @project.team.name %>
-        <% end %>
-      </li>
-    </ol>
-  </nav>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <%= link_to team_path(@project.team) do %>
+        <%= icon 'angle-left' %>
+        <%= team_icon %>
+        <%= @project.team.name %>
+      <% end %>
+    </li>
+  </ol>
+</nav>
 
 <% if can? :edit, @project %>
   <div class="btn-group float-right" role="group" aria-label="Space actions">
