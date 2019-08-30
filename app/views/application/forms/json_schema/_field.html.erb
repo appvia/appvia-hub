@@ -1,3 +1,7 @@
+<% value = current_value.nil? ? property_spec['default'] : current_value %>
+
+<% help_text = json_schema_field_help_text property_spec %>
+
 <%- case property_spec['type'] -%>
 <%- when 'boolean' -%>
   <% include_blank = local_assigns.fetch :include_blank, true %>
@@ -5,37 +9,40 @@
     form.select name,
       [true, false],
       {
-        value: current_value,
-        selected: current_value,
+        value: value,
+        selected: value,
         required: is_required,
         label: label_with_tooltip(
           config_field_title(name, property_spec),
           property_spec['description']
         ),
-        include_blank: include_blank
+        include_blank: include_blank,
+        help: help_text
       },
       { class: 'selectpicker' }
   %>
 <%- when 'integer'  %>
   <%=
     form.number_field name,
-      value: current_value,
-      required: is_required,
-      label: label_with_tooltip(
-        config_field_title(name, property_spec),
-        property_spec['description']
-      )
-  %>
-<%- else -%>
-  <%=
-    form.text_field name,
-      value: current_value,
+      value: value,
       required: is_required,
       label: label_with_tooltip(
         config_field_title(name, property_spec),
         property_spec['description']
       ),
       pattern: property_spec['pattern'],
-      help: property_spec['pattern_text']
+      help: help_text
+  %>
+<%- else -%>
+  <%=
+    form.text_field name,
+      value: value,
+      required: is_required,
+      label: label_with_tooltip(
+        config_field_title(name, property_spec),
+        property_spec['description']
+      ),
+      pattern: property_spec['pattern'],
+      help: help_text
   %>
 <%- end -%>

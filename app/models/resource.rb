@@ -6,7 +6,17 @@ class Resource < ApplicationRecord
 
   audited associated_with: :project
 
-  has_closure_tree order: 'integration_id', dependent: nil
+  belongs_to :parent,
+    class_name: 'Resource',
+    inverse_of: :children,
+    optional: true
+
+  has_many :children,
+    -> { order(:integration_id) },
+    foreign_key: 'parent_id',
+    class_name: 'Resource',
+    inverse_of: :parent,
+    dependent: nil
 
   belongs_to :project,
     -> { readonly },

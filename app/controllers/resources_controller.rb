@@ -53,7 +53,7 @@ class ResourcesController < ApplicationController
 
     notice = ('A default set of resources have been requested for this space' if result)
 
-    redirect_to @project, notice: notice
+    redirect_to project_path(@project, autorefresh: true), notice: notice
   end
 
   private

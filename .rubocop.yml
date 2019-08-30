@@ -1,4 +1,6 @@
-require: rubocop-performance
+require:
+  - rubocop-performance
+  - rubocop-rails
 
 AllCops:
   DisplayCopNames: true
@@ -32,6 +34,7 @@ Metrics/BlockLength:
     - "spec/**/*"
 
 Metrics/ClassLength:
+  Max: 150
   Exclude:
     - "spec/**/*"
 
@@ -45,14 +48,12 @@ Metrics/MethodLength:
     - "spec/**/*"
 
 Metrics/ModuleLength:
+  Max: 150
   Exclude:
     - "spec/**/*"
 
 Metrics/ParameterLists:
   Enabled: false
-
-Rails:
-  Enabled: true
 
 Rails/Delegate:
   Enabled: false

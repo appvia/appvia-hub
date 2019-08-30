@@ -25,8 +25,8 @@ gem 'octokit', '~> 4.13'
 gem 'faraday', '~> 0.15.4'
 gem 'faraday_middleware', '~> 0.13.1'
 gem 'typhoeus', '~> 1.3', '>= 1.3.1'
-gem 'closure_tree', '~> 7.0'
 gem 'wait', '~> 0.5.3'
+gem 'hub-clusters-creator', github: 'appvia/hub-clusters-creator', tag: 'v0.0.8'
 
 group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
@@ -44,8 +44,9 @@ group :development do
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
-  gem 'rubocop', '~> 0.68.1', require: false
-  gem 'rubocop-performance', '~> 1.1', require: false
+  gem 'rubocop', '~> 0.73.0', require: false
+  gem 'rubocop-performance', '~> 1.4.0', require: false
+  gem 'rubocop-rails', '~> 2.2', '>= 2.2.1', require: false
   gem 'better_errors', '~> 2.5.1'
   gem 'binding_of_caller', '~> 0.8.0'
 end

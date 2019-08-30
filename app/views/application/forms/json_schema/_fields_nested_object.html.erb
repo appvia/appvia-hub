@@ -10,7 +10,7 @@
 <% end %>
 <%= tag.div class: 'indented ml-2 mb-3 nested-object' do %>
   <%=
-    render partial: 'form_fields',
+    render partial: 'application/forms/json_schema/fields',
       locals: {
         form: form,
         namespace: name,

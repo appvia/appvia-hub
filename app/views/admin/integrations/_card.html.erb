@@ -3,12 +3,43 @@
 <div id="<%= integration.id -%>" class="card mb-3">
   <div class="card-body">
     <h5 class="card-title">
+      <%= delete_integration_link integration, css_class: 'float-right btn btn-sm btn-danger' %>
+
       Name: <%= integration.name %>
+      <%= link_to admin_integrations_path_with_selected(integration) do %>
+        <%= icon 'link', css_class: ['ml-1', 'text-muted'] %>
+      <% end %>
     </h5>
 
     <p class="text-muted">
       <%= pluralize integration.resources.count, 'resource' %>
     </p>
+
+    <% parents = integration.parents %>
+    <% children = integration.children %>
+    <% if parents.present? || children.present? %>
+      <hr />
+
+      <% if parents.present? %>
+        <h6 class="font-weight-bold">Depends on</h6>
+        <% parents.each do |p| %>
+          <div class="indented mb-1">
+            <%= link_to p.name, admin_integrations_path_with_selected(p) %>
+          </div>
+        <% end %>
+      <% end %>
+
+      <% if children.present? %>
+        <h6 class="font-weight-bold">Has dependents</h6>
+        <% children.each do |c| %>
+          <div class="indented mb-1">
+            <%= link_to c.name, admin_integrations_path_with_selected(c) %>
+          </div>
+        <% end %>
+      <% end %>
+
+      <hr />
+    <% end %>
 
     <%=
       render partial: 'config_fields',

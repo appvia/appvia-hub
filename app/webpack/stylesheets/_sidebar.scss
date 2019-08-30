@@ -12,13 +12,30 @@
     position: relative;
     top: 0;
     height: calc(100vh - #{$navbar-height});
-    padding-top: .5rem;
     overflow-x: hidden;
     overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+    @extend .pt-2;
+  }
+
+  hr {
+    @extend .my-2;
   }
 
   .sidebar-heading {
-    @extend .mb-2;
+    @extend .py-2;
+    @extend .pl-2;
+    @extend .mb-1;
+    margin-right: 1px;
+    margin-top: -1 * map-get($spacers, 2);
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 0.75em;
+    border-bottom: 1px dotted $border-color;
+    background: $gray-200;
+  }
+
+  .sidebar-item {
+    @extend .py-1;
     @extend .text-muted;
     font-size: .85rem;
     text-transform: uppercase;
@@ -29,8 +46,8 @@
   }
 
   .nav-link {
-    padding: 0.2rem 2rem;
     @extend .pl-3;
+    @extend .py-1;
     font-weight: 500;
     color: $blue-light;
 

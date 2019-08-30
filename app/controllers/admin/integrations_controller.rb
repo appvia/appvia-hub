@@ -1,6 +1,6 @@
 module Admin
-  class IntegrationsController < Admin::BaseController
-    before_action :find_integration, only: %i[edit update]
+  class IntegrationsController < BaseController
+    before_action :find_integration, only: %i[edit update destroy]
 
     # GET /admin/integrations
     def index
@@ -27,32 +27,52 @@ module Admin
 
       unprocessable_entity_error && return unless Integration.provider_ids.key?(provider_id)
 
+      @potential_parents = find_potential_parents provider_id
+
       @integration = Integration.new provider_id: provider_id
     end
 
     # GET /admin/integrations/:id/edit
-    def edit; end
+    def edit
+      @potential_parents = find_potential_parents @integration.provider_id
+    end
 
     # POST /admin/integrations
     def create
-      @integration = Integration.new integration_params
+      params = integration_params
+
+      params[:parent_ids].reject!(&:blank?) if params.key?(:parent_ids)
+
+      @integration = Integration.new params
 
       if @integration.save
-        path = admin_integrations_path_with_selected @integration
+        path = helpers.admin_integrations_path_with_selected @integration
         redirect_to path, notice: 'New integration was successfully created.'
       else
+        @potential_parents = find_potential_parents @integration.provider_id
         render :new
       end
     end
 
     # PATCH/PUT /admin/integrations/:id
     def update
-      if @integration.update integration_params
-        path = admin_integrations_path_with_selected @integration
+      params = integration_params
+
+      params[:parent_ids].reject!(&:blank?) if params.key?(:parent_ids)
+
+      if @integration.update params
+        path = helpers.admin_integrations_path_with_selected @integration
         redirect_to path, notice: 'Integration was successfully updated.'
       else
+        @potential_parents = find_potential_parents @integration.provider_id
         render :edit
       end
+    end
+
+    # DELETE /admin/integrations/:id
+    def destroy
+      @integration.destroy
+      redirect_to admin_integrations_path, notice: 'Integration was successfully deleted.'
     end
 
     private
@@ -61,17 +81,12 @@ module Admin
       @integration = Integration.find params[:id]
     end
 
-    def integration_params
-      params.require(:integration).permit(:provider_id, :name, config: {})
+    def find_potential_parents(provider_id)
+      DependentIntegrationsService.potential_parents_for provider_id
     end
 
-    def admin_integrations_path_with_selected(integration)
-      resource_type = ResourceTypesService.for_provider integration.provider_id
-
-      admin_integrations_path(
-        expand: resource_type[:id],
-        anchor: integration.id
-      )
+    def integration_params
+      params.require(:integration).permit(:provider_id, :name, parent_ids: [], config: {})
     end
   end
 end

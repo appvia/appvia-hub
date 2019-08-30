@@ -4,7 +4,22 @@
 
 ## Docs
 
-Please refer to https://appvia.github.io/appvia-hub/ for the documentation. 
+Please refer to https://appvia.github.io/appvia-hub/ for the documentation.
+
+## Preview / QA
+
+These instructions allow you to quickly run the Hub in docker.
+
+**Note** the container is built locally and the hub is run with the production rails environment so this isn't suitable for development.
+
+**Note** for development, you will need to run the steps for [Dev](#dev) below.
+
+Run the command:
+```shell
+docker-compose -f docker-compose.yml -f docker-compose-app-preview.yml up
+```
+
+The hub should then be available at http://localhost:3000
 
 ## Dev
 
@@ -12,6 +27,7 @@ Please refer to https://appvia.github.io/appvia-hub/ for the documentation.
 
 - Ruby 2.5.5
   - with Bundler v1.17+
+  - Postgres client ([platform lib required](https://stackoverflow.com/questions/6040583/cant-find-the-libpq-fe-h-header-when-trying-to-install-pg-gem?answertab=votes#tab-top))
 - NodeJS 10+
   - with Yarn 1.10+
 - Docker Compose v1.23+
@@ -50,6 +66,8 @@ Then you're ready to use the usual `rails` commands (like `bin/rails serve`) to 
 
 ### Running the app locally
 
+#### Web app server
+
 Start up the Rails server with:
 
 ```shell
@@ -60,11 +78,27 @@ This serves the entire app, including all frontend assets (bundled using [Webpac
 
 You can **also** run `bin/webpack-dev-server` in a separate terminal shell if you want live reloading (in your browser) of CSS and JavaScript changes (note: only changes made within the `app/webpack` folder will cause live reloads).
 
-Start up the background processor with:
+#### Tests
+
+To run the test suite:
 
 ```shell
-bundle exec sidekiq -c 1
+bundle exec rspec
 ```
+
+#### Background workers
+
+Certain tasks – such as resource provisioning – are carried out in background jobs using [Sidekiq](https://github.com/mperham/sidekiq).
+
+There are different background workers for different types of jobs:
+
+- One for **resource provisioning** specifically:
+  - **IMPORTANT:** MUST run with a concurrency of 1 (`-c 1`) to ensure proper FIFO processing.
+  - `bundle exec sidekiq -q resources -c 1`
+- One for **admin tasks** specifically:
+  - `bundle exec sidekiq -q admin_tasks -c 2`
+- And one for everything else:
+  - `bundle exec sidekiq -q default -c 5`
 
 ### Dev tips
 

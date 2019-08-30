@@ -1,6 +1,8 @@
 module JsonSchemaHelpers
   # Processes a flat Hash of values, ensuring fields are converted to the data
   # type specified in the provided JsonSchema spec.
+  #
+  # rubocop:disable Metrics/CyclomaticComplexity
   def self.ensure_data_types(data, spec)
     return data if data.blank?
 
@@ -17,10 +19,13 @@ module JsonSchemaHelpers
           data[name] = ActiveRecord::Type::Boolean.new.cast(data[name])
         elsif property_spec.type.include?('integer')
           data[name] = data[name].to_i
+        elsif data[name] == ''
+          data[name] = nil
         end
       end
     end
 
     data
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
 end

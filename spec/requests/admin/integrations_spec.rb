@@ -244,4 +244,47 @@ RSpec.describe 'Admin - Integrations', type: :request do
       end
     end
   end
+
+  describe 'destroy - DELETE /admin/integrations/:id' do
+    before do
+      @integration = create_mocked_integration
+    end
+
+    it_behaves_like 'unauthenticated not allowed' do
+      before do
+        delete admin_integration_path(@integration)
+      end
+    end
+
+    it_behaves_like 'authenticated' do
+      it_behaves_like 'not a hub admin so not allowed' do
+        before do
+          delete admin_integration_path(@integration)
+        end
+      end
+
+      it_behaves_like 'a hub admin' do
+        it 'deletes the existing Integration and redirects to the integrations index page' do
+          expect do
+            delete admin_integration_path(@integration)
+            expect(Integration.exists?(@integration.id)).to be false
+            expect(response).to redirect_to(admin_integrations_url)
+          end.to change { Integration.count }.by(-1)
+        end
+
+        it 'logs an Audit' do
+          move_time_to 1.minute.from_now
+          delete admin_integration_path(@integration)
+          audit = Audit
+            .auditable_finder(@integration.id, Integration.name)
+            .order(:created_at)
+            .last
+          expect(audit).not_to be nil
+          expect(audit.action).to eq 'destroy'
+          expect(audit.user_email).to eq auth_email
+          expect(audit.created_at.to_i).to eq now.to_i
+        end
+      end
+    end
+  end
 end

@@ -10,11 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_08_145925) do
+ActiveRecord::Schema.define(version: 2019_07_22_153945) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "admin_tasks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "type", null: false
+    t.uuid "created_by_id", null: false
+    t.string "status", null: false
+    t.jsonb "data", default: {}, null: false
+    t.text "encrypted_data", null: false
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.text "error"
+    t.string "lock_version"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_admin_tasks_on_created_by_id"
+    t.index ["data"], name: "index_admin_tasks_on_data", using: :gin
+    t.index ["type"], name: "index_admin_tasks_on_type"
+  end
 
   create_table "audits", force: :cascade do |t|
     t.string "auditable_type"
@@ -84,6 +101,7 @@ ActiveRecord::Schema.define(version: 2019_07_08_145925) do
     t.text "config", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "parent_ids", default: [], null: false, array: true
     t.index ["name"], name: "index_integrations_on_name", unique: true
     t.index ["provider_id"], name: "index_integrations_on_provider_id"
   end
@@ -95,14 +113,6 @@ ActiveRecord::Schema.define(version: 2019_07_08_145925) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_projects_on_slug", unique: true
-  end
-
-  create_table "resource_hierarchies", id: false, force: :cascade do |t|
-    t.uuid "ancestor_id", null: false
-    t.uuid "descendant_id", null: false
-    t.integer "generations", null: false
-    t.index ["ancestor_id", "descendant_id", "generations"], name: "resource_anc_desc_idx", unique: true
-    t.index ["descendant_id"], name: "resource_desc_idx"
   end
 
   create_table "resources", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -133,6 +143,7 @@ ActiveRecord::Schema.define(version: 2019_07_08_145925) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  add_foreign_key "admin_tasks", "users", column: "created_by_id"
   add_foreign_key "integration_overrides", "integrations"
   add_foreign_key "integration_overrides", "projects"
   add_foreign_key "resources", "integrations"

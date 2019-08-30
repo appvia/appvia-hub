@@ -9,7 +9,7 @@ ENV APP_PATH="/app" \
 
 WORKDIR /app
 
-RUN apk add --update --no-cache bash curl make gcc libc-dev postgresql-client postgresql-dev tzdata nodejs yarn
+RUN apk add --update --no-cache bash curl make gcc g++ libstdc++ libc-dev postgresql-client postgresql-dev tzdata git nodejs yarn
 
 # install gems
 COPY Gemfile Gemfile.lock ./

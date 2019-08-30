@@ -191,16 +191,18 @@
         masked: true
       ca_cert:
         title: CA certificate
-        description: MUST be base64 encoded. This is the CA bundle (pem format) for requests to the Grafana API.
+        description: "MUST be base64 encoded. This is the CA bundle (pem format) for requests to the Grafana API. If none is required, you can set this to a dummy value (e.g. 'noop')"
         type: string
         masked: true
       template_url:
         title: Dashboard template URL
         description: A URL to a dashboard template (in Golang templated format) that will be used when creating the dashboard on Grafana.
         type: string
+        default: "http://s3-eu-west-2.amazonaws.com/appvia-hub-demo-grafana-templates-store/kubernetes-prometheus.json.tmpl"
     required:
       - url
       - api_key
+      - ca_cert
       - template_url
 
 - id: loki
@@ -215,6 +217,7 @@
         title: Loki data source name
         description: Name of the Grafana data source used for Loki
         type: string
+        default: "Loki"
     required:
       - grafana_url
       - data_source_name

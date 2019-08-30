@@ -1,0 +1,54 @@
+version: '3.7'
+
+services:
+
+  rails_server:
+    build: .
+    image: appvia-hub:latest
+    volumes:
+      - '.env:/app/.env'
+      - './tmp/preview:/app/tmp/preview'
+    entrypoint:
+      - "./bin/preview-entrypoint"
+      - "setup-or-update"
+      - "./bin/rails server"
+    ports:
+      - 3001:3001
+    depends_on:
+      - postgres
+
+  bundle_sidekiq_resources:
+    image: appvia-hub:latest
+    volumes:
+      - '.env:/app/.env'
+      - './tmp/preview:/app/tmp/preview'
+    entrypoint:
+      - "./bin/preview-entrypoint"
+      - "bundle exec sidekiq -q resources -c 1"
+    depends_on:
+      - rails_server
+      - postgres
+
+  bundle_sidekiq_admin:
+    image: appvia-hub:latest
+    volumes:
+      - '.env:/app/.env'
+      - './tmp/preview:/app/tmp/preview'
+    entrypoint:
+      - "./bin/preview-entrypoint"
+      - "bundle exec sidekiq -q admin_tasks -c 2"
+    depends_on:
+      - rails_server
+      - postgres
+
+  bundle_sidekiq_default:
+    image: appvia-hub:latest
+    volumes:
+      - '.env:/app/.env'
+      - './tmp/preview:/app/tmp/preview'
+    entrypoint:
+      - "./bin/preview-entrypoint"
+      - "bundle exec sidekiq -q default -c 5"
+    depends_on:
+      - rails_server
+      - postgres

@@ -3,9 +3,16 @@ module ResourceIntegrationSpecsExamples
     include_context 'time helpers'
 
     let! :integration do
+      parent_ids = if defined?(parent_integration)
+                     [parent_integration.id]
+                   else
+                     []
+                   end
+
       create :integration,
         provider_id: provider_id,
-        config: integration_config
+        config: integration_config,
+        parent_ids: parent_ids
     end
 
     let! :provisioning_service do
@@ -49,9 +56,9 @@ module ResourceIntegrationSpecsExamples
               .with(resource, d[:type])
               .and_call_original
 
-            expect(ResourceTypesService).to receive(:integrations_for)
-              .with(d[:type])
-              .and_return([d[:integration]])
+            expect(DependentIntegrationsService).to receive(:find_dependent_for)
+              .with(integration, d[:type])
+              .and_call_original
           end
         end
 
