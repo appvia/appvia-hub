@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+# Path needs to be a volume for docker compose...
+preview_path=./tmp/preview
+setup_mutex_file=${preview_path}/setup_complete
+
+set -a
+# use the base values for credentials
+source .env
+set +a
+
+# Docker compose doesn't generate secrets so we need to do this somewhere
+function get-persistent-secret() {
+  local file=${preview_path}/${1}
+  [[ ! -f ${file} ]] && \
+    echo $(head -c30 < /dev/urandom | base64)>${file}
+  cat ${file}
+}
+
+function setup-or-update() {
+  rm ${setup_mutex_file}
+  # this shouldn't be dependant on a file
+  # ...it's ok to fail if already setup
+  ./bin/setup || true
+  # Always update
+  ./bin/update
+  # setup complete
+  touch ${setup_mutex_file}
+}
+
+function wait-for-setup() {
+  echo "waiting for setup..."
+  while [[ ! -f ${setup_mutex_file} ]]; do
+    sleep 2
+  done
+}
+
+# Use the same secret for all containers
+export SECRET_KEY_BASE=$(get-persistent-secret SECRET_KEY_BASE)
+export SECRET_SALT=$(get-persistent-secret SECRET_SALT)
+
+# NOTE: On OSX / Windows only the host can see the exposed ports
+#       Update all the endpoints to match the docker-compose.yml
+export REDIS_URL="redis://sidekiq_redis:6379"
+export AHUB_DB_HOST="postgres"
+export QUAY_AGENT_BASE_URL="http://quay_agent:10001/api/v1beta"
+export KUBERNETES_AGENT_BASE_URL="http://kube_agent:10002/api/v1beta"
+export ECR_AGENT_BASE_URL="http://ecr_agent:10003/api/v1beta"
+export GRAFANA_AGENT_BASE_URL="http://grafana_agent:10004/api/v1beta"
+
+# Run all the commands provided...
+for cmd in "${@}"; do
+  if [[ ${cmd} == setup-or-update ]]; then
+    setup-or-update
+  else
+    wait-for-setup
+    eval ${cmd}
+  fi
+done
