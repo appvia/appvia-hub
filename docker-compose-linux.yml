@@ -10,6 +10,8 @@ services:
 
   auth_proxy:
     network_mode: host
+    environment:
+      - PROXY_UPSTREAM_URL=http://127.0.0.1:3001
     command:
       - --openid-provider-proxy=http://localhost:9000
       - --secure-cookie=false
