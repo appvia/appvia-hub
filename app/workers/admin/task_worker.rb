@@ -66,13 +66,27 @@ module Admin
           }
         )
 
-        task.update!(
-          integrations: {
-            'kubernetes' => kube_integration.id,
-            'grafana' => grafana_integration.id,
-            'loki' => loki_integration.id
-          }
-        )
+        intergrations = {
+          'kubernetes' => kube_integration.id,
+          'grafana' => grafana_integration.id,
+          'loki' => loki_integration.id
+        }
+
+        if results[:services][:aws_sb]
+          service_broker_integration = Integration.create!(
+            provider_id: 'service_broker',
+            parent_ids: [kube_integration.id],
+            name: "Service broker for #{kube_integration.name}",
+            config: {
+              'api_url' => results[:cluster][:endpoint],
+              'ca_cert' => results[:cluster][:ca],
+              'token' => results[:cluster][:service_account_token]
+            }
+          )
+          intergrations['service_broker'] = service_broker_integration.id
+        end
+
+        task.update!(integrations: intergrations)
 
         true
       end
