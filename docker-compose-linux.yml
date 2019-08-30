@@ -1,0 +1,40 @@
+---
+version: '3.7'
+services:
+
+  postgres:
+    network_mode: host
+
+  mock_user_service:
+    network_mode: host
+
+  auth_proxy:
+    network_mode: host
+    environment:
+      - PROXY_UPSTREAM_URL=http://127.0.0.1:3001
+    command:
+      - --openid-provider-proxy=http://localhost:9000
+      - --secure-cookie=false
+
+  sidekiq_redis:
+    network_mode: host
+
+  quay_agent:
+    network_mode: host
+    environment:
+      - LISTEN=0.0.0.0
+
+  kube_agent:
+    network_mode: host
+    environment:
+      - LISTEN=0.0.0.0
+
+  ecr_agent:
+    network_mode: host
+    environment:
+      - LISTEN=0.0.0.0
+
+  grafana_agent:
+    network_mode: host
+    environment:
+      - LISTEN=0.0.0.0
