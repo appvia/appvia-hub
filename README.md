@@ -35,7 +35,7 @@ The hub should then be available at http://localhost:3000
 ### Dependent services
 
 A database, mock user service and auth proxy can all be run locally using Docker Compose, using the provided `docker-compose.yml`.
-Note for linux users you can use `docker-compose-linux.yml` and simply add the `docker-compose -f docker-compose.yml -f docker-compose-linux.yml <commands>`. This is required due to the current lack of support for `host.docker.internal` in [Docker for Linux](https://github.com/docker/for-linux/issues/264).
+Note for linux users you can use `docker-compose -f docker-compose.yml -f docker-compose-linux.yml <commands>`. This is required due to the current lack of support for `host.docker.internal` in [Docker for Linux](https://github.com/docker/for-linux/issues/264).
 
 To start them all up (running in the background):
 
