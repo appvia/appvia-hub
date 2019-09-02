@@ -11,7 +11,7 @@ class ResourcesController < ApplicationController
   before_action :find_parent_resource, only: [:new]
 
   def new
-    integration = @integrations.values.first.first.id
+    integration = @integrations.values.first.first
     @resource = @project.resources.new(
       type: @resource_type[:class],
       integration_id: integration.id
