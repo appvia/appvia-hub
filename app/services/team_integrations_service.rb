@@ -23,5 +23,15 @@ module TeamIntegrationsService
         end
         .sort_by(&:name)
     end
+
+    def for_user(user)
+      user
+        .teams
+        .reduce([]) do |acc, t|
+          acc + TeamIntegrationsService.get(t, include_dependents: true)
+        end
+        .uniq
+        .sort_by(&:name)
+    end
   end
 end

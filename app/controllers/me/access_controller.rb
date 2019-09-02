@@ -10,10 +10,8 @@ module Me
         .group_by(&:integration_id)
         .transform_values(&:first)
 
-      integrations_by_provider = current_user
-        .teams
-        .reduce([]) { |acc, t| acc + TeamIntegrationsService.get(t, include_dependents: true) }
-        .uniq
+      integrations_by_provider = TeamIntegrationsService
+        .for_user(current_user)
         .group_by(&:provider_id)
 
       @groups = ResourceTypesService.all.map do |rt|

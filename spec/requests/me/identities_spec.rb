@@ -3,6 +3,11 @@ require 'rails_helper'
 RSpec.describe 'Me - Identities', type: :request do
   include_context 'time helpers'
 
+  before do
+    # User needs to be in at least one team to access integrations
+    create :team_membership, user: current_user
+  end
+
   describe 'destroy - DELETE /me/identities/:integration_id' do
     let :integration do
       create_mocked_integration
@@ -17,6 +22,9 @@ RSpec.describe 'Me - Identities', type: :request do
     it_behaves_like 'authenticated' do
       let!(:other_user) { create :user }
       let! :other_identity do
+        # User needs to be in at least one team to access integrations
+        create :team_membership, user: other_user
+
         create :identity, user: other_user, integration: integration
       end
 
