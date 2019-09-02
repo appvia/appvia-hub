@@ -60,8 +60,13 @@ RSpec.describe 'Code Repo - GitHub - using a template' do
   let(:user_auth_token) { 'user_auth_token' }
 
   let! :identity do
+    user = resource.requested_by
+
+    # User needs to be in at least one team to access integrations
+    create :team_membership, user: user
+
     create :identity,
-      user: resource.requested_by,
+      user: user,
       integration: integration,
       access_token: user_auth_token
   end

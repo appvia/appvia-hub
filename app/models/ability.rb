@@ -35,6 +35,12 @@ class Ability
     can %i[show edit update destroy], Project do |project|
       can_participate_in_team? project.team, user
     end
+
+    # Identity flows
+
+    can :connect_identity, Integration do |integration|
+      can_use_integration? integration, user
+    end
   end
 
   private
@@ -51,5 +57,11 @@ class Ability
       team.id,
       user.id
     )
+  end
+
+  def can_use_integration?(integration, user)
+    TeamIntegrationsService
+      .for_user(user)
+      .include?(integration)
   end
 end
