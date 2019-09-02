@@ -56,6 +56,10 @@ module ResourcesHelper
     end
   end
 
+  def get_resource_integration_children(integration)
+    integration.children.map(&:provider_id)
+  end
+
   def get_service_broker_classes(classes)
     classes.collect do |c|
       id = "#{c.metadata.name}|#{c.spec.externalName}|#{c.spec.externalMetadata.displayName}"
