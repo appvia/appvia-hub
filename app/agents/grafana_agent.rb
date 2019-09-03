@@ -25,6 +25,23 @@ class GrafanaAgent
     end.body
   end
 
+  def update_users(users)
+    path = 'users'
+    users = users.map do |u|
+      {
+        name: u,
+        login: u,
+        email: u
+      }
+    end
+    body = users.to_json
+    client.put do |req|
+      add_grafana_headers req
+      req.url path
+      req.body = body
+    end.body
+  end
+
   def delete_dashboard(name)
     path = dashboard_path name
     client.delete do |req|
