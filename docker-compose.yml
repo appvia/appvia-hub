@@ -13,7 +13,7 @@ services:
       - 5432:5432
 
   mock_user_service:
-    image: quay.io/appvia/mock-oidc-user-server:v0.0.2
+    image: quay.io/appvia/mock-oidc-user-server:v0.0.3
     environment:
       - PORT=9000
       - CLIENT_ID=ahub-client
