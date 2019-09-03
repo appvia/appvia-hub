@@ -44,6 +44,11 @@ jobs:
           name: lint
           command: bundle exec rubocop && yarn lint
 
+      # Audit
+      - run:
+          name: audit
+          command: yarn audit
+
       # Database setup
       - run: bundle exec rake db:create
       - run: bundle exec rake db:schema:load
