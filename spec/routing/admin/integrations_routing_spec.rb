@@ -25,9 +25,5 @@ RSpec.describe Admin::IntegrationsController, type: :routing do
     it 'routes to #update via PATCH' do
       expect(patch: '/admin/integrations/1').to route_to('admin/integrations#update', id: '1')
     end
-
-    it 'routes to #destroy' do
-      expect(delete: '/admin/integrations/1').to route_to('admin/integrations#destroy', id: '1')
-    end
   end
 end

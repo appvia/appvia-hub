@@ -110,7 +110,7 @@ module Admin
         rescue StandardError => e
           logger.error [
             "Failed to process admin task #{task.id} (type: #{task.type})",
-            "- error: #{e.inspect}"
+            "- error: #{e.message} - #{e.backtrace.first}"
           ].join(' ')
 
           task.update!(

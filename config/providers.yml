@@ -6,10 +6,6 @@
         title: Your GitHub organisation
         description: "The organisation on GitHub to manage repos for. This should be the 'login' value as specified in https://developer.github.com/v3/orgs/."
         type: string
-      all_team_id:
-        title: Team ID for all users
-        description: "The numeric ID of the org's main team in which to place all hub users in and grant repos admin access to. This should be the 'id' value from https://developer.github.com/v3/teams/#list-teams – see also http://fabian-kostadinov.github.io/2015/01/16/how-to-find-a-github-team-id/"
-        type: integer
       app_id:
         title: Your GitHub App ID
         description: "The app ID for the [GitHub App](https://developer.github.com/apps/about-apps/) you have set up."
@@ -55,7 +51,6 @@
             - repo_url
     required:
       - org
-      - all_team_id
       - app_id
       - app_private_key
       - app_installation_id

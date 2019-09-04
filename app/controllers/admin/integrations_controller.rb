@@ -1,6 +1,6 @@
 module Admin
   class IntegrationsController < BaseController
-    before_action :find_integration, only: %i[edit update destroy]
+    before_action :find_integration, only: %i[edit update]
 
     authorize_resource
 
@@ -48,9 +48,9 @@ module Admin
       params[:parent_ids].reject!(&:blank?) if params.key?(:parent_ids)
       params[:team_ids].reject!(&:blank?) if params.key?(:team_ids)
 
-      @integration = Integration.new params
+      @integration, success = Admin::IntegrationsService.create params
 
-      if @integration.save
+      if success
         path = helpers.admin_integrations_path_with_selected @integration
         redirect_to path, notice: 'New integration was successfully created.'
       else
@@ -67,7 +67,7 @@ module Admin
       params[:parent_ids].reject!(&:blank?) if params.key?(:parent_ids)
       params[:team_ids].reject!(&:blank?) if params.key?(:team_ids)
 
-      if @integration.update params
+      if Admin::IntegrationsService.update(@integration, params)
         path = helpers.admin_integrations_path_with_selected @integration
         redirect_to path, notice: 'Integration was successfully updated.'
       else
@@ -75,12 +75,6 @@ module Admin
         @potential_teams = find_potential_teams @integration.provider_id
         render :edit
       end
-    end
-
-    # DELETE /admin/integrations/:id
-    def destroy
-      @integration.destroy
-      redirect_to admin_integrations_path, notice: 'Integration was successfully deleted.'
     end
 
     private
