@@ -71,6 +71,22 @@ jobs:
       # - to test that the build process goes through okay
       - run: yarn install --frozen-lockfile --production && NODE_ENV=production bin/rails assets:precompile
 
+  audit:
+    parallelism: 1
+
+    docker:
+      - image: circleci/ruby:2.5.5-node-browsers
+
+    working_directory: ~/appvia-hub
+
+    steps:
+      - checkout
+
+      # Audit
+      - run:
+          name: audit
+          command: yarn audit
+
   build_only:
     machine: true
     parallelism: 1
@@ -143,6 +159,14 @@ workflows:
                 - master
             tags:
               ignore: /.*/
+
+      - audit:
+          filters:
+            branches:
+              only:
+                - master
+            tags:
+              only: /.*/
 
       - build_and_push_latest:
           requires:
