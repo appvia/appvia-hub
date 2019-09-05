@@ -165,6 +165,8 @@ workflows:
             branches:
               only:
                 - master
+            tags:
+              only: /.*/
 
       - build_and_push_latest:
           requires:
