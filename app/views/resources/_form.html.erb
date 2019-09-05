@@ -125,7 +125,7 @@
               <%= form.fields_for :service_broker do |service_broker_form| %>
                 <%=
                   service_broker_form.select :service_class,
-                    get_service_broker_classes(service_classes),
+                    sb_service.generate_service_class_select_options,
                     {
                       label: label_with_tooltip(
                         'Type',
@@ -141,8 +141,9 @@
                 %>
 
                 <%=
+                  service_plans = sb_service.generate_service_plans_select_options(resource.class_name)
                   service_broker_form.select :service_plan,
-                    get_service_broker_class_plans(service_plans),
+                    service_plans,
                     {
                       label: label_with_tooltip(
                         'Plan',
@@ -153,14 +154,14 @@
                       required: true,
                     },
                     {
-                      disabled: service_plans.nil?,
+                      disabled: service_plans.empty?,
                       data: {
                         action: 'resource-form#submitForm'
                       }
                     }
                 %>
-
-                <% if service_plan_schema %>
+                <% service_plan_schema = sb_service.service_plan_schema(resource.class_name, resource.plan_name) %>
+                <% unless service_plan_schema.nil? %>
                   <%=
                     render partial: 'application/forms/json_schema/fields',
                       locals: {

@@ -1,0 +1,278 @@
+[
+  {
+    "apiVersion": "servicecatalog.k8s.io/v1beta1",
+    "kind": "ClusterServicePlan",
+    "metadata": {
+      "creationTimestamp": "2019-08-30T08:45:03Z",
+      "name": "56b56d98-5f98-5a7e-91c3-7b0d62931734",
+      "ownerReferences": [
+        {
+          "apiVersion": "servicecatalog.k8s.io/v1beta1",
+          "blockOwnerDeletion": false,
+          "controller": true,
+          "kind": "ClusterServiceBroker",
+          "name": "aws-sb",
+          "uid": "3daf1889-cb02-11e9-819a-76d9ac1d491b"
+        }
+      ],
+      "resourceVersion": "2336",
+      "selfLink": "/apis/servicecatalog.k8s.io/v1beta1/clusterserviceplans/56b56d98-5f98-5a7e-91c3-7b0d62931734",
+      "uid": "75c2a2a1-cb02-11e9-819a-76d9ac1d491b"
+    },
+    "spec": {
+      "bindable": true,
+      "clusterServiceBrokerName": "aws-sb",
+      "clusterServiceClassRef": {
+        "name": "dab9f158-8e72-523b-b3a0-7d28636053e3"
+      },
+      "description": "SQS Queue (Standard)",
+      "externalID": "56b56d98-5f98-5a7e-91c3-7b0d62931734",
+      "externalMetadata": {
+        "cost": "https://aws.amazon.com/sqs/pricing/",
+        "displayName": "Standard",
+        "longDescription": "Managed Standard SQS Queue"
+      },
+      "externalName": "standard",
+      "free": false,
+      "instanceCreateParameterSchema": {
+        "$schema": "http://json-schema.org/draft-06/schema#",
+        "openshift_form_definition": [
+          {
+            "Items": [
+              "target_account_id",
+              "target_role_name",
+              "region",
+              "user_tags",
+              "admin_tags"
+            ],
+            "Title": "AWS Account Information",
+            "Type": "fieldset"
+          },
+          {
+            "Items": [
+              "VisibilityTimeout",
+              "DelaySeconds",
+              "MaximumMessageSize",
+              "MessageRetentionPeriod",
+              "ReceiveMessageWaitTimeSeconds",
+              "UsedeadletterQueue"
+            ],
+            "Title": "SQS Configuration",
+            "Type": "fieldset"
+          }
+        ],
+        "prescribed": {
+          "ContentBasedDeduplication": "false",
+          "FifoQueue": "false"
+        },
+        "properties": {
+          "DelaySeconds": {
+            "default": "5",
+            "description": "The Id of the AMI you wish to launch the instance from.",
+            "title": "Delay Seconds",
+            "type": "integer"
+          },
+          "MaximumMessageSize": {
+            "default": "262144",
+            "description": "The limit of how many bytes that a message can contain before Amazon SQS rejects it, 1024 bytes (1 KiB) to 262144 bytes (256 KiB)",
+            "title": "Maximum Message Size",
+            "type": "integer"
+          },
+          "MessageRetentionPeriod": {
+            "default": "345600",
+            "description": "The number of seconds that Amazon SQS retains a message. You can specify an integer value from 60 seconds (1 minute) to 1209600 seconds (14 days).",
+            "title": "Message Retention Period",
+            "type": "integer"
+          },
+          "ReceiveMessageWaitTimeSeconds": {
+            "default": "0",
+            "description": "Specifies the duration, in seconds, that the ReceiveMessage action call waits until a message is in the queue in order to include it in the response, as opposed to returning an empty response if a message is not yet available. 1 to 20",
+            "title": "Receive Message Wait Time Seconds",
+            "type": "integer"
+          },
+          "UsedeadletterQueue": {
+            "default": "false",
+            "description": "A dead-letter queue is a queue that other (source) queues can target for messages that can't be processed (consumed) successfully. You can set aside and isolate these messages in the dead-letter queue to determine why their processing doesn't succeed.",
+            "enum": [
+              "true",
+              "false"
+            ],
+            "title": "Use Dead Letter Queue",
+            "type": "string"
+          },
+          "VisibilityTimeout": {
+            "default": "5",
+            "description": "This should be longer than the time it would take to process and delete a message, this should not exceed 12 hours.",
+            "title": "Visibility Timeout",
+            "type": "integer"
+          },
+          "admin_tags": {
+            "default": "[]",
+            "description": "AWS Resource tags to apply to resources (json formatted [{\"Key\": \"MyTagKey\", \"Value\": \"MyTagValue\"}, ...]",
+            "title": "Additional AWS Tags",
+            "type": "string"
+          },
+          "target_role_name": {
+            "default": "",
+            "description": "AWS IAM Role name to use for provisioning",
+            "title": "AWS Target Role Name",
+            "type": "string"
+          },
+          "user_tags": {
+            "default": "[]",
+            "description": "AWS Resource tags to apply to resources (json formatted [{\"Key\": \"MyTagKey\", \"Value\": \"MyTagValue\"}, ...]",
+            "title": "AWS Tags",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    "status": {
+      "removedFromBrokerCatalog": false
+    }
+  },
+  {
+    "apiVersion": "servicecatalog.k8s.io/v1beta1",
+    "kind": "ClusterServicePlan",
+    "metadata": {
+      "creationTimestamp": "2019-08-30T08:45:03Z",
+      "name": "89b87a4c-d41a-5572-8258-8e656322724c",
+      "ownerReferences": [
+        {
+          "apiVersion": "servicecatalog.k8s.io/v1beta1",
+          "blockOwnerDeletion": false,
+          "controller": true,
+          "kind": "ClusterServiceBroker",
+          "name": "aws-sb",
+          "uid": "3daf1889-cb02-11e9-819a-76d9ac1d491b"
+        }
+      ],
+      "resourceVersion": "2337",
+      "selfLink": "/apis/servicecatalog.k8s.io/v1beta1/clusterserviceplans/89b87a4c-d41a-5572-8258-8e656322724c",
+      "uid": "75e132fc-cb02-11e9-819a-76d9ac1d491b"
+    },
+    "spec": {
+      "bindable": true,
+      "clusterServiceBrokerName": "aws-sb",
+      "clusterServiceClassRef": {
+        "name": "dab9f158-8e72-523b-b3a0-7d28636053e3"
+      },
+      "description": "SQS Queue (FIFO)",
+      "externalID": "89b87a4c-d41a-5572-8258-8e656322724c",
+      "externalMetadata": {
+        "cost": "https://aws.amazon.com/sqs/pricing/",
+        "displayName": "FIFO",
+        "longDescription": "Managed FIFO SQS Queue"
+      },
+      "externalName": "fifo",
+      "free": false,
+      "instanceCreateParameterSchema": {
+        "$schema": "http://json-schema.org/draft-06/schema#",
+        "openshift_form_definition": [
+          {
+            "Items": [
+              "user_tags",
+              "admin_tags",
+              "target_account_id",
+              "target_role_name",
+              "region"
+            ],
+            "Title": "AWS Account Information",
+            "Type": "fieldset"
+          },
+          {
+            "Items": [
+              "ContentBasedDeduplication",
+              "DelaySeconds",
+              "MaximumMessageSize",
+              "MessageRetentionPeriod",
+              "ReceiveMessageWaitTimeSeconds",
+              "UsedeadletterQueue",
+              "VisibilityTimeout"
+            ],
+            "Title": "SQS Configuration",
+            "Type": "fieldset"
+          }
+        ],
+        "prescribed": {
+          "FifoQueue": "true"
+        },
+        "properties": {
+          "ContentBasedDeduplication": {
+            "default": "true",
+            "description": "specifies whether to enable content-based deduplication, only applies to FIFO queues",
+            "enum": [
+              "true",
+              "false"
+            ],
+            "title": "Content Based Deduplication",
+            "type": "string"
+          },
+          "DelaySeconds": {
+            "default": "5",
+            "description": "The Id of the AMI you wish to launch the instance from.",
+            "title": "Delay Seconds",
+            "type": "integer"
+          },
+          "MaximumMessageSize": {
+            "default": "262144",
+            "description": "The limit of how many bytes that a message can contain before Amazon SQS rejects it, 1024 bytes (1 KiB) to 262144 bytes (256 KiB)",
+            "title": "Maximum Message Size",
+            "type": "integer"
+          },
+          "MessageRetentionPeriod": {
+            "default": "345600",
+            "description": "The number of seconds that Amazon SQS retains a message. You can specify an integer value from 60 seconds (1 minute) to 1209600 seconds (14 days).",
+            "title": "Message Retention Period",
+            "type": "integer"
+          },
+          "ReceiveMessageWaitTimeSeconds": {
+            "default": "0",
+            "description": "Specifies the duration, in seconds, that the ReceiveMessage action call waits until a message is in the queue in order to include it in the response, as opposed to returning an empty response if a message is not yet available. 1 to 20",
+            "title": "Receive Message Wait Time Seconds",
+            "type": "integer"
+          },
+          "UsedeadletterQueue": {
+            "default": "false",
+            "description": "A dead-letter queue is a queue that other (source) queues can target for messages that can't be processed (consumed) successfully. You can set aside and isolate these messages in the dead-letter queue to determine why their processing doesn't succeed.",
+            "enum": [
+              "true",
+              "false"
+            ],
+            "title": "Use Dead Letter Queue",
+            "type": "string"
+          },
+          "VisibilityTimeout": {
+            "default": "5",
+            "description": "This should be longer than the time it would take to process and delete a message, this should not exceed 12 hours.",
+            "title": "Visibility Timeout",
+            "type": "integer"
+          },
+          "admin_tags": {
+            "default": "[]",
+            "description": "AWS Resource tags to apply to resources (json formatted [{\"Key\": \"MyTagKey\", \"Value\": \"MyTagValue\"}, ...]",
+            "title": "Additional AWS Tags",
+            "type": "string"
+          },
+          "target_role_name": {
+            "default": "",
+            "description": "AWS IAM Role name to use for provisioning",
+            "title": "AWS Target Role Name",
+            "type": "string"
+          },
+          "user_tags": {
+            "default": "[]",
+            "description": "AWS Resource tags to apply to resources (json formatted [{\"Key\": \"MyTagKey\", \"Value\": \"MyTagValue\"}, ...]",
+            "title": "AWS Tags",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    "status": {
+      "removedFromBrokerCatalog": false
+    }
+  }
+]
