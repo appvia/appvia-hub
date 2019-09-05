@@ -58,12 +58,6 @@ RSpec.describe 'Service Broker Instances' do
       }
     end
 
-    let :some_test do
-      lambda do
-        expect(true).to eq true
-      end
-    end
-
     let :agent_create_method_call_success do
       lambda do |agent, _resource|
         expect(agent).to receive(:create_resource)

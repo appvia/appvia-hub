@@ -55,26 +55,4 @@ module ResourcesHelper
       )
     end
   end
-
-  def get_resource_integration_children(integration)
-    integration.children.map(&:provider_id)
-  end
-
-  def get_service_broker_classes(classes)
-    classes.collect do |c|
-      id = "#{c.metadata.name}|#{c.spec.externalName}|#{c.spec.externalMetadata.displayName}"
-      value = c.spec.externalMetadata.displayName
-      [value, id]
-    end
-  end
-
-  def get_service_broker_class_plans(plans)
-    return [] if plans.nil?
-
-    plans.collect do |p|
-      id = "#{p.metadata.name}|#{p.spec.externalName}|#{p.spec.externalMetadata.displayName}"
-      value = "#{p.spec.externalMetadata.displayName} - #{p.spec.description}"
-      [value, id]
-    end
-  end
 end

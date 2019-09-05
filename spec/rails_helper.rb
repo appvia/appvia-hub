@@ -45,6 +45,8 @@ RSpec.configure do |config|
 
   config.include_context 'mocked integration helper'
 
+  config.include_context 'fixture helpers'
+
   config.before(:each) do
     Sidekiq::Worker.clear_all
   end
