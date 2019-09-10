@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Code Repo - GitHub - with overriden config option' do
+RSpec.describe 'Code Repo - GitHub - with overridden config option' do
   let! :provisioning_service do
     ResourceProvisioningService.new
   end
@@ -72,7 +72,7 @@ RSpec.describe 'Code Repo - GitHub - with overriden config option' do
   end
 
   describe 'request create' do
-    it 'agent should receive the overriden config option' do
+    it 'agent should receive the overridden config option' do
       expect(agent).to receive(:create_repository)
         .with(resource.name, team_id: 1000, auto_init: false)
         .and_return(agent_create_response)
