@@ -88,7 +88,7 @@ RSpec.describe 'Code Repo - GitHub - using a template' do
   end
 
   describe 'request create' do
-    it 'agent should receive the overriden config option' do
+    it 'agent should receive the overridden config option' do
       expect(agent).to receive(:create_repository)
         .with(resource.name, team_id: 1000, auto_init: false)
         .and_return(agent_create_response)
