@@ -11,7 +11,7 @@ module Me
 
       raise ActiveRecord::RecordNotFound if identity.blank?
 
-      identity.destroy!
+      IdentitiesService.destroy! identity
 
       redirect_to me_access_path, notice: 'Identity disconnected'
     end

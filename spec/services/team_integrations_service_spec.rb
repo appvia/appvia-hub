@@ -104,4 +104,72 @@ RSpec.describe TeamIntegrationsService, type: :service do
       )
     end
   end
+
+  describe '.get_teams_for' do
+    it 'returns the appropriate teams for each integration, taking into account parent integrations where necessary' do
+      expect(
+        TeamIntegrationsService.get_teams_for(integration_1)
+      ).to contain_exactly team_1, team_2
+
+      expect(
+        TeamIntegrationsService.get_teams_for(integration_2)
+      ).to contain_exactly team_1
+
+      expect(
+        TeamIntegrationsService.get_teams_for(integration_3)
+      ).to contain_exactly team_1, team_2
+
+      expect(
+        TeamIntegrationsService.get_teams_for(integration_4)
+      ).to contain_exactly team_2
+
+      expect(
+        TeamIntegrationsService.get_teams_for(integration_3_dependent)
+      ).to contain_exactly team_1, team_2
+
+      expect(
+        TeamIntegrationsService.get_teams_for(integration_4_dependent)
+      ).to contain_exactly team_2
+    end
+  end
+
+  describe '.bifurcate_teams' do
+    context 'when all teams are specified' do
+      let(:teams) { Team.all.entries }
+
+      it 'splits the teams into two lists - one for the allowed teams and for those not allowed for the integration' do
+        result = TeamIntegrationsService.bifurcate_teams(teams, integration_1)
+        expect(result[:allowed]).to contain_exactly team_1, team_2
+        expect(result[:not_allowed]).to be_empty
+
+        result = TeamIntegrationsService.bifurcate_teams(teams, integration_2)
+        expect(result[:allowed]).to contain_exactly team_1
+        expect(result[:not_allowed]).to contain_exactly team_2
+      end
+    end
+
+    context 'when a subset of teams are specified' do
+      it 'splits the teams into two lists - one for the allowed teams and for those not allowed for the integration' do
+        result = TeamIntegrationsService.bifurcate_teams([], integration_1)
+        expect(result[:allowed]).to be_empty
+        expect(result[:not_allowed]).to be_empty
+
+        result = TeamIntegrationsService.bifurcate_teams([team_1], integration_1)
+        expect(result[:allowed]).to contain_exactly team_1
+        expect(result[:not_allowed]).to be_empty
+
+        result = TeamIntegrationsService.bifurcate_teams([team_2], integration_1)
+        expect(result[:allowed]).to contain_exactly team_2
+        expect(result[:not_allowed]).to be_empty
+
+        result = TeamIntegrationsService.bifurcate_teams([team_1], integration_2)
+        expect(result[:allowed]).to contain_exactly team_1
+        expect(result[:not_allowed]).to be_empty
+
+        result = TeamIntegrationsService.bifurcate_teams([team_2], integration_2)
+        expect(result[:allowed]).to be_empty
+        expect(result[:not_allowed]).to contain_exactly team_2
+      end
+    end
+  end
 end

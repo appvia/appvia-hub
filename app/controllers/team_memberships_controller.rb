@@ -5,11 +5,11 @@ class TeamMembershipsController < ApplicationController
   def update
     authorize! :edit, @team
 
-    @team_membership = team_membership_scope.first_or_initialize
-
-    @team_membership.role = params[:role] if params.key?(:role)
-
-    @team_membership.save!
+    @team_membership = TeamMembershipsService.create_or_update!(
+      team: @team,
+      user_id: params.require(:id),
+      role: params[:role]
+    )
 
     flash[:notice] = 'Team member successfully added or updated'
 
@@ -24,9 +24,10 @@ class TeamMembershipsController < ApplicationController
   def destroy
     authorize! :edit, @team
 
-    @team_membership = team_membership_scope.first
-
-    @team_membership&.destroy
+    @team_membership = TeamMembershipsService.destroy!(
+      team: @team,
+      user_id: params.require(:id)
+    )
 
     redirect_to team_path(@team, anchor: 'people'), notice: 'Team member removed'
   end
@@ -35,12 +36,5 @@ class TeamMembershipsController < ApplicationController
 
   def find_team
     @team = Team.friendly.find params[:team_id]
-  end
-
-  def team_membership_scope
-    user_id = params.require :id
-    @team
-      .memberships
-      .where(user_id: user_id)
   end
 end

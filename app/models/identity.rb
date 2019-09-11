@@ -22,9 +22,6 @@ class Identity < ApplicationRecord
 
   attr_readonly :user_id, :integration_id
 
-  after_create_commit :trigger_created_worker
-  after_destroy_commit :trigger_deleted_worker
-
   def descriptor
     "For integration: #{integration.name}"
   end
@@ -50,17 +47,6 @@ class Identity < ApplicationRecord
     errors.add(
       :integration,
       'cannot use the integration specified as it\'s not allowed for the user'
-    )
-  end
-
-  def trigger_created_worker
-    HandleIdentityCreatedWorker.perform_async id
-  end
-
-  def trigger_deleted_worker
-    HandleIdentityDeletedWorker.perform_async(
-      integration.id,
-      external_info
     )
   end
 end

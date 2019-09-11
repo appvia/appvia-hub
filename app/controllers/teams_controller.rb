@@ -25,12 +25,9 @@ class TeamsController < ApplicationController
 
   # POST /teams
   def create
-    @team = Team.new team_params
+    @team, success = TeamsService.create team_params, current_user
 
-    if @team.save
-      # Current user becomes an admin of the team
-      @team.memberships.create! user_id: current_user.id, role: 'admin'
-
+    if success
       redirect_to @team, notice: 'Team was successfully created.'
     else
       render :new
@@ -39,7 +36,7 @@ class TeamsController < ApplicationController
 
   # PATCH/PUT /teams/1
   def update
-    if @team.update team_params
+    if TeamsService.update(@team, team_params)
       redirect_to @team, notice: 'Team was successfully updated.'
     else
       render :edit
@@ -48,7 +45,8 @@ class TeamsController < ApplicationController
 
   # DELETE /teams/1
   def destroy
-    @team.destroy
+    TeamsService.destroy! @team
+
     redirect_to teams_url, notice: 'Team was successfully destroyed.'
   end
 
