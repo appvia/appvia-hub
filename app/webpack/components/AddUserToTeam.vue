@@ -54,7 +54,9 @@ export default {
       return axios
         .put(
           `/teams/${this.teamId}/memberships/${result.id}`,
-          {},
+          {
+            role: null
+          },
           {
             headers: {
               'X-CSRF-TOKEN': this.csrfToken,
