@@ -74,7 +74,7 @@
 
     <% grouped_resources = group_resources_by_resource_type resource.children %>
     <% grouped_resources.each do |group| %>
-      <% if group[:class] != 'Resources::ServiceBrokerInstance' %>
+      <% if group[:class] != 'Resources::ServiceCatalogInstance' %>
         <% group[:resources].each do |r| %>
           <div class="indented mt-3">
             <%= resource_icon r %>
@@ -98,9 +98,9 @@
       <% end %>
     <% end %>
 
-    <% if resource.integration.children.map(&:provider_id).include? 'service_broker' %>
+    <% if resource.status == 'active' && resource.integration.children.map(&:provider_id).include?('service_catalog') %>
       <%=
-        render partial: 'resources/service_broker_instance_list',
+        render partial: 'resources/service_catalog_instance_list',
           locals: {
             resource: resource,
             grouped_resources: grouped_resources

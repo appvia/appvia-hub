@@ -10,7 +10,7 @@ class ResourcesController < ApplicationController
 
   before_action :find_parent_resource, only: [:new]
 
-  before_action :create_service_broker_service, if: :service_broker?, only: %i[new create]
+  before_action :create_service_catalog_service, if: :service_catalog?, only: %i[new create]
 
   def new
     integration = @integrations.values.first.first
@@ -99,15 +99,15 @@ class ResourcesController < ApplicationController
     @parent_resource = @project.resources.find params['parent_id'] if params['parent_id']
   end
 
-  def service_broker?
-    @resource_type[:id] == 'ServiceBrokerInstance'
+  def service_catalog?
+    @resource_type[:id] == 'ServiceCatalogInstance'
   end
 
-  def create_service_broker_service
+  def create_service_catalog_service
     integration = @resource&.integration || @integrations.values.first.first
     config = IntegrationOverridesService.new.effective_config_for integration, @project
-    agent = AgentsService.get 'service_broker', config
-    @sb_service = ServiceBrokerClassesService.new agent
+    agent = AgentsService.get 'service_catalog', config
+    @sb_service = ServiceCatalogService.new agent
   end
 
   def resource_params
@@ -127,7 +127,7 @@ class ResourcesController < ApplicationController
                      integration_specific_params['template_url'].presence
 
       resource.template_url = template_url
-    when 'service_broker'
+    when 'service_catalog'
       service_class = integration_specific_params['service_class']
       service_plan = integration_specific_params['service_plan']
       @sb_service.service_class_plan_names(service_class, service_plan)
@@ -140,7 +140,7 @@ class ResourcesController < ApplicationController
   def integration_specific_prechecks(resource, params)
     provider = (resource.integration&.provider_id)
     case provider
-    when 'service_broker'
+    when 'service_catalog'
       # this checks that the stages in the multi-step class/plan/parameters selection process are completed
       # to be complete, the class and plan must be set and the form submitted using the "Request" button
       return false unless resource.class_name && resource.plan_name && params[:commit]

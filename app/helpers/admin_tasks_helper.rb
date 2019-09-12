@@ -22,7 +22,7 @@ module AdminTasksHelper
     kube_integration = Integration.find_by id: task.integrations['kubernetes']
     grafana_integration = Integration.find_by id: task.integrations['grafana']
     loki_integration = Integration.find_by id: task.integrations['loki']
-    service_broker_integration = Integration.find_by id: task.integrations['service_broker']
+    service_catalog_integration = Integration.find_by id: task.integrations['service_catalog']
 
     [
       {
@@ -44,10 +44,10 @@ module AdminTasksHelper
         path: loki_integration.present? ? admin_integrations_path_with_selected(loki_integration) : nil
       },
       {
-        type: 'Service Broker',
-        integration: service_broker_integration,
-        name: service_broker_integration&.name,
-        path: service_broker_integration.present? ? admin_integrations_path_with_selected(service_broker_integration) : nil
+        type: 'Service Catalog',
+        integration: service_catalog_integration,
+        name: service_catalog_integration&.name,
+        path: service_catalog_integration.present? ? admin_integrations_path_with_selected(service_catalog_integration) : nil
       }
     ]
   end

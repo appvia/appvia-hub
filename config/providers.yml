@@ -217,8 +217,8 @@
       - grafana_url
       - data_source_name
 
-- id: service_broker
-  name: Service Broker Instance
+- id: service_catalog
+  name: Service Catalog
   config_spec:
     properties:
       api_url:

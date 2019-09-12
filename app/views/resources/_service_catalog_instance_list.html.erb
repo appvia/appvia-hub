@@ -1,10 +1,10 @@
 <div class="indented mt-3">
   <h3 class="h6">
-    <strong>Service broker instances</strong>
-    <%= link_to 'New', new_project_resource_path(resource.project, type: 'ServiceBrokerInstance', parent_id: resource[:id]), class: 'btn btn-sm btn-primary mr-1 mt-n1' %>
+    <strong>Service Catalog instances</strong>
+    <%= link_to 'New', new_project_resource_path(resource.project, type: 'ServiceCatalogInstance', parent_id: resource[:id]), class: 'btn btn-sm btn-primary mr-1 mt-n1' %>
   </h3>
   <% grouped_resources.each do |group| %>
-    <% if group[:class] == 'Resources::ServiceBrokerInstance' %>
+    <% if group[:class] == 'Resources::ServiceCatalogInstance' %>
       <% group[:resources].each do |r| %>
         <div class="mt-3">
           <%= resource_icon r %>
@@ -37,7 +37,7 @@
           %>
 
           <%=
-            render partial: 'resources/service_broker_instance_detail',
+            render partial: 'resources/service_catalog_instance_detail',
               locals: {
                 icon: 'keyboard',
                 link_text: 'Create parameters',
@@ -47,7 +47,7 @@
 
           <% unless r.service_instance.nil? %>
             <%=
-              render partial: 'resources/service_broker_instance_detail',
+              render partial: 'resources/service_catalog_instance_detail',
                 locals: {
                   icon: 'cloud',
                   link_text: 'Service instance',

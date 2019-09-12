@@ -35,8 +35,8 @@ module Resources
           true
         end
       },
-      'Resources::ServiceBrokerInstance' => {
-        'service_broker' => lambda do |resource, agent, _config|
+      'Resources::ServiceCatalogInstance' => {
+        'service_catalog' => lambda do |resource, agent, _config|
           agent.delete_resource(
             namespace: resource.parent.name,
             name: resource.name
