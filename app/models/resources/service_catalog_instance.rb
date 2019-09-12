@@ -1,5 +1,5 @@
 module Resources
-  class ServiceBrokerInstance < Resource
+  class ServiceCatalogInstance < Resource
     attr_json :class_name, :string
     attr_json :class_external_name, :string
     attr_json :class_display_name, :string
@@ -21,7 +21,5 @@ module Resources
     validates :plan_name, presence: true
     validates :plan_external_name, presence: true
     validates :plan_display_name, presence: true
-
-    validates :create_parameters, presence: true
   end
 end

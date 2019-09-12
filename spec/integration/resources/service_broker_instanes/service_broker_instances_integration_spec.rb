@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-RSpec.describe 'Service Broker Instances' do
+RSpec.describe 'Service Catalog Instances' do
   include_examples 'resource integration specs' do
-    let(:provider_id) { 'service_broker' }
+    let(:provider_id) { 'service_catalog' }
 
     let :integration_config do
       {
@@ -28,8 +28,8 @@ RSpec.describe 'Service Broker Instances' do
     end
 
     let! :resource do
-      create :service_broker,
-        name: 'service-broker-instance',
+      create :service_catalog,
+        name: 'service-catalog-instance',
         parent: parent,
         integration: integration,
         class_name: 'abcd-1234',
@@ -43,7 +43,7 @@ RSpec.describe 'Service Broker Instances' do
         }
     end
 
-    let(:agent_class) { ServiceBrokerAgent }
+    let(:agent_class) { ServiceCatalogAgent }
     let :agent_initializer_params do
       {
         kube_api_url: 'url-to-kube-api',
@@ -65,7 +65,7 @@ RSpec.describe 'Service Broker Instances' do
             namespace: parent.name,
             cluster_service_class_external_name: 's3',
             cluster_service_plan_external_name: 'production',
-            name: 'service-broker-instance',
+            name: 'service-catalog-instance',
             parameters: {
               'SomeParameter' => 'value'
             }
@@ -88,7 +88,7 @@ RSpec.describe 'Service Broker Instances' do
             namespace: parent.name,
             cluster_service_class_external_name: 's3',
             cluster_service_plan_external_name: 'production',
-            name: 'service-broker-instance',
+            name: 'service-catalog-instance',
             parameters: {
               'SomeParameter' => 'value'
             }
@@ -111,7 +111,7 @@ RSpec.describe 'Service Broker Instances' do
     let :agent_delete_method_call_success do
       lambda do |agent, _resource|
         expect(agent).to receive(:delete_resource)
-          .with(namespace: parent.name, name: 'service-broker-instance')
+          .with(namespace: parent.name, name: 'service-catalog-instance')
           .and_return(true)
       end
     end
@@ -119,7 +119,7 @@ RSpec.describe 'Service Broker Instances' do
     let :agent_delete_method_call_error do
       lambda do |agent, _resource|
         expect(agent).to receive(:delete_resource)
-          .with(namespace: parent.name, name: 'service-broker-instance')
+          .with(namespace: parent.name, name: 'service-catalog-instance')
           .and_raise('Something broked')
       end
     end

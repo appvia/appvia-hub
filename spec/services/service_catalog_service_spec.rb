@@ -1,15 +1,15 @@
 require 'rails_helper'
 
-RSpec.describe ServiceBrokerClassesService, type: :service do
+RSpec.describe ServiceCatalogService, type: :service do
   let :agent do
-    instance_double(ServiceBrokerAgent)
+    instance_double(ServiceCatalogAgent)
   end
 
   let :service_classes do
-    s3_class_json = load_json_fixture 'service_broker/class_s3.json'
-    s3_class_plans_json = load_json_fixture 'service_broker/class_s3_plans.json'
-    sqs_class_json = load_json_fixture 'service_broker/class_sqs.json'
-    sqs_class_plans_json = load_json_fixture 'service_broker/class_sqs_plans.json'
+    s3_class_json = load_json_fixture 'service_catalog/class_s3.json'
+    s3_class_plans_json = load_json_fixture 'service_catalog/class_s3_plans.json'
+    sqs_class_json = load_json_fixture 'service_catalog/class_sqs.json'
+    sqs_class_plans_json = load_json_fixture 'service_catalog/class_sqs_plans.json'
 
     s3_class = K8s::Resource.new s3_class_json
     s3_class.plans = s3_class_plans_json.map { |plan| K8s::Resource.new(plan) }
@@ -24,7 +24,7 @@ RSpec.describe ServiceBrokerClassesService, type: :service do
 
   before do
     allow(agent).to receive(:get_options).and_return(service_classes)
-    @service = ServiceBrokerClassesService.new agent
+    @service = ServiceCatalogService.new agent
   end
 
   it 'should have service classes available at the start' do
@@ -119,7 +119,7 @@ RSpec.describe ServiceBrokerClassesService, type: :service do
       expect(names[:class_display_name]).to eq 'Amazon S3'
       expect(names[:plan_name]).to eq s3_prod_plan_name
       expect(names[:plan_external_name]).to eq 'production'
-      expect(names[:plan_display_name]).to eq 'Production'
+      expect(names[:plan_display_name]).to eq 'Production - S3 Bucket pre-configured with production best practices'
     end
 
     it 'handles an invalid plan' do

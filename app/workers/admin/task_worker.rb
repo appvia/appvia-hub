@@ -73,17 +73,17 @@ module Admin
         }
 
         if results[:services][:aws_sb]
-          service_broker_integration = Integration.create!(
-            provider_id: 'service_broker',
+          service_catalog_integration = Integration.create!(
+            provider_id: 'service_catalog',
             parent_ids: [kube_integration.id],
-            name: "Service broker for #{kube_integration.name}",
+            name: "Service catalog for #{kube_integration.name}",
             config: {
               'api_url' => results[:cluster][:endpoint],
               'ca_cert' => results[:cluster][:ca],
               'token' => results[:cluster][:service_account_token]
             }
           )
-          intergrations['service_broker'] = service_broker_integration.id
+          intergrations['service_catalog'] = service_catalog_integration.id
         end
 
         task.update!(integrations: intergrations)

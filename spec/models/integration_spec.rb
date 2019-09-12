@@ -273,9 +273,9 @@ RSpec.describe Integration, type: :model do
 
       let(:parent_ids) { [parent_integration.id, second_parent_integration.id] }
 
-      context 'when provider is service_broker' do
+      context 'when provider is service_catalog' do
         before do
-          integration.provider_id = 'service_broker'
+          integration.provider_id = 'service_catalog'
         end
 
         it 'is not valid' do

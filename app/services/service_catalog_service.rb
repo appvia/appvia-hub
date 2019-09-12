@@ -1,4 +1,4 @@
-class ServiceBrokerClassesService
+class ServiceCatalogService
   attr_reader :service_classes
 
   def initialize(agent)
@@ -32,13 +32,13 @@ class ServiceBrokerClassesService
   end
 
   def generate_service_plans_select_options(class_name)
-    service_plans(class_name).collect { |p| ["#{p.spec.externalMetadata.displayName} - #{p.spec.description}", p.metadata.name] }
+    service_plans(class_name).collect { |p| [friendly_plan_name(p), p.metadata.name] }
   end
 
   private
 
   def load_service_classes
-    @service_classes = @agent.get_options
+    @service_classes = @agent.get_options.sort_by { |c| [c.spec.clusterServiceBrokerName, c.spec.externalMetadata.displayName] }
   end
 
   def service_class_names(class_name)
@@ -59,7 +59,15 @@ class ServiceBrokerClassesService
     {
       plan_name: selected_plan.metadata.name,
       plan_external_name: selected_plan.spec.externalName,
-      plan_display_name: selected_plan.spec.externalMetadata.displayName
+      plan_display_name: friendly_plan_name(selected_plan)
     }
+  end
+
+  def friendly_plan_name(plan)
+    if plan.spec.externalMetadata&.displayName.present? && plan.spec.description.present?
+      return "#{plan.spec.externalMetadata.displayName} - #{plan.spec.description}"
+    end
+
+    plan.spec.description.presence || plan.spec.externalName.presence
   end
 end

@@ -1,6 +1,6 @@
 require 'k8s-client'
 
-class ServiceBrokerAgent
+class ServiceCatalogAgent
   API_VERSION = 'servicecatalog.k8s.io/v1beta1'.freeze
 
   PROVISION_WAIT_ATTEMPTS = 20
@@ -140,7 +140,7 @@ class ServiceBrokerAgent
     @client.api(API_VERSION).resource('serviceinstances', namespace: namespace).delete(service_instance_name)
   rescue K8s::Error::NotFound
     Rails.logger.warn [
-      '[ServiceBroker Agent]',
+      '[ServiceCatalog Agent]',
       'cannot delete serviceinstance:',
       service_instance_name,
       'because it does not exist'
@@ -152,7 +152,7 @@ class ServiceBrokerAgent
     @client.api(API_VERSION).resource('servicebindings', namespace: namespace).delete(service_binding_name)
   rescue K8s::Error::NotFound
     Rails.logger.warn [
-      '[ServiceBroker Agent]',
+      '[ServiceCatalog Agent]',
       'cannot delete servicebinding:',
       service_binding_name,
       'because it does not exist'

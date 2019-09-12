@@ -53,10 +53,10 @@ module ResourceTypesService
           depends_on: %w[kubernetes].freeze
         },
         {
-          id: 'ServiceBrokerInstance',
-          class: 'Resources::ServiceBrokerInstance',
-          name: 'Service Broker Instance',
-          providers: %w[service_broker].freeze,
+          id: 'ServiceCatalogInstance',
+          class: 'Resources::ServiceCatalogInstance',
+          name: 'Service Catalog',
+          providers: %w[service_catalog].freeze,
           top_level: false,
           depends_on: %w[kubernetes].freeze
         }
