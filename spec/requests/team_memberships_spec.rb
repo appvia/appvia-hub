@@ -25,10 +25,10 @@ RSpec.describe 'Team Memberships', type: :request do
         end
       end
 
-      def expect_team_membership_create_or_update(team, user, role: nil, expect_new: true)
+      def expect_team_membership_create_or_update(team, user, role:, expect_new: true)
         move_time_to 1.minute.from_now
 
-        put team_membership_path(team, user, role: role)
+        put team_membership_path(team, user), params: { role: role }
         expect(response).to redirect_to(team_path(team, anchor: 'people'))
         team_membership = team.memberships.where(user_id: user.id).first
         expect(team_membership).not_to be nil
@@ -54,9 +54,14 @@ RSpec.describe 'Team Memberships', type: :request do
             expect(@team.memberships.exists?(user_id: @user.id)).to be false
             expect_team_membership_create_or_update @team, @user, role: 'admin'
           end
+
+          it 'also works when role is `nil`' do
+            expect(@team.memberships.exists?(user_id: @user.id)).to be false
+            expect_team_membership_create_or_update @team, @user, role: nil
+          end
         end
 
-        context 'when membership exists and a role change is made' do
+        context 'when membership exists and role is changed to admin' do
           before do
             create :team_membership, team: @team, user: @user
           end
@@ -64,6 +69,17 @@ RSpec.describe 'Team Memberships', type: :request do
           it 'updates the role of the existing team membership' do
             expect(@team.memberships.exists?(user_id: @user.id)).to be true
             expect_team_membership_create_or_update @team, @user, role: 'admin', expect_new: false
+          end
+        end
+
+        context 'when admin membership exists and admin role is removed' do
+          before do
+            create :team_membership, :admin, team: @team, user: @user
+          end
+
+          it 'updates the role of the existing team membership' do
+            expect(@team.memberships.exists?(user_id: @user.id)).to be true
+            expect_team_membership_create_or_update @team, @user, role: nil, expect_new: false
           end
         end
       end

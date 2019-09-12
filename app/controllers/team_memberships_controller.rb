@@ -5,10 +5,16 @@ class TeamMembershipsController < ApplicationController
   def update
     authorize! :edit, @team
 
+    user_id = params.require(:id)
+
+    raise ActionController::ParameterMissing, :role unless params.key?(:role)
+
+    role = params[:role].presence
+
     @team_membership = TeamMembershipsService.create_or_update!(
       team: @team,
-      user_id: params.require(:id),
-      role: params[:role]
+      user_id: user_id,
+      role: role
     )
 
     flash[:notice] = 'Team member successfully added or updated'

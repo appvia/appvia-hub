@@ -14,7 +14,7 @@ module TeamMembershipsService
         user_id
       ).first_or_initialize
 
-      team_membership.role = role if role.present?
+      team_membership.role = role
 
       is_a_new_record = team_membership.new_record?
 
