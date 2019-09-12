@@ -26,7 +26,11 @@ gem 'faraday', '~> 0.15.4'
 gem 'faraday_middleware', '~> 0.13.1'
 gem 'typhoeus', '~> 1.3', '>= 1.3.1'
 gem 'wait', '~> 0.5.3'
-gem 'hub-clusters-creator', github: 'appvia/hub-clusters-creator', tag: 'v0.0.8'
+gem 'hub-clusters-creator', github: 'appvia/hub-clusters-creator', tag: 'v0.0.9'
+gem 'k8s-client', '~> 0.10'
+gem 'pg_search', '~> 2.3'
+gem 'active_model_serializers', '~> 0.10.10'
+gem 'cancancan', '~> 3.0', '>= 3.0.1'
 
 group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
@@ -34,7 +38,6 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.8', '>= 3.8.2'
   gem 'factory_bot_rails', '~> 5.0.1'
   gem 'rails-controller-testing', '~> 1.0', '>= 1.0.4'
-  gem 'shoulda-matchers', '~> 4.0.1'
   gem 'pry-rails', '~> 0.3.9'
   gem 'pry-byebug', '~> 3.7'
 end
@@ -54,6 +57,8 @@ end
 group :test do
   gem 'rspec_junit_formatter', '~> 0.4.1'
   gem 'timecop', '~> 0.9.1'
+  gem 'shoulda-matchers', '~> 4.1', '>= 4.1.2'
+  gem 'with_model', '~> 2.1', '>= 2.1.2'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

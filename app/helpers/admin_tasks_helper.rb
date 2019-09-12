@@ -15,12 +15,14 @@ module AdminTasksHelper
       ] + Array(css_class)
   end
 
+  # rubocop:disable Metrics/MethodLength
   def admin_task_integrations(task)
     return [] if task.integrations.blank?
 
     kube_integration = Integration.find_by id: task.integrations['kubernetes']
     grafana_integration = Integration.find_by id: task.integrations['grafana']
     loki_integration = Integration.find_by id: task.integrations['loki']
+    service_catalog_integration = Integration.find_by id: task.integrations['service_catalog']
 
     [
       {
@@ -40,9 +42,16 @@ module AdminTasksHelper
         integration: loki_integration,
         name: loki_integration&.name,
         path: loki_integration.present? ? admin_integrations_path_with_selected(loki_integration) : nil
+      },
+      {
+        type: 'Service Catalog',
+        integration: service_catalog_integration,
+        name: service_catalog_integration&.name,
+        path: service_catalog_integration.present? ? admin_integrations_path_with_selected(service_catalog_integration) : nil
       }
     ]
   end
+  # rubocop:enable Metrics/MethodLength
 
   def admin_task_config_data_panels(task)
     init_secret_fields = task

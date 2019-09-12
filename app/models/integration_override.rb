@@ -14,6 +14,8 @@ class IntegrationOverride < ApplicationRecord
   validates :integration_id,
     uniqueness: { scope: :project_id }
 
+  validate :check_integration_is_allowed
+
   attr_readonly :project_id, :integration_id
 
   def config_schema
@@ -32,5 +34,20 @@ class IntegrationOverride < ApplicationRecord
 
   def descriptor
     "For space: #{project.friendly_id} - integration: #{integration.name}"
+  end
+
+  private
+
+  def check_integration_is_allowed
+    return if project.blank? || integration.blank?
+
+    allowed_integrations = TeamIntegrationsService.get project.team
+
+    return if allowed_integrations.include?(integration)
+
+    errors.add(
+      :integration,
+      'cannot use the integration specified as it\'s not allowed for the project'
+    )
   end
 end

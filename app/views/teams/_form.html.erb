@@ -1,0 +1,20 @@
+<%= bootstrap_form_with(model: team, local: true) do |form| %>
+  <%= form.alert_message "Please fix the issues below:" %>
+
+  <%= form.text_field :name %>
+
+  <% if team.new_record? %>
+    <%=
+      form.text_field :slug,
+        help: Team::SLUG_FORMAT_TEXT.capitalize,
+        pattern: "^#{Team::SLUG_FORMAT_REGEX}$"
+    %>
+  <% else %>
+    <%= form.static_control :slug %>
+  <% end %>
+
+  <%= form.text_area :description %>
+
+  <% submit_label = team.new_record? ? 'Create team' : 'Update team' %>
+  <%= form.primary submit_label %>
+<% end %>

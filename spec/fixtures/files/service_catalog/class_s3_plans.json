@@ -1,0 +1,263 @@
+[
+  {
+    "apiVersion": "servicecatalog.k8s.io/v1beta1",
+    "kind": "ClusterServicePlan",
+    "metadata": {
+      "creationTimestamp": "2019-08-30T08:45:02Z",
+      "name": "151c5162-66c5-530c-b1d6-707ef85b5d68",
+      "ownerReferences": [
+        {
+          "apiVersion": "servicecatalog.k8s.io/v1beta1",
+          "blockOwnerDeletion": false,
+          "controller": true,
+          "kind": "ClusterServiceBroker",
+          "name": "aws-sb",
+          "uid": "3daf1889-cb02-11e9-819a-76d9ac1d491b"
+        }
+      ],
+      "resourceVersion": "2331",
+      "selfLink": "/apis/servicecatalog.k8s.io/v1beta1/clusterserviceplans/151c5162-66c5-530c-b1d6-707ef85b5d68",
+      "uid": "752a1194-cb02-11e9-819a-76d9ac1d491b"
+    },
+    "spec": {
+      "bindable": true,
+      "clusterServiceBrokerName": "aws-sb",
+      "clusterServiceClassRef": {
+        "name": "20e8cd7b-44bf-5590-bc43-48a68d8a8f14"
+      },
+      "description": "S3 Bucket pre-configured with production best practices",
+      "externalID": "151c5162-66c5-530c-b1d6-707ef85b5d68",
+      "externalMetadata": {
+        "cost": "https://aws.amazon.com/s3/pricing/",
+        "displayName": "Production",
+        "longDescription": "Amazon Simple Storage Service (Amazon S3) is storage for the Internet. You can use Amazon S3 to store and retrieve any amount of data at any time, from anywhere on the web. You can accomplish these tasks using the simple and intuitive web interface of the AWS Management Console."
+      },
+      "externalName": "production",
+      "free": false,
+      "instanceCreateParameterSchema": {
+        "$schema": "http://json-schema.org/draft-06/schema#",
+        "openshift_form_definition": [
+          {
+            "Items": [
+              "target_account_id",
+              "target_role_name",
+              "region",
+              "user_tags",
+              "admin_tags"
+            ],
+            "Title": "AWS Account Information",
+            "Type": "fieldset"
+          }
+        ],
+        "prescribed": {
+          "BucketAccessControl": "Private",
+          "BucketName": "Auto",
+          "EnableGlacierLifeCycle": "False",
+          "EnableLogging": "True",
+          "EnableVersioning": "True",
+          "GlacierLifeCycleTransitionInDays": "30",
+          "LifeCyclePrefix": "Archive",
+          "LoggingPrefix": "S3AccessLogs",
+          "PreventDeletion": "True"
+        },
+        "properties": {
+          "admin_tags": {
+            "default": "[]",
+            "description": "AWS Resource tags to apply to resources (json formatted [{\"Key\": \"MyTagKey\", \"Value\": \"MyTagValue\"}, ...]",
+            "title": "Additional AWS Tags",
+            "type": "string"
+          },
+          "target_role_name": {
+            "default": "",
+            "description": "AWS IAM Role name to use for provisioning",
+            "title": "AWS Target Role Name",
+            "type": "string"
+          },
+          "user_tags": {
+            "default": "[]",
+            "description": "AWS Resource tags to apply to resources (json formatted [{\"Key\": \"MyTagKey\", \"Value\": \"MyTagValue\"}, ...]",
+            "title": "AWS Tags",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    "status": {
+      "removedFromBrokerCatalog": false
+    }
+  },
+  {
+    "apiVersion": "servicecatalog.k8s.io/v1beta1",
+    "kind": "ClusterServicePlan",
+    "metadata": {
+      "creationTimestamp": "2019-08-30T08:45:02Z",
+      "name": "5a24854e-c57d-5785-80fc-c2c4e32bedb3",
+      "ownerReferences": [
+        {
+          "apiVersion": "servicecatalog.k8s.io/v1beta1",
+          "blockOwnerDeletion": false,
+          "controller": true,
+          "kind": "ClusterServiceBroker",
+          "name": "aws-sb",
+          "uid": "3daf1889-cb02-11e9-819a-76d9ac1d491b"
+        }
+      ],
+      "resourceVersion": "2332",
+      "selfLink": "/apis/servicecatalog.k8s.io/v1beta1/clusterserviceplans/5a24854e-c57d-5785-80fc-c2c4e32bedb3",
+      "uid": "7548926d-cb02-11e9-819a-76d9ac1d491b"
+    },
+    "spec": {
+      "bindable": true,
+      "clusterServiceBrokerName": "aws-sb",
+      "clusterServiceClassRef": {
+        "name": "20e8cd7b-44bf-5590-bc43-48a68d8a8f14"
+      },
+      "description": "S3 Bucket pre-configured with custom configuration",
+      "externalID": "5a24854e-c57d-5785-80fc-c2c4e32bedb3",
+      "externalMetadata": {
+        "cost": "https://aws.amazon.com/s3/pricing/",
+        "displayName": "Custom",
+        "longDescription": "Amazon Simple Storage Service (Amazon S3) is storage for the Internet. You can use Amazon S3 to store and retrieve any amount of data at any time, from anywhere on the web. You can accomplish these tasks using the simple and intuitive web interface of the AWS Management Console."
+      },
+      "externalName": "custom",
+      "free": false,
+      "instanceCreateParameterSchema": {
+        "$schema": "http://json-schema.org/draft-06/schema#",
+        "openshift_form_definition": [
+          {
+            "Items": [
+              "target_account_id",
+              "target_role_name",
+              "region",
+              "user_tags",
+              "admin_tags"
+            ],
+            "Title": "AWS Account Information",
+            "Type": "fieldset"
+          },
+          {
+            "Items": [
+              "LoggingPrefix",
+              "EnableLogging",
+              "EnableGlacierLifeCycle",
+              "BucketAccessControl",
+              "BucketName",
+              "EnableVersioning",
+              "LifeCyclePrefix",
+              "GlacierLifeCycleTransitionInDays",
+              "PreventDeletion"
+            ],
+            "Title": "S3 Bucket Settings",
+            "Type": "fieldset"
+          }
+        ],
+        "prescribed": {},
+        "properties": {
+          "BucketAccessControl": {
+            "default": "Private",
+            "description": "define if the bucket can be accessed from public or private locations",
+            "enum": [
+              "Private",
+              "PublicRead",
+              "PublicReadWrite",
+              "AuthenticatedRead",
+              "LogDeliveryWrite",
+              "BucketOwnerRead",
+              "BucketOwnerFullControl",
+              "AwsExecRead"
+            ],
+            "title": "Bucket Access Control",
+            "type": "string"
+          },
+          "BucketName": {
+            "default": "Auto",
+            "description": "Must contain only lowercase letters, numbers, periods (.), and hyphens. If set to Auto, a bucket name will be generated (-),Cannot end in numbers",
+            "title": "BucketName",
+            "type": "string"
+          },
+          "EnableGlacierLifeCycle": {
+            "default": "False",
+            "description": "enable archiving to Glacier Storage",
+            "enum": [
+              "True",
+              "False"
+            ],
+            "title": "Enable Glacier LifeCycle",
+            "type": "string"
+          },
+          "EnableLogging": {
+            "default": "True",
+            "description": "enable or discable S3 logging",
+            "enum": [
+              "True",
+              "False"
+            ],
+            "title": "Enable Logging",
+            "type": "string"
+          },
+          "EnableVersioning": {
+            "default": "False",
+            "description": "enable versioning",
+            "enum": [
+              "True",
+              "False"
+            ],
+            "title": "Enable Versioning",
+            "type": "string"
+          },
+          "GlacierLifeCycleTransitionInDays": {
+            "default": "0",
+            "description": "Define how many days objects should exist before being moved to Glacier",
+            "title": "Glacier LifeCycle Transition In Days",
+            "type": "string"
+          },
+          "LifeCyclePrefix": {
+            "default": "Archive",
+            "description": "Must contain only lowercase letters, numbers, periods (.), and hyphens (-),Cannot end in numbers",
+            "title": "LifeCycle Prefix",
+            "type": "string"
+          },
+          "LoggingPrefix": {
+            "default": "Archive",
+            "description": "Must contain only lowercase letters, numbers, periods (.), and hyphens (-),Cannot end in numbers",
+            "title": "Logging Prefix",
+            "type": "string"
+          },
+          "PreventDeletion": {
+            "default": "True",
+            "description": "With the PreventDeletion attribute you can preserve a resource when its stack is deleted",
+            "enum": [
+              "True",
+              "False"
+            ],
+            "title": "Prevent Deletion",
+            "type": "string"
+          },
+          "admin_tags": {
+            "default": "[]",
+            "description": "AWS Resource tags to apply to resources (json formatted [{\"Key\": \"MyTagKey\", \"Value\": \"MyTagValue\"}, ...]",
+            "title": "Additional AWS Tags",
+            "type": "string"
+          },
+          "target_role_name": {
+            "default": "",
+            "description": "AWS IAM Role name to use for provisioning",
+            "title": "AWS Target Role Name",
+            "type": "string"
+          },
+          "user_tags": {
+            "default": "[]",
+            "description": "AWS Resource tags to apply to resources (json formatted [{\"Key\": \"MyTagKey\", \"Value\": \"MyTagValue\"}, ...]",
+            "title": "AWS Tags",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    "status": {
+      "removedFromBrokerCatalog": false
+    }
+  }
+]

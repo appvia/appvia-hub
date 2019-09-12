@@ -1,9 +1,19 @@
 class UsersController < ApplicationController
-  before_action :require_admin, only: [:update_role]
+  authorize_resource
 
   # GET /users
   def index
     @users = User.order(:email)
+  end
+
+  # GET /users/search
+  def search
+    query = params.require(:q)
+    users = User.search query
+
+    respond_to do |format|
+      format.any { render json: users, content_type: 'application/json' }
+    end
   end
 
   # PUT/PATCH /users/:user_id/role

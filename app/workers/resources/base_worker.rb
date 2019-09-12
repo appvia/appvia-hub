@@ -16,7 +16,7 @@ module Resources
             logger.error [
               "Failed to process request for resource #{resource.id}",
               "(type: #{resource.type}, provider: #{resource.integration.provider_id})",
-              "- error: #{e.inspect}"
+              "- error: #{e.message} - #{e.backtrace.first}"
             ].join(' ')
 
             resource.failed!

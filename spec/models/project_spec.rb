@@ -14,4 +14,9 @@ RSpec.describe Project, type: :model do
       uniqueness: true,
       readonly: true
   end
+
+  describe '#team' do
+    it { is_expected.to belong_to(:team) }
+    it { is_expected.to have_readonly_attribute(:team_id) }
+  end
 end

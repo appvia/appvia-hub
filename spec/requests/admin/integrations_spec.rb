@@ -61,6 +61,8 @@ RSpec.describe 'Admin - Integrations', type: :request do
             expect(response).to render_template(:new)
             expect(assigns(:integration)).to be_a Integration
             expect(assigns(:integration)).to be_new_record
+            expect(assigns(:potential_parents)).not_to be nil
+            expect(assigns(:potential_teams)).not_to be nil
           end
         end
       end
@@ -91,6 +93,8 @@ RSpec.describe 'Admin - Integrations', type: :request do
           expect(response).to be_successful
           expect(response).to render_template(:edit)
           expect(assigns(:integration)).to eq @integration
+          expect(assigns(:potential_parents)).not_to be nil
+          expect(assigns(:potential_teams)).not_to be nil
         end
       end
     end
@@ -141,6 +145,9 @@ RSpec.describe 'Admin - Integrations', type: :request do
               expect(integration.config).to eq params[:config].stringify_keys
               expect(integration.created_at.to_i).to eq now.to_i
             end.to change { Integration.count }.by(1)
+
+            expect(assigns(:potential_parents)).to be nil
+            expect(assigns(:potential_teams)).to be nil
           end
 
           it 'logs an Audit' do
@@ -163,6 +170,9 @@ RSpec.describe 'Admin - Integrations', type: :request do
             expect(integration).not_to be_persisted
             expect(integration.errors).to_not be_empty
             expect(integration.errors[:name]).to be_present
+
+            expect(assigns(:potential_parents)).not_to be nil
+            expect(assigns(:potential_teams)).not_to be nil
           end
         end
       end
@@ -210,6 +220,9 @@ RSpec.describe 'Admin - Integrations', type: :request do
               expect(integration.config).to eq @integration.config
               expect(integration.updated_at.to_i).to eq now.to_i
             end.to change { Integration.count }.by(0)
+
+            expect(assigns(:potential_parents)).to be nil
+            expect(assigns(:potential_teams)).to be nil
           end
 
           it 'logs an Audit' do
@@ -231,6 +244,9 @@ RSpec.describe 'Admin - Integrations', type: :request do
             integration = assigns(:integration)
             expect(integration.errors).to_not be_empty
             expect(integration.errors[:name]).to be_present
+
+            expect(assigns(:potential_parents)).not_to be nil
+            expect(assigns(:potential_teams)).not_to be nil
           end
         end
 
@@ -240,49 +256,6 @@ RSpec.describe 'Admin - Integrations', type: :request do
 
           put admin_integration_path(@integration), params: { integration: { provider_id: new_provider_id } }
           expect(Integration.find(@integration.id).provider_id).to eq @integration.provider_id
-        end
-      end
-    end
-  end
-
-  describe 'destroy - DELETE /admin/integrations/:id' do
-    before do
-      @integration = create_mocked_integration
-    end
-
-    it_behaves_like 'unauthenticated not allowed' do
-      before do
-        delete admin_integration_path(@integration)
-      end
-    end
-
-    it_behaves_like 'authenticated' do
-      it_behaves_like 'not a hub admin so not allowed' do
-        before do
-          delete admin_integration_path(@integration)
-        end
-      end
-
-      it_behaves_like 'a hub admin' do
-        it 'deletes the existing Integration and redirects to the integrations index page' do
-          expect do
-            delete admin_integration_path(@integration)
-            expect(Integration.exists?(@integration.id)).to be false
-            expect(response).to redirect_to(admin_integrations_url)
-          end.to change { Integration.count }.by(-1)
-        end
-
-        it 'logs an Audit' do
-          move_time_to 1.minute.from_now
-          delete admin_integration_path(@integration)
-          audit = Audit
-            .auditable_finder(@integration.id, Integration.name)
-            .order(:created_at)
-            .last
-          expect(audit).not_to be nil
-          expect(audit.action).to eq 'destroy'
-          expect(audit.user_email).to eq auth_email
-          expect(audit.created_at.to_i).to eq now.to_i
         end
       end
     end

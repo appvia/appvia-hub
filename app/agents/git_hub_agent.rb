@@ -8,7 +8,7 @@ class GitHubAgent
     setup_client
   end
 
-  def create_repository(name, team_id:, team_permission: 'admin', private: false, auto_init: false)
+  def create_repository(name, team_name:, team_permission: 'admin', private: false, auto_init: false)
     client = app_installation_client
 
     resource = find_or_create_repo(
@@ -18,7 +18,15 @@ class GitHubAgent
       auto_init: auto_init
     )
 
-    client.add_team_repository team_id, resource.full_name, permission: team_permission
+    team = find_team client, team_name
+
+    if team.present?
+      client.add_team_repository(
+        team.id,
+        resource.full_name,
+        permission: team_permission
+      )
+    end
 
     resource
   end
@@ -77,16 +85,51 @@ class GitHubAgent
     client.delete_repository(repo)
   end
 
-  def add_user_to_team(team_id, username)
-    app_installation_client.add_team_membership(
-      team_id,
+  def create_team(name, description, privacy: 'closed')
+    client = app_installation_client
+
+    team = find_team client, name
+
+    return team if team.present?
+
+    client.create_team @org,
+      name: name,
+      description: description,
+      privacy: privacy
+  end
+
+  def delete_team(name)
+    client = app_installation_client
+
+    team = find_team client, name
+
+    return false if team.nil?
+
+    client.delete_team team.id
+  end
+
+  def add_user_to_team(team_name, username)
+    client = app_installation_client
+
+    team = find_team client, team_name
+
+    return false if team.nil?
+
+    client.add_team_membership(
+      team.id,
       username
     )
   end
 
-  def remove_user_from_team(team_id, username)
-    app_installation_client.remove_team_member(
-      team_id,
+  def remove_user_from_team(team_name, username)
+    client = app_installation_client
+
+    team = find_team client, team_name
+
+    return false if team.nil?
+
+    client.remove_team_member(
+      team.id,
       username
     )
   end
@@ -118,5 +161,11 @@ class GitHubAgent
       organization: @org,
       private: private,
       auto_init: auto_init
+  end
+
+  def find_team(client, name)
+    # NOTE: only checks the first 100 teams for now
+    teams = client.org_teams @org, per_page: 100
+    teams.find { |t| t.name == name }
   end
 end

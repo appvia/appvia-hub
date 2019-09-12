@@ -4,17 +4,34 @@
       <%= nav_item 'Home', root_path %>
     </div>
 
+    <% if current_user.teams.count > 0 %>
+      <hr />
+
+      <ul class="nav flex-column">
+        <% current_user.teams.each do |team| %>
+          <%= nav_list_item team.name, team_path(team), icon: team_icon %>
+          <ul class="nav flex-column indented">
+            <% team.projects.each do |project| %>
+              <%= nav_list_item project.name, project_path(project), icon: project_icon %>
+            <% end %>
+          </ul>
+        <% end %>
+      </ul>
+    <% end %>
+
     <hr />
 
     <div class="sidebar-item">
-      <%= link_to 'New', new_project_path, class: 'btn btn-sm btn-primary float-right mr-3' %>
-      <%= nav_item 'Spaces', projects_path %>
+      <%= link_to 'New', new_team_path, class: 'btn btn-sm btn-primary float-right mr-3' %>
+      <%= nav_item 'All Teams', teams_path %>
     </div>
-    <ul class="nav flex-column mb-3">
-      <% Project.order(:name).each do |project| %>
-        <%= nav_list_item project.name, project_path(project), icon_name: 'cube' %>
+
+    <div class="sidebar-item">
+      <% if current_user.teams.count > 0 %>
+        <%= link_to 'New', new_project_path, class: 'btn btn-sm btn-primary float-right mr-3' %>
       <% end %>
-    </ul>
+      <%= nav_item 'All Spaces', projects_path %>
+    </div>
 
     <hr />
 

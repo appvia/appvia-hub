@@ -1,5 +1,9 @@
 module Admin
   class TasksController < ApplicationController
+    before_action :find_admin_task, only: [:destroy]
+
+    authorize_resource class: 'Admin::Task', instance_name: 'admin_task'
+
     # GET /admin/tasks/new
     def new
       type = params.require(:type)
@@ -35,8 +39,6 @@ module Admin
 
     # DELETE /admin/tasks/:id
     def destroy
-      @admin_task = Admin::Task.find params[:id]
-
       if @admin_task.deleteable?
         @admin_task.destroy
         redirect_to admin_create_path, notice: 'Task successfully deleted.'
@@ -46,6 +48,10 @@ module Admin
     end
 
     private
+
+    def find_admin_task
+      @admin_task = Admin::Task.find params[:id]
+    end
 
     def admin_task_params
       params.require(:admin_task).permit(:type)

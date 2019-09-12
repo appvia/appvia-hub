@@ -97,10 +97,11 @@ There are different background workers for different types of jobs:
 - One for **resource provisioning** specifically:
   - **IMPORTANT:** MUST run with a concurrency of 1 (`-c 1`) to ensure proper FIFO processing.
   - `bundle exec sidekiq -q resources -c 1`
+- One for **teams** processing specifically:
+  - **IMPORTANT:** MUST run with a concurrency of 1 (`-c 1`) to ensure proper FIFO processing.
+  - `bundle exec sidekiq -q teams -c 1`
 - One for **admin tasks** specifically:
   - `bundle exec sidekiq -q admin_tasks -c 2`
-- And one for everything else:
-  - `bundle exec sidekiq -q default -c 5`
 
 ### Dev tips
 

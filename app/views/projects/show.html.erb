@@ -1,16 +1,31 @@
-<div class="btn-group float-right" role="group" aria-label="Space actions">
-  <button id="projectActionsGroupDropdown" type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Actions
-  </button>
-  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="projectActionsGroupDropdown">
-    <%= link_to 'Edit', edit_project_path(@project), class: 'dropdown-item' %>
-    <%= delete_project_link @project, css_class: 'dropdown-item' %>
-    <div class="dropdown-divider"></div>
-    <%= link_to 'Override integrations', project_integration_overrides_path(@project), class: 'dropdown-item' %>
+<nav aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <%= link_to team_path(@project.team) do %>
+        <%= icon 'angle-left' %>
+        <%= team_icon %>
+        <%= @project.team.name %>
+      <% end %>
+    </li>
+  </ol>
+</nav>
+
+<% if can? :edit, @project %>
+  <div class="btn-group float-right" role="group" aria-label="Space actions">
+    <button id="projectActionsGroupDropdown" type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Actions
+    </button>
+    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="projectActionsGroupDropdown">
+      <%= link_to 'Edit', edit_project_path(@project), class: 'dropdown-item' %>
+      <%= delete_project_link @project, css_class: 'dropdown-item' %>
+      <div class="dropdown-divider"></div>
+      <%= link_to 'Override integrations', project_integration_overrides_path(@project), class: 'dropdown-item' %>
+    </div>
   </div>
-</div>
+<% end %>
 
 <h1>
+  <%= project_icon %>
   <%= @project.name %>
 </h1>
 
@@ -31,10 +46,15 @@
 
 <ul class="nav nav-tabs" role="tablist">
   <li class="nav-item">
-    <a class="nav-link active" id="resources-tab" data-toggle="tab" href="#resources" role="tab" aria-controls="resources" aria-selected="true">Resources</a>
+    <a class="nav-link active" id="resources-tab" data-toggle="tab" href="#resources" role="tab" aria-controls="resources" aria-selected="true">
+      Resources
+      <%= count_badge @project.resources.count %>
+    </a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" id="activity-tab" data-toggle="tab" href="#activity" role="tab" aria-controls="activity" aria-selected="false">Activity</a>
+    <a class="nav-link" id="activity-tab" data-toggle="tab" href="#activity" role="tab" aria-controls="activity" aria-selected="false">
+      Activity
+    </a>
   </li>
 </ul>
 
@@ -70,6 +90,7 @@
 
     <%= render partial: 'resources', locals: { project: @project, grouped_resources: @grouped_resources } %>
   </div>
+
   <div class="tab-pane" id="activity" role="tabpanel" aria-labelledby="activity-tab">
     <%= render partial: 'activity/stream', locals: { activity: @activity } %>
   </div>

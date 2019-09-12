@@ -69,4 +69,8 @@ module ApplicationHelper
     )
     # rubocop:enable Rails/OutputSafety
   end
+
+  def count_badge(value)
+    tag.span value, class: 'badge badge-secondary ml-1'
+  end
 end

@@ -1,0 +1,62 @@
+<%- case a.action -%>
+<%- when 'request_create' -%>
+  <%= activity_entry resource_icon(a.auditable_model_name), a.created_at do %>
+    <% if a.user_email %>
+      <%= a.user_email %> requested a new resource
+    <% else %>
+      A new resource has been requested
+    <% end %>
+    <span class="font-weight-bold">
+      <%= a.auditable_descriptor %>
+    </span>
+    <% status = 'pending' %>
+    <%= resource_status_badge status %>
+    for space
+    <%= link_to a.associated_descriptor, project_path(a.associated_id), class: 'text-monospace' %>
+  <% end %>
+<%- when 'update' -%>
+  <% status_changes = Array(a.audited_changes['status']).flatten %>
+  <% if status_changes.uniq.size == 2 && status_changes.last != Resource.statuses[:deleting] %>
+    <%= activity_entry resource_icon(a.auditable_model_name), a.created_at do %>
+      Resource
+      <span class="font-weight-bold">
+        <%= a.auditable_descriptor %>
+      </span>
+      is now
+      <% status = a.audited_changes['status'].last %>
+      <%= resource_status_badge status %>
+      for space
+      <%= link_to a.associated_descriptor, project_path(a.associated_id), class: 'text-monospace' %>
+    <% end %>
+  <% end %>
+<%- when 'request_delete' -%>
+  <%= activity_entry resource_icon(a.auditable_model_name), a.created_at do %>
+    <% if a.user_email %>
+      <%= a.user_email %> requested deletion of resource
+    <% else %>
+      A resource has been requested to be deleted
+    <% end %>
+    <%= a.user_email %>
+    <span class="font-weight-bold">
+      <%= a.auditable_descriptor %>
+    </span>
+    <% status = 'deleting' %>
+    <%= resource_status_badge status %>
+    for space
+    <%= link_to a.associated_descriptor, project_path(a.associated_id), class: 'text-monospace' %>
+  <% end %>
+<%- when 'destroy' -%>
+  <%= activity_entry resource_icon(a.auditable_model_name), a.created_at do %>
+    <% if a.user_email %>
+      <%= a.user_email %> deleted resource
+    <% else %>
+      A resource was deleted
+    <% end %>
+    <%= a.user_email %>
+    <span class="font-weight-bold">
+      <%= a.auditable_descriptor %>
+    </span>
+    for space
+    <%= link_to a.associated_descriptor, project_path(a.associated_id), class: 'text-monospace' %>
+  <% end %>
+<%- end -%>

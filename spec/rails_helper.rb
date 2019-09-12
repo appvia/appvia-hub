@@ -29,6 +29,8 @@ rescue ActiveRecord::PendingMigrationError => e
   exit 1
 end
 RSpec.configure do |config|
+  config.extend WithModel
+
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
   config.use_transactional_fixtures = true
@@ -39,9 +41,12 @@ RSpec.configure do |config|
 
   config.include FactoryBot::Syntax::Methods
 
+  config.include JsonResponseHelper, type: :request
   config.include_context 'authentication helpers', type: :request
 
   config.include_context 'mocked integration helper'
+
+  config.include_context 'fixture helpers'
 
   config.before(:each) do
     Sidekiq::Worker.clear_all

@@ -1,5 +1,11 @@
 module ProjectsHelper
+  def project_icon
+    icon 'cube'
+  end
+
   def delete_project_link(project, css_class: nil)
+    return unless can?(:destroy, project)
+
     if project.resources.count.positive?
       tag.span class: css_class do
         safe_join(

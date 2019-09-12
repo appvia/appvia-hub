@@ -15,18 +15,43 @@
   <%= form.text_field :name, layout: :default, input_group_class: 'input-group-lg' %>
 
   <% if @potential_parents.present? %>
-    <%=
-      form.select :parent_ids,
-        @potential_parents.transform_values { |l| l.map { |i| [i.name, i.id] }},
-        {
-          label: 'Link with parent(s)',
-          layout: :default
-        },
-        {
-          class: 'selectpicker',
-          multiple: true
-        }
-    %>
+    <div class="card p-3 mb-3">
+      <%=
+        form.select :parent_ids,
+          @potential_parents.transform_values { |l| l.map { |i| [i.name, i.id] }},
+          {
+            label: 'Link with parent(s)',
+            layout: :default,
+            wrapper: { class: 'mb-0' }
+          },
+          {
+            class: 'selectpicker',
+            multiple: true
+          }
+      %>
+    </div>
+  <% end %>
+
+  <% if @potential_teams.present? %>
+    <div class="card p-3 mb-3">
+      <%=
+        form.select :team_ids,
+          @potential_teams.map { |t| [t.name, t.id] },
+          {
+            label: 'Allocate to team(s)',
+            layout: :default,
+            wrapper: { class: 'mb-0' },
+            help: 'If nothing selected then this integration will be available to ALL teams'
+          },
+          {
+            class: 'selectpicker',
+            multiple: true,
+            data: {
+              'actions-box': true
+            }
+          }
+      %>
+    </div>
   <% end %>
 
   <div class="card mb-3">

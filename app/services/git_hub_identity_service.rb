@@ -1,4 +1,13 @@
 class GitHubIdentityService
+  class InvalidCallbackState < StandardError
+  end
+
+  class NoAccessToken < StandardError
+  end
+
+  class MismatchWithExistingUser < StandardError
+  end
+
   def initialize(encryption_service:, client_id:, client_secret:)
     @encryption_service = encryption_service
     @client_id = client_id
@@ -25,41 +34,48 @@ class GitHubIdentityService
 
     raise NoAccessToken if access_token.blank?
 
-    github_client = Octokit::Client.new
-    github_client.access_token = access_token
-    github_user = github_client.user
+    git_hub_client = Octokit::Client.new
+    git_hub_client.access_token = access_token
+    git_hub_user = git_hub_client.user
 
-    identity = integration.user_identities.find_by(external_id: github_user.id)
+    identity = process(
+      integration,
+      user,
+      git_hub_user,
+      access_token
+    )
+
+    identity
+  end
+
+  private
+
+  def process(integration, user, git_hub_user, access_token)
+    identity = integration.user_identities.find_by(external_id: git_hub_user.id)
+
     if identity.blank?
-      identity = integration.user_identities.create!(
+      identity = IdentitiesService.create!(
+        integration.user_identities,
         user: user,
-        external_id: github_user.id,
-        external_username: github_user.login,
-        external_name: github_user.name,
-        external_email: github_user.email,
+        external_id: git_hub_user.id,
+        external_username: git_hub_user.login,
+        external_name: git_hub_user.name,
+        external_email: git_hub_user.email,
         access_token: access_token
       )
     elsif identity.user_id != user.id
       raise MismatchWithExistingUser
     else
       # Update the existing identity with latest from the GitHub user profile
-      identity.update!(
-        external_username: github_user.login,
-        external_name: github_user.name,
-        external_email: github_user.email,
+      IdentitiesService.update!(
+        identity,
+        external_username: git_hub_user.login,
+        external_name: git_hub_user.name,
+        external_email: git_hub_user.email,
         access_token: access_token
       )
     end
 
     identity
-  end
-
-  class InvalidCallbackState < StandardError
-  end
-
-  class NoAccessToken < StandardError
-  end
-
-  class MismatchWithExistingUser < StandardError
   end
 end

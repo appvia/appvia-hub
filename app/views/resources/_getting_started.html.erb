@@ -56,6 +56,15 @@
           </code>
         </pre>
         <% documentation_url = 'https://docs.quay.io/solution/getting-started.html' %>
+      <%- when 'service_catalog' -%>
+        <pre class="mb-0" style="white-space:normal;">
+          <code>
+            $ kubectl --namespace <%= resource.parent.name %> get serviceinstance <%= resource.name %>
+            <br/>
+            $ kubectl --namespace <%= resource.parent.name %> get servicebinding <%= resource.name %>
+          </code>
+        </pre>
+        <% documentation_url = 'https://svc-cat.io/docs/' %>
       <%- end -%>
     </div>
 

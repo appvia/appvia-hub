@@ -27,5 +27,11 @@ FactoryBot.define do
       # - you will need to set the `parent` association yourself (to another
       # valid resource).
     end
+
+    factory :service_catalog, class: 'Resources::ServiceCatalogInstance' do
+      # NOTE: this factory will not produce a valid model object out of the box
+      # - you will need to set the `parent` association yourself (to another
+      # valid resource).
+    end
   end
 end
