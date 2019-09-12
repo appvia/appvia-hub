@@ -10,7 +10,10 @@ class UsersController < ApplicationController
   def search
     query = params.require(:q)
     users = User.search query
-    render json: users
+
+    respond_to do |format|
+      format.any { render json: users, content_type: 'application/json' }
+    end
   end
 
   # PUT/PATCH /users/:user_id/role

@@ -41,6 +41,7 @@ RSpec.configure do |config|
 
   config.include FactoryBot::Syntax::Methods
 
+  config.include JsonResponseHelper, type: :request
   config.include_context 'authentication helpers', type: :request
 
   config.include_context 'mocked integration helper'

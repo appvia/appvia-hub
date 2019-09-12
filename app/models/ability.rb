@@ -13,6 +13,7 @@ class Ability
     can :manage, :all if user.admin?
 
     can :read, User
+    can :search, User
 
     # Teams and projects
 
