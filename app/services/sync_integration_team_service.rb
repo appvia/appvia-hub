@@ -2,15 +2,18 @@ module SyncIntegrationTeamService
   TEAM_PREFIX = '[Hub]'.freeze
 
   class << self
+    def build_team_name(slug)
+      "#{TEAM_PREFIX} #{slug}"
+    end
+
     def sync_team(integration, team)
+      name = build_team_name team.slug
+
       case integration.provider_id
       when 'git_hub'
-        agent = AgentsService.get integration.provider_id, integration.config
+        agent = agent_for integration
 
-        agent.create_team(
-          build_team_name(team.slug),
-          team.description
-        )
+        agent.create_team name, team.description
 
         team.memberships.each do |membership|
           sync_team_membership integration, membership
@@ -19,17 +22,21 @@ module SyncIntegrationTeamService
     end
 
     def remove_team(integration, team_slug)
+      name = build_team_name team_slug
+
       case integration.provider_id
       when 'git_hub'
-        agent = AgentsService.get integration.provider_id, integration.config
+        agent = agent_for integration
 
-        agent.delete_team build_team_name(team_slug)
+        agent.delete_team name
       end
     end
 
     def sync_team_membership(integration, team_membership)
       team = team_membership.team
       user = team_membership.user
+
+      name = build_team_name team.slug
 
       case integration.provider_id
       when 'git_hub'
@@ -38,30 +45,28 @@ module SyncIntegrationTeamService
         # added once they connect up their GitHub identity.
         identity = user.identities.find_by integration_id: integration.id
         if identity.present?
-          agent = AgentsService.get integration.provider_id, integration.config
+          agent = agent_for integration
 
-          agent.add_user_to_team(
-            build_team_name(team.slug),
-            identity.external_username
-          )
+          agent.add_user_to_team name, identity.external_username
         end
       end
     end
 
     def remove_team_membership(integration, team_slug, external_username)
+      name = build_team_name team_slug
+
       case integration.provider_id
       when 'git_hub'
-        agent = AgentsService.get integration.provider_id, integration.config
+        agent = agent_for integration
 
-        agent.remove_user_from_team(
-          build_team_name(team_slug),
-          external_username
-        )
+        agent.remove_user_from_team name, external_username
       end
     end
 
-    def build_team_name(slug)
-      "#{TEAM_PREFIX} #{slug}"
+    private
+
+    def agent_for(integration)
+      AgentsService.get integration.provider_id, integration.config
     end
   end
 end
