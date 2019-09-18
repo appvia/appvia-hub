@@ -8,7 +8,6 @@
 
 <% @teams.each do |team| %>
   <% can_access = can? :show, team %>
-  <% can_delete = can? :destroy, team %>
 
   <div class="card shadow-sm mb-3 <%= can_access ? nil : 'bg-light' -%>">
     <div class="card-body">
@@ -32,10 +31,5 @@
         </div>
       <% end %>
     </div>
-    <% if can_delete %>
-      <div class="card-footer text-muted">
-        <%= delete_team_link team, css_class: 'float-right btn btn-danger' %>
-      </div>
-    <% end %>
   </div>
 <% end %>

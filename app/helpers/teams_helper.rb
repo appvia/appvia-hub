@@ -3,22 +3,6 @@ module TeamsHelper
     icon 'user-friends'
   end
 
-  def delete_team_link(team, css_class: nil)
-    return unless can?(:destroy, team)
-
-    link_to 'Delete',
-      team_path(team),
-      method: :delete,
-      class: css_class,
-      data: {
-        confirm: 'Are you sure you want to delete this team permanently?',
-        title: "Delete team: #{team.slug}",
-        verify: team.slug,
-        verify_text: "Type '#{team.slug}' to confirm"
-      },
-      role: 'button'
-  end
-
   def delete_team_membership_link(team, user, css_class: nil)
     link_to 'Remove from team',
       team_membership_path(team, user),
