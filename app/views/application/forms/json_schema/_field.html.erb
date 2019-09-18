@@ -19,7 +19,10 @@
         include_blank: include_blank,
         help: help_text
       },
-      { class: 'selectpicker' }
+      {
+        required: is_required,
+        class: 'selectpicker'
+      }
   %>
 <%- when 'integer'  %>
   <%=
@@ -34,15 +37,39 @@
       help: help_text
   %>
 <%- else -%>
-  <%=
-    form.text_field name,
-      value: value,
-      required: is_required,
-      label: label_with_tooltip(
-        config_field_title(name, property_spec),
-        property_spec['description']
-      ),
-      pattern: property_spec['pattern'],
-      help: help_text
-  %>
+  <% if property_spec['oneOf'].present? %>
+    <%=
+      form.select name,
+        json_schema_one_of_select_list(property_spec),
+        {
+          value: value,
+          selected: value,
+          required: is_required,
+          label: label_with_tooltip(
+            config_field_title(name, property_spec),
+            property_spec['description']
+          ),
+          include_blank: include_blank,
+          help: help_text
+        },
+        {
+          multiple: multiple,
+          required: is_required,
+          class: 'selectpicker'
+        }
+    %>
+  <% else %>
+    <%=
+      form.text_field name,
+        value: value,
+        required: is_required,
+        multiple: multiple,
+        label: label_with_tooltip(
+          config_field_title(name, property_spec),
+          property_spec['description']
+        ),
+        pattern: property_spec['pattern'],
+        help: help_text
+    %>
+  <% end %>
 <%- end -%>

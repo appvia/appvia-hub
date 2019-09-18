@@ -1,0 +1,18 @@
+<%= tag.div class: 'indented ml-2 mb-3 nested-object' do %>
+
+  <% is_required = Array(spec['required']).include?(name) %>
+  <%=
+    render partial: 'application/forms/json_schema/field',
+      locals: {
+        form: form,
+        name: name,
+        property_spec: spec,
+        is_required: is_required,
+        current_value: current,
+        include_blank: is_required,
+        multiple: multiple
+      }
+  %>
+
+  <%= yield if block_given? %>
+<% end %>

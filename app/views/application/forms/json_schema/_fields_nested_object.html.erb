@@ -1,14 +1,14 @@
-<% if spec['title'] %>
-  <h6>
-    <%=
-      label_with_tooltip(
-        config_field_title(name, spec),
-        spec['description']
-      )
-    %>
-  </h6>
-<% end %>
 <%= tag.div class: 'indented ml-2 mb-3 nested-object' do %>
+  <% if spec['title'] %>
+    <h6>
+      <%=
+        label_with_tooltip(
+          config_field_title(name, spec),
+          spec['description']
+        )
+      %>
+    </h6>
+  <% end %>
   <%=
     render partial: 'application/forms/json_schema/fields',
       locals: {
