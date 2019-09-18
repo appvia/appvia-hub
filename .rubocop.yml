@@ -40,6 +40,11 @@ Metrics/ClassLength:
   Exclude:
     - "spec/**/*"
 
+Metrics/CyclomaticComplexity:
+  Max: 8
+  Exclude:
+    - "spec/**/*"
+
 Metrics/LineLength:
   Max: 150
 

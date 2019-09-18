@@ -114,7 +114,6 @@ class ResourcesController < ApplicationController
     params.require(:resource).permit(:type, :integration_id, :name, :parent_id)
   end
 
-  # rubocop:disable Metrics/CyclomaticComplexity
   def set_from_integration_specific_params(resource, params)
     return if resource.integration.blank?
 
@@ -135,7 +134,6 @@ class ResourcesController < ApplicationController
       resource.create_parameters = integration_specific_params['plan_parameters'] || {}
     end
   end
-  # rubocop:enable Metrics/CyclomaticComplexity
 
   def integration_specific_prechecks(resource, params)
     provider = (resource.integration&.provider_id)
