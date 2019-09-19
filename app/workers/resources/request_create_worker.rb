@@ -2,7 +2,7 @@ module Resources
   class RequestCreateWorker < BaseWorker
     HANDLERS = {
       'Resources::CodeRepo' => {
-        'git_hub' => lambda do |resource, agent, config|
+        'git_hub' => lambda do |resource, agent, config, _logger|
           Resources::CreateGitHubCodeRepoService
             .new(agent)
             .call(resource, config)
@@ -11,13 +11,36 @@ module Resources
         end
       },
       'Resources::DockerRepo' => {
-        'quay' => lambda do |resource, agent, _config|
-          result = agent.create_repository resource.name
+        'quay' => lambda do |resource, agent, config, logger|
+          integration = resource.integration
+          project = resource.project
+          credential = ProjectRobotCredentialsService.get(
+            integration.id,
+            project.id,
+            project.slug
+          )
+
+          org = config['org']
+          robots = if credential.present?
+                     [{ name: "#{org}+#{credential.name}", permission: 'write' }]
+                   else
+                     logger.warn [
+                       'No hub managed project level robot credential available for',
+                       "project: #{project.slug}",
+                       "for integration #{integration.id}",
+                       "(provider: #{integration.provider_id}, name: #{integration.name})"
+                     ].join(' ')
+
+                     []
+                   end
+
+          result = agent.create_repository resource.name, robots: robots
+
           resource.visibility = result.spec.visibility
           resource.base_uri = result.spec.url
           true
         end,
-        'ecr' => lambda do |resource, agent, _config|
+        'ecr' => lambda do |resource, agent, _config, _logger|
           result = agent.create_repository resource.name
           resource.visibility = result.spec.visibility
           resource.base_uri = result.spec.url
@@ -25,8 +48,29 @@ module Resources
         end
       },
       'Resources::KubeNamespace' => {
-        'kubernetes' => lambda do |resource, agent, _config|
-          agent.create_namespace resource.name
+        'kubernetes' => lambda do |resource, agent, _config, logger|
+          integration = resource.integration
+          project = resource.project
+          credential = ProjectRobotCredentialsService.get(
+            integration.id,
+            project.id,
+            project.slug
+          )
+
+          service_accounts = if credential.present?
+                               [{ name: credential.name }]
+                             else
+                               logger.warn [
+                                 'No hub managed project level robot credential available for',
+                                 "project: #{project.slug}",
+                                 "for integration #{integration.id}",
+                                 "(provider: #{integration.provider_id}, name: #{integration.name})"
+                               ].join(' ')
+
+                               []
+                             end
+
+          agent.create_namespace resource.name, service_accounts: service_accounts
 
           provisioning_service = ResourceProvisioningService.new
 
@@ -37,7 +81,7 @@ module Resources
         end
       },
       'Resources::MonitoringDashboard' => {
-        'grafana' => lambda do |resource, agent, config|
+        'grafana' => lambda do |resource, agent, config, _logger|
           template_url = config['template_url']
 
           result = agent.create_dashboard resource.name, template_url: template_url
@@ -48,7 +92,7 @@ module Resources
         end
       },
       'Resources::LoggingDashboard' => {
-        'loki' => lambda do |resource, agent, _config|
+        'loki' => lambda do |resource, agent, _config, _logger|
           query_expression = '{namespace=\"' + resource.name + '\"}'
 
           result = agent.create_logging_dashboard query_expression
@@ -59,7 +103,7 @@ module Resources
         end
       },
       'Resources::ServiceCatalogInstance' => {
-        'service_catalog' => lambda do |resource, agent, _config|
+        'service_catalog' => lambda do |resource, agent, _config, _logger|
           create_parameters = resource.create_parameters.deep_dup
           JsonSchemaHelpers.transform_additional_properties create_parameters
 

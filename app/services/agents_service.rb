@@ -26,8 +26,7 @@ module AgentsService
           agent_base_url: Rails.configuration.agents.quay.base_url,
           agent_token: Rails.configuration.agents.quay.token,
           quay_access_token: config['api_access_token'],
-          org: config['org'],
-          global_robot_name: config['global_robot_name']
+          org: config['org']
         )
       end,
       'kubernetes' => lambda do |config|
@@ -36,8 +35,7 @@ module AgentsService
           agent_token: Rails.configuration.agents.kubernetes.token,
           kube_api_url: config['api_url'],
           kube_ca_cert: config['ca_cert'],
-          kube_token: config['token'],
-          global_service_account_name: config['global_service_account_name']
+          kube_token: config['token']
         )
       end,
       'grafana' => lambda do |config|
