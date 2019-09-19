@@ -5,8 +5,8 @@ RSpec.describe 'GitHub teams end-to-end' do
 
   let(:agent_class) { GitHubAgent }
 
-  let(:user) { create :user }
-  let(:other_user) { create :user }
+  let!(:user) { create :user }
+  let!(:other_user) { create :user }
 
   def reload_all(*args)
     user.reload

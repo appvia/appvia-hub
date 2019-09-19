@@ -10,12 +10,30 @@ module Teams
       teams = TeamIntegrationsService.get_teams_for integration
 
       teams.each do |t|
-        membership = t.memberships.find_by user_id: identity.user_id
-
-        next if membership.nil?
-
-        SyncIntegrationTeamService.sync_team_membership integration, membership
+        process_team(
+          t,
+          integration,
+          identity
+        )
       end
+    end
+
+    private
+
+    def process_team(team, integration, identity)
+      membership = team.memberships.find_by user_id: identity.user_id
+
+      return if membership.nil?
+
+      SyncIntegrationTeamService.sync_team_membership integration, membership
+    rescue StandardError => e
+      logger.error [
+        "Failed to process team #{team.slug}",
+        "for integration #{integration.id}",
+        "(provider: #{integration.provider_id}, name: #{integration.name})",
+        "for identity #{identity.id}",
+        "- error: #{e.message} - #{e.backtrace.first}"
+      ].join(' ')
     end
   end
 end
