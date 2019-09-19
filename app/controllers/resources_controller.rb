@@ -3,12 +3,12 @@ class ResourcesController < ApplicationController
 
   authorize_resource :project
 
+  before_action :find_parent_resource, only: %i[new create]
+
   before_action :find_resource_type, only: %i[new create]
   before_action :find_integrations, only: %i[new create]
 
   before_action :find_resource, only: [:destroy]
-
-  before_action :find_parent_resource, only: [:new]
 
   before_action :create_service_catalog_service, if: :service_catalog?, only: %i[new create]
 
@@ -75,11 +75,11 @@ class ResourcesController < ApplicationController
   end
 
   def find_integrations
-    parent_id = params[:parent_id] || (params.key?(:resource) && params[:resource][:parent_id])
-    is_a_dependent_resource = parent_id.present?
+    is_a_dependent_resource = @parent_resource&.id.present?
     @integrations = TeamIntegrationsService
       .get(@project.team, include_dependents: is_a_dependent_resource)
       .select { |i| @resource_type[:providers].include? i.provider_id }
+      .select { |i| i.parent_ids.empty? || i.parent_ids.include?(@parent_resource.integration_id) }
       .group_by { |i| i.provider['name'] }
 
     if @integrations.empty? # rubocop:disable Style/GuardClause
@@ -96,7 +96,8 @@ class ResourcesController < ApplicationController
   end
 
   def find_parent_resource
-    @parent_resource = @project.resources.find params['parent_id'] if params['parent_id']
+    parent_id = params[:parent_id] || (params.key?(:resource) && params[:resource][:parent_id])
+    @parent_resource = @project.resources.find parent_id if parent_id.present?
   end
 
   def service_catalog?
