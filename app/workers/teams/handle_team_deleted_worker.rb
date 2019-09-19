@@ -6,8 +6,21 @@ module Teams
 
         next if integration.nil?
 
-        SyncIntegrationTeamService.remove_team integration, team_slug
+        process_integration integration, team_slug
       end
+    end
+
+    private
+
+    def process_integration(integration, team_slug)
+      SyncIntegrationTeamService.remove_team integration, team_slug
+    rescue StandardError => e
+      logger.error [
+        "Failed to process integration #{integration.id}",
+        "(provider: #{integration.provider_id}, name: #{integration.name})",
+        "for team #{team_slug}",
+        "- error: #{e.message} - #{e.backtrace.first}"
+      ].join(' ')
     end
   end
 end

@@ -10,8 +10,21 @@ module Teams
       return if integrations.blank?
 
       integrations.each do |i|
-        SyncIntegrationTeamService.sync_team i, team
+        process_integration i, team
       end
+    end
+
+    private
+
+    def process_integration(integration, team)
+      SyncIntegrationTeamService.sync_team integration, team
+    rescue StandardError => e
+      logger.error [
+        "Failed to process integration #{integration.id}",
+        "(provider: #{integration.provider_id}, name: #{integration.name})",
+        "for team #{team.slug}",
+        "- error: #{e.message} - #{e.backtrace.first}"
+      ].join(' ')
     end
   end
 end

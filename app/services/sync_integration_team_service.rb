@@ -19,6 +19,8 @@ module SyncIntegrationTeamService
           sync_team_membership integration, membership
         end
       end
+
+      true
     end
 
     def remove_team(integration, team_slug)
@@ -30,6 +32,8 @@ module SyncIntegrationTeamService
 
         agent.delete_team name
       end
+
+      true
     end
 
     def sync_team_membership(integration, team_membership)
@@ -50,6 +54,8 @@ module SyncIntegrationTeamService
           agent.add_user_to_team name, identity.external_username
         end
       end
+
+      true
     end
 
     def remove_team_membership(integration, team_slug, external_username)
@@ -61,6 +67,8 @@ module SyncIntegrationTeamService
 
         agent.remove_user_from_team name, external_username
       end
+
+      true
     end
 
     private
