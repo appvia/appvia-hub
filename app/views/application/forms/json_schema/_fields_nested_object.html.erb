@@ -1,4 +1,5 @@
-<%= tag.div class: 'indented ml-2 mb-3 nested-object' do %>
+<div class="nested-object">
+
   <% if spec['title'] %>
     <h6>
       <%=
@@ -9,16 +10,23 @@
       %>
     </h6>
   <% end %>
-  <%=
-    render partial: 'application/forms/json_schema/fields',
-      locals: {
-        form: form,
-        namespace: name,
-        spec: spec,
-        current: current,
-        is_array: is_array
-      }
-  %>
 
-  <%= yield if block_given? %>
-<% end %>
+  <%= tag.div class: 'indented ml-2 mb-3' do %>
+
+    <% if spec['properties'] %>
+      <%=
+        render partial: 'application/forms/json_schema/fields',
+          locals: {
+            form: form,
+            namespace: name,
+            spec: spec,
+            current: current,
+            is_array: is_array
+          }
+      %>
+      <%= yield if block_given? %>
+    <% end %>
+
+  <% end %>
+
+</div>
