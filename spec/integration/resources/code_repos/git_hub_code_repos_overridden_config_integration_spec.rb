@@ -71,7 +71,7 @@ RSpec.describe 'Code Repo - GitHub - with overridden config option' do
 
   describe 'request create' do
     it 'agent should receive the overridden config option' do
-      team_name = "[Hub] #{resource.project.team.slug}"
+      team_name = "hub-#{resource.project.team.slug}"
 
       expect(agent).to receive(:create_repository)
         .with(resource.name, team_name: team_name, auto_init: false)

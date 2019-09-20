@@ -39,7 +39,7 @@ RSpec.describe 'Code Repos - GitHub' do
 
     let :agent_create_method_call_success do
       lambda do |agent, resource|
-        team_name = "[Hub] #{resource.project.team.slug}"
+        team_name = "hub-#{resource.project.team.slug}"
 
         expect(agent).to receive(:create_repository)
           .with(resource.name, team_name: team_name, auto_init: true)
@@ -62,7 +62,7 @@ RSpec.describe 'Code Repos - GitHub' do
 
     let :agent_create_method_call_error do
       lambda do |agent, resource|
-        team_name = "[Hub] #{resource.project.team.slug}"
+        team_name = "hub-#{resource.project.team.slug}"
 
         expect(agent).to receive(:create_repository)
           .with(resource.name, team_name: team_name, auto_init: true)
