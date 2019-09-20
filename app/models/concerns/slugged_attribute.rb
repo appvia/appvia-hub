@@ -1,8 +1,8 @@
 module SluggedAttribute
   extend ActiveSupport::Concern
 
-  SLUG_FORMAT_REGEX = '[a-z]+[a-z0-9\-_]*'.freeze
-  SLUG_FORMAT_TEXT = 'must start with a letter and can only contain lowercase letters, numbers, hyphens, and underscores'.freeze
+  SLUG_FORMAT_REGEX = '[a-z]+[a-z0-9\-]*'.freeze
+  SLUG_FORMAT_TEXT = 'must start with a letter and can only contain lowercase letters, numbers and hyphens'.freeze
 
   class_methods do
     def slugged_attribute(attribute_name, presence:, uniqueness:, readonly:)
