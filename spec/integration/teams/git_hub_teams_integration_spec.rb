@@ -132,7 +132,7 @@ RSpec.describe 'GitHub teams end-to-end' do
       expect(Sidekiq::Worker.jobs.size).to eq 2
 
       expect(agent).to receive(:create_team)
-        .with('[Hub] team-1', team1.description)
+        .with('hub-team-1', team1.description)
 
       process_jobs
 
@@ -154,7 +154,7 @@ RSpec.describe 'GitHub teams end-to-end' do
       expect(Sidekiq::Worker.jobs.size).to eq 1
 
       expect(agent).to receive(:add_user_to_team)
-        .with('[Hub] team-1', 'foo')
+        .with('hub-team-1', 'foo')
 
       process_jobs
 
@@ -186,7 +186,7 @@ RSpec.describe 'GitHub teams end-to-end' do
       expect(Sidekiq::Worker.jobs.size).to eq 1
 
       expect(agent).to receive(:add_user_to_team)
-        .with('[Hub] team-1', 'bar')
+        .with('hub-team-1', 'bar')
 
       process_jobs
 
@@ -214,10 +214,10 @@ RSpec.describe 'GitHub teams end-to-end' do
       expect(Sidekiq::Worker.jobs.size).to eq 2
 
       expect(agent).to receive(:create_team)
-        .with('[Hub] team-2', team2.description)
+        .with('hub-team-2', team2.description)
 
       expect(agent).to receive(:add_user_to_team)
-        .with('[Hub] team-2', 'bar')
+        .with('hub-team-2', 'bar')
         .twice
 
       process_jobs
@@ -238,7 +238,7 @@ RSpec.describe 'GitHub teams end-to-end' do
       expect(Sidekiq::Worker.jobs.size).to eq 1
 
       expect(agent).to receive(:remove_user_from_team)
-        .with('[Hub] team-1', 'bar')
+        .with('hub-team-1', 'bar')
 
       process_jobs
 
@@ -258,7 +258,7 @@ RSpec.describe 'GitHub teams end-to-end' do
       expect(Sidekiq::Worker.jobs.size).to eq 1
 
       expect(agent).to receive(:add_user_to_team)
-        .with('[Hub] team-1', 'bar')
+        .with('hub-team-1', 'bar')
 
       process_jobs
 
@@ -271,10 +271,10 @@ RSpec.describe 'GitHub teams end-to-end' do
       expect(Sidekiq::Worker.jobs.size).to eq 1
 
       expect(agent).to receive(:remove_user_from_team)
-        .with('[Hub] team-1', 'bar')
+        .with('hub-team-1', 'bar')
 
       expect(agent).to receive(:remove_user_from_team)
-        .with('[Hub] team-2', 'bar')
+        .with('hub-team-2', 'bar')
 
       process_jobs
 
@@ -291,13 +291,13 @@ RSpec.describe 'GitHub teams end-to-end' do
       expect(Sidekiq::Worker.jobs.size).to eq 1
 
       expect(agent).to receive(:delete_team)
-        .with('[Hub] team-2')
+        .with('hub-team-2')
 
       # Does a full sync, so also handles syncing of Team 1 too.
       expect(agent).to receive(:create_team)
-        .with('[Hub] team-1', team1.description)
+        .with('hub-team-1', team1.description)
       expect(agent).to receive(:add_user_to_team)
-        .with('[Hub] team-1', 'foo')
+        .with('hub-team-1', 'foo')
 
       process_jobs
 
@@ -322,7 +322,7 @@ RSpec.describe 'GitHub teams end-to-end' do
       )
 
       expect(agent).to receive(:create_repository)
-        .with(code_repo.name, team_name: '[Hub] team-1', auto_init: true)
+        .with(code_repo.name, team_name: 'hub-team-1', auto_init: true)
         .and_return(agent_create_repo_response)
 
       expect(agent).to receive(:apply_best_practices)
@@ -370,10 +370,10 @@ RSpec.describe 'GitHub teams end-to-end' do
         .at_least(:once)
 
       expect(other_agent).to receive(:create_team)
-        .with('[Hub] team-1', team1.description)
+        .with('hub-team-1', team1.description)
 
       expect(other_agent).to receive(:create_team)
-        .with('[Hub] team-2', team2.description)
+        .with('hub-team-2', team2.description)
 
       process_jobs
 
@@ -394,9 +394,9 @@ RSpec.describe 'GitHub teams end-to-end' do
       expect(Sidekiq::Worker.jobs.size).to eq 1
 
       expect(other_agent).to receive(:add_user_to_team)
-        .with('[Hub] team-1', 'bar')
+        .with('hub-team-1', 'bar')
       expect(other_agent).to receive(:add_user_to_team)
-        .with('[Hub] team-2', 'bar')
+        .with('hub-team-2', 'bar')
 
       process_jobs
 
@@ -423,7 +423,7 @@ RSpec.describe 'GitHub teams end-to-end' do
       expect(Sidekiq::Worker.jobs.size).to eq 2
 
       expect(other_agent).to receive(:create_team)
-        .with('[Hub] team-3', team3.description)
+        .with('hub-team-3', team3.description)
 
       process_jobs
 
@@ -436,11 +436,11 @@ RSpec.describe 'GitHub teams end-to-end' do
       expect(Sidekiq::Worker.jobs.size).to eq 1
 
       expect(agent).to receive(:delete_team)
-        .with('[Hub] team-2')
+        .with('hub-team-2')
         .never
 
       expect(other_agent).to receive(:delete_team)
-        .with('[Hub] team-2')
+        .with('hub-team-2')
 
       process_jobs
 
@@ -457,21 +457,21 @@ RSpec.describe 'GitHub teams end-to-end' do
       expect(Sidekiq::Worker.jobs.size).to eq 1
 
       expect(agent).to receive(:create_team)
-        .with('[Hub] team-1', team1.description)
+        .with('hub-team-1', team1.description)
       expect(agent).to receive(:add_user_to_team)
-        .with('[Hub] team-1', 'foo')
+        .with('hub-team-1', 'foo')
       expect(agent).to receive(:add_user_to_team)
-        .with('[Hub] team-1', 'bar')
+        .with('hub-team-1', 'bar')
         .never
 
       expect(agent).to receive(:create_team)
-        .with('[Hub] team-2', team2.description)
+        .with('hub-team-2', team2.description)
         .never
 
       expect(agent).to receive(:create_team)
-        .with('[Hub] team-3', team3.description)
+        .with('hub-team-3', team3.description)
       expect(agent).to receive(:add_user_to_team)
-        .with('[Hub] team-3', 'foo')
+        .with('hub-team-3', 'foo')
 
       process_jobs
     end

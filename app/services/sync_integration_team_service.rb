@@ -1,9 +1,9 @@
 module SyncIntegrationTeamService
-  TEAM_PREFIX = '[Hub]'.freeze
+  TEAM_PREFIX = 'hub-'.freeze
 
   class << self
     def build_team_name(slug)
-      "#{TEAM_PREFIX} #{slug}"
+      "#{TEAM_PREFIX}#{slug}"
     end
 
     def sync_team(integration, team)

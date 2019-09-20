@@ -87,7 +87,7 @@ RSpec.describe 'Code Repo - GitHub - using a template' do
 
   describe 'request create' do
     it 'agent should set up the repo and import from the template' do
-      team_name = "[Hub] #{resource.project.team.slug}"
+      team_name = "hub-#{resource.project.team.slug}"
 
       expect(agent).to receive(:create_repository)
         .with(resource.name, team_name: team_name, auto_init: false)
