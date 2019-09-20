@@ -16,10 +16,14 @@ export default class extends Controller {
 
   showCurrentSection() {
     this.sectionTargets.forEach(el => {
-      el.classList.toggle(
-        'd-none',
-        el.dataset.integrationId !== this.integrationId
-      );
+      /* eslint-disable-next-line prettier/prettier */
+      const isSelectedIntegration = el.dataset.integrationId === this.integrationId;
+      el.classList.toggle('d-none', !isSelectedIntegration);
+      if (isSelectedIntegration) {
+        el.removeAttribute('disabled');
+      } else {
+        el.setAttribute('disabled', 'disabled');
+      }
     });
   }
 
