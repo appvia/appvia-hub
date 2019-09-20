@@ -117,64 +117,66 @@
             </div>
           </div>
         <%- when 'service_catalog' -%>
-          <div class="card my-4">
-            <div class="card-header">
-              Instance details
-            </div>
-            <div class="card-body">
-              <%= form.fields_for :service_catalog do |service_catalog_form| %>
-                <%=
-                  service_catalog_form.select :service_class,
-                    sb_service.generate_service_class_select_options,
-                    {
-                      label: label_with_tooltip(
-                        'Type',
-                        'The type of cloud resource you would like to request'
-                      ),
-                      selected: params.dig('resource', 'service_catalog', 'service_class'),
-                      include_blank: true,
-                      required: true
-                    },
-                    data: {
-                      action: 'resource-form#submitForm'
-                    }
-                %>
-
-                <%=
-                  service_plans = sb_service.generate_service_plans_select_options(resource.class_name)
-                  service_catalog_form.select :service_plan,
-                    service_plans,
-                    {
-                      label: label_with_tooltip(
-                        'Plan',
-                        'The plan for the selected type'
-                      ),
-                      selected: params.dig('resource', 'service_catalog', 'service_plan'),
-                      include_blank: true,
-                      required: true,
-                    },
-                    {
-                      disabled: service_plans.empty?,
+          <% if i.parent_ids.include?(@parent_resource.integration_id) %>
+            <div class="card my-4">
+              <div class="card-header">
+                Instance details
+              </div>
+              <div class="card-body">
+                <%= form.fields_for :service_catalog do |service_catalog_form| %>
+                  <%=
+                    service_catalog_form.select :service_class,
+                      sb_service.generate_service_class_select_options,
+                      {
+                        label: label_with_tooltip(
+                          'Type',
+                          'The type of cloud resource you would like to request'
+                        ),
+                        selected: params.dig('resource', 'service_catalog', 'service_class'),
+                        include_blank: true,
+                        required: true
+                      },
                       data: {
                         action: 'resource-form#submitForm'
                       }
-                    }
-                %>
-                <% service_plan_schema = sb_service.service_plan_schema(resource.class_name, resource.plan_name) %>
-                <% unless service_plan_schema.nil? %>
+                  %>
+
                   <%=
-                    render partial: 'application/forms/json_schema/fields',
-                      locals: {
-                        form: service_catalog_form,
-                        namespace: :plan_parameters,
-                        spec: service_plan_schema,
-                        current: params.dig('resource', 'service_catalog', 'plan_parameters') || {}
+                    service_plans = sb_service.generate_service_plans_select_options(resource.class_name)
+                    service_catalog_form.select :service_plan,
+                      service_plans,
+                      {
+                        label: label_with_tooltip(
+                          'Plan',
+                          'The plan for the selected type'
+                        ),
+                        selected: params.dig('resource', 'service_catalog', 'service_plan'),
+                        include_blank: true,
+                        required: true,
+                      },
+                      {
+                        disabled: service_plans.empty?,
+                        data: {
+                          action: 'resource-form#submitForm'
+                        }
                       }
                   %>
+                  <% service_plan_schema = sb_service.service_plan_schema(resource.class_name, resource.plan_name) %>
+                  <% unless service_plan_schema.nil? %>
+                    <%=
+                      render partial: 'application/forms/json_schema/fields',
+                        locals: {
+                          form: service_catalog_form,
+                          namespace: :plan_parameters,
+                          spec: service_plan_schema,
+                          current: params.dig('resource', 'service_catalog', 'plan_parameters') || {}
+                        }
+                    %>
+                  <% end %>
                 <% end %>
-              <% end %>
+              </div>
             </div>
-          </div>
+          <% end %>
         <%- end -%>
       </div>
     <% end %>
