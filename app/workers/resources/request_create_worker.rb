@@ -60,14 +60,19 @@ module Resources
       },
       'Resources::ServiceCatalogInstance' => {
         'service_catalog' => lambda do |resource, agent, _config|
+          create_parameters = resource.create_parameters.deep_dup
+          JsonSchemaHelpers.transform_additional_properties create_parameters
+
           result = agent.create_resource(
             namespace: resource.parent.name,
             cluster_service_class_external_name: resource.class_external_name,
             cluster_service_plan_external_name: resource.plan_external_name,
             name: resource.name,
-            parameters: resource.create_parameters
+            parameters: create_parameters
           )
+
           resource.service_instance = result.to_hash
+
           true
         end
       }

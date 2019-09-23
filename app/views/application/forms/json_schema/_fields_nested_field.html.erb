@@ -1,4 +1,4 @@
-<%= tag.div class: 'indented ml-2 mb-3 nested-object' do %>
+<div class="indented ml-2 mb-3 nested-object">
 
   <% is_required = Array(spec['required']).include?(name) %>
   <%=
@@ -15,4 +15,4 @@
   %>
 
   <%= yield if block_given? %>
-<% end %>
+</div>

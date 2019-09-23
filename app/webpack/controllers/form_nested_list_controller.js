@@ -13,7 +13,7 @@ export default class extends Controller {
 
     const content = this.templateTarget.innerHTML;
     this.linksTarget.insertAdjacentHTML('beforebegin', content);
-    // setup tooltips in newly created elements
+    // setup tooltips and bootstrap-select in newly created elements
     /* eslint-disable no-undef */
     $('[data-toggle="tooltip"]').tooltip();
     $(window).trigger('load.bs.select.data-api');

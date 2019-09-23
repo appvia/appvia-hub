@@ -26,4 +26,17 @@ module JsonSchemaHelpers
 
     data
   end
+
+  def self.transform_additional_properties(data)
+    data.each do |_key, param_value|
+      next unless param_value.is_a?(Hash) && param_value.key?('additional_properties')
+
+      param_value['additional_properties'].each do |prop|
+        value = prop['value'] == '' ? nil : prop['value']
+        param_value[prop['key']] = value unless prop['key'].empty?
+      end
+      param_value.delete 'additional_properties'
+      transform_additional_properties param_value
+    end
+  end
 end

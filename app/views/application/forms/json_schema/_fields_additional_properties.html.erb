@@ -1,0 +1,78 @@
+<%= form.fields_for name do |additional_props_container| %>
+
+  <%= additional_props_container.fields_for :additional_properties, { index: nil } do |additional_props_form| %>
+
+    <div class="indented ml-2 mb-3">
+      <div data-controller="form-nested-list">
+
+        <template data-target="form-nested-list.template">
+          <div class="indented nested-object mb-3">
+            <h6>
+              <%= label_with_tooltip('Property', 'Key/value pair') %>
+            </h6>
+            <%=
+              additional_props_form.text_field :key,
+                required: false,
+                label: label_with_tooltip(
+                  'Key',
+                  'Additional property key'
+                )
+            %>
+            <%=
+              additional_props_form.text_field :value,
+                required: false,
+                label: label_with_tooltip(
+                  'Value',
+                  'Additional property value'
+                )
+            %>
+            <div>
+              <%= link_to "Remove", "#", class: "btn btn-sm btn-outline-primary", data: { action: "click->form-nested-list#remove" } %>
+            </div>
+          </div>
+        </template>
+
+        <h6>
+          <%= label_with_tooltip('Additional properties', 'Key/value pairs') %>
+        </h6>
+
+        <div>
+          <% current.each do |item| %>
+            <div class="indented nested-object mb-3">
+              <h6>
+                <%= label_with_tooltip('Property', 'Key/value pair') %>
+              </h6>
+              <%=
+                additional_props_form.text_field :key,
+                  value: item['key'],
+                  required: false,
+                  label: label_with_tooltip(
+                    'Key',
+                    'Additional property key'
+                  )
+              %>
+              <%=
+                additional_props_form.text_field :value,
+                  value: item['value'],
+                  required: false,
+                  label: label_with_tooltip(
+                    'Value',
+                    'Additional property value'
+                  )
+              %>
+              <div>
+                <%= link_to "Remove", "#", class: "btn btn-sm btn-outline-primary", data: { action: "click->form-nested-list#remove" } %>
+              </div>
+            </div>
+          <% end %>
+
+          <div class="mb-3" data-target="form-nested-list.links">
+            <%= link_to "Add", "#", class: "btn btn-sm btn-outline-primary", data: { action: "click->form-nested-list#add" } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <% end %>
+
+<% end %>

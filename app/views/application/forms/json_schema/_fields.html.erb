@@ -81,6 +81,19 @@
             }
         %>
 
+        <% if property_spec['additionalProperties'].present? && property_spec['additionalProperties']['type'] == 'string' %>
+
+          <%=
+            render partial: 'application/forms/json_schema/fields_additional_properties',
+              locals: {
+                form: fields_form,
+                name: name,
+                current: Array((current[name] || {})['additional_properties']),
+              }
+          %>
+
+        <% end %>
+
       <% else %>
 
         <% is_required = Array(spec['required']).include?(name) %>
