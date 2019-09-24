@@ -6,10 +6,6 @@
         title: Your GitHub organisation
         description: "The organisation on GitHub to manage repos for. This should be the 'login' value as specified in https://developer.github.com/v3/orgs/."
         type: string
-      all_team_id:
-        title: Team ID for all users
-        description: "The numeric ID of the org's main team in which to place all hub users in and grant repos admin access to. This should be the 'id' value from https://developer.github.com/v3/teams/#list-teams – see also http://fabian-kostadinov.github.io/2015/01/16/how-to-find-a-github-team-id/"
-        type: integer
       app_id:
         title: Your GitHub App ID
         description: "The app ID for the [GitHub App](https://developer.github.com/apps/about-apps/) you have set up."
@@ -55,7 +51,6 @@
             - repo_url
     required:
       - org
-      - all_team_id
       - app_id
       - app_private_key
       - app_installation_id
@@ -230,3 +225,26 @@
     required:
       - grafana_url
       - data_source_name
+
+- id: service_catalog
+  name: Service Catalog
+  config_spec:
+    properties:
+      api_url:
+        title: API URL
+        description: The Kubernetes API URL. This can be found using `kubectl cluster-info`.
+        type: string
+      ca_cert:
+        title: CA Certificate
+        description: MUST be base64 encoded. This is the CA bundle (pem format) used by the Kubernetes API server.
+        type: string
+        masked: true
+      token:
+        title: Service account token
+        description: A service account token used by the hub to interact with the Kubernetes API. The service account must have `cluster-admin` level permissions in order to manage namespaces, deployments and service accounts among other things. This is not shown to regular users of the hub.
+        type: string
+        masked: true
+    required:
+      - api_url
+      - ca_cert
+      - token

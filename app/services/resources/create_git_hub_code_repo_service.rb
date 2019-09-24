@@ -17,7 +17,7 @@ module Resources
     end
 
     def call(resource, config)
-      all_team_id = config['all_team_id']
+      team_name = SyncIntegrationTeamService.build_team_name(resource.project.team.slug)
 
       should_enforce_best_practices = config['enforce_best_practices']
 
@@ -25,7 +25,7 @@ module Resources
 
       create_result = @agent.create_repository(
         resource.name,
-        team_id: all_team_id,
+        team_name: team_name,
         auto_init: should_auto_init
       )
 

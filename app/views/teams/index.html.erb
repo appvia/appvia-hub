@@ -1,0 +1,35 @@
+<h1>Teams</h1>
+
+<% if @teams.blank? %>
+  <div class="alert alert-warning">
+    No teams created yet
+  </div>
+<% end %>
+
+<% @teams.each do |team| %>
+  <% can_access = can? :show, team %>
+
+  <div class="card shadow-sm mb-3 <%= can_access ? nil : 'bg-light' -%>">
+    <div class="card-body">
+      <h5 class="card-title">
+        <%= team_icon %>
+
+        <% if can_access  %>
+          <%= link_to team.name, team_path(team) %>
+        <% else %>
+          <%= team.name %>
+        <% end %>
+      </h5>
+
+      <small class="badge badge-info text-monospace">
+        <%= team.slug %>
+      </small>
+
+      <% if team.description.present? %>
+        <div class="card-text mt-3">
+          <%= simple_format team.description %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

@@ -2,102 +2,26 @@
   <ul class="list-group list-group-flush">
     <% if activity.present? %>
       <% activity.each do |a| %>
-        <%- case a.auditable_type -%>
-        <%- when 'User' -%>
-          <%- case a.action -%>
-          <%- when 'create' -%>
-            <%= activity_entry icon('user-plus'), a.created_at do %>
-              <%= a.user_email %> joined the hub
-            <% end %>
-          <%- when 'update' -%>
-            <% if a.audited_changes.key? 'role' %>
-              <%= activity_entry icon('user-cog'), a.created_at do %>
-                <%= a.user_email %>
-                <% if a.audited_changes['role'] == ['admin', 'user'] %>
-                  removed <%= a.auditable_descriptor %> as a hub admin
-                <% elsif a.audited_changes['role'] == ['user', 'admin'] %>
-                  made <%= a.auditable_descriptor %> a hub admin
-                <% end %>
-              <% end %>
-            <% end %>
-          <%- end -%>
-        <%- when 'Project' -%>
-          <%- case a.action -%>
-          <%- when 'create' -%>
-            <%= activity_entry icon('cube'), a.created_at do %>
-              <%= a.user_email %> created a new space:
-              <%= link_to a.auditable_descriptor, project_path(a.auditable_id), class: 'text-monospace' %>
-            <% end %>
-          <%- when 'destroy' -%>
-            <%= activity_entry icon('cube'), a.created_at do %>
-              <%= a.user_email %> deleted space:
-              <span class="text-monospace"><%= a.auditable_descriptor %></span>
-            <% end %>
-          <%- end -%>
-        <%- when 'Resource' -%>
-          <%- case a.action -%>
-          <%- when 'request_create' -%>
-            <%= activity_entry resource_icon(a.auditable_model_name), a.created_at do %>
-              <% if a.user_email %>
-                <%= a.user_email %> requested a new resource:
-              <% else %>
-                A new resource has been requested:
-              <% end %>
-              <span class="font-weight-bold">
-                <%= a.auditable_descriptor %>
-              </span>
-              <% status = 'pending' %>
-              <%= resource_status_badge status %>
-              for space:
-              <%= link_to a.associated_descriptor, project_path(a.associated_id), class: 'text-monospace' %>
-            <% end %>
-          <%- when 'update' -%>
-            <% status_changes = Array(a.audited_changes['status']).flatten %>
-            <% if status_changes.uniq.size == 2 && status_changes.last != Resource.statuses[:deleting] %>
-              <%= activity_entry resource_icon(a.auditable_model_name), a.created_at do %>
-                Resource
-                <span class="font-weight-bold">
-                  <%= a.auditable_descriptor %>
-                </span>
-                is now
-                <% status = a.audited_changes['status'].last %>
-                <%= resource_status_badge status %>
-                for space:
-                <%= link_to a.associated_descriptor, project_path(a.associated_id), class: 'text-monospace' %>
-              <% end %>
-            <% end %>
-          <%- when 'request_delete' -%>
-            <%= activity_entry resource_icon(a.auditable_model_name), a.created_at do %>
-              <% if a.user_email %>
-                <%= a.user_email %> requested deletion of resource:
-              <% else %>
-                A resource has been requested to be deleted:
-              <% end %>
-              <%= a.user_email %>
-              <span class="font-weight-bold">
-                <%= a.auditable_descriptor %>
-              </span>
-              <% status = 'deleting' %>
-              <%= resource_status_badge status %>
-              for space:
-              <%= link_to a.associated_descriptor, project_path(a.associated_id), class: 'text-monospace' %>
-            <% end %>
-          <%- when 'destroy' -%>
-            <%= activity_entry resource_icon(a.auditable_model_name), a.created_at do %>
-              <% if a.user_email %>
-                <%= a.user_email %> deleted resource:
-              <% else %>
-                A resource was deleted:
-              <% end %>
-              <%= a.user_email %>
-              <span class="font-weight-bold">
-                <%= a.auditable_descriptor %>
-              </span>
-              for space:
-              <%= link_to a.associated_descriptor, project_path(a.associated_id), class: 'text-monospace' %>
-            <% end %>
-          <%- end -%>
-        <%- end -%>
+        <% begin %>
+          <% partial = "activity/entries/#{a.auditable_type.underscore}" %>
+          <%= render partial: partial, locals: { a: a } %>
+        <% rescue => e %>
+          <%
+            logger.error [
+              "Failed to render activity stream entry for audit entry #{a.id}",
+              "- auditable: type '#{a.auditable_type}', ID: '#{a.auditable_id}', descriptor: '#{a.auditable_descriptor}'",
+              " - error: #{e.message}"
+            ].join(' ')
+          %>
+
+          <% if Rails.env.development? %>
+            <li class="list-group-item text-danger">
+              [development mode only]
+              Failed to render this activity entry:
+              <%= e.message %>
+            </li>
+          <% end %>
+        <% end %>
       <%- end -%>
     <% else %>
       <li class="list-group-item text-center none-text">

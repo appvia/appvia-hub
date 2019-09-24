@@ -17,10 +17,8 @@ module SluggedAttributeExamples
       is_expected.to allow_values(
         'f',
         'foo',
-        'foo_bar',
         'foo-bar',
         'foo-1',
-        'foo_1',
         'f1obar',
         'foo-bar5'
       ).for(attribute_name)
@@ -29,10 +27,12 @@ module SluggedAttributeExamples
     it do
       is_expected.not_to allow_values(
         'FOO_1',
+        'foo_bar',
         'fOO',
         'Foo',
         'foo bar',
         'foo 1',
+        'foo_1',
         '1-foo',
         '1',
         '-foo',

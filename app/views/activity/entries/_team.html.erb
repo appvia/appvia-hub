@@ -1,0 +1,12 @@
+<%- case a.action -%>
+<%- when 'create' -%>
+  <%= activity_entry team_icon, a.created_at do %>
+    <%= a.user_email %> created a new team
+    <%= link_to a.auditable_descriptor, team_path(a.auditable_id), class: 'text-monospace' %>
+  <% end %>
+<%- when 'destroy' -%>
+  <%= activity_entry team_icon, a.created_at do %>
+    <%= a.user_email %> deleted team
+    <span class="text-monospace"><%= a.auditable_descriptor %></span>
+  <% end %>
+<%- end -%>

@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_22_153945) do
+ActiveRecord::Schema.define(version: 2019_08_20_151439) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
@@ -31,6 +32,18 @@ ActiveRecord::Schema.define(version: 2019_07_22_153945) do
     t.index ["created_by_id"], name: "index_admin_tasks_on_created_by_id"
     t.index ["data"], name: "index_admin_tasks_on_data", using: :gin
     t.index ["type"], name: "index_admin_tasks_on_type"
+  end
+
+  create_table "allocations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "allocatable_type", null: false
+    t.uuid "allocatable_id", null: false
+    t.string "allocation_receivable_type", null: false
+    t.uuid "allocation_receivable_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["allocatable_type", "allocatable_id", "allocation_receivable_type", "allocation_receivable_id"], name: "index_allocations_on_al_and_al_rec_unique", unique: true
+    t.index ["allocatable_type", "allocatable_id"], name: "index_allocations_on_al_type_and_al_id"
+    t.index ["allocation_receivable_type", "allocation_receivable_id"], name: "index_allocations_on_al_rec_type_and_al_rec_id"
   end
 
   create_table "audits", force: :cascade do |t|
@@ -112,7 +125,9 @@ ActiveRecord::Schema.define(version: 2019_07_22_153945) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "team_id"
     t.index ["slug"], name: "index_projects_on_slug", unique: true
+    t.index ["team_id"], name: "index_projects_on_team_id"
   end
 
   create_table "resources", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -133,6 +148,26 @@ ActiveRecord::Schema.define(version: 2019_07_22_153945) do
     t.index ["type"], name: "index_resources_on_type"
   end
 
+  create_table "team_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "team_id", null: false
+    t.uuid "user_id", null: false
+    t.string "role"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id", "user_id"], name: "index_team_memberships_on_team_id_and_user_id", unique: true
+    t.index ["team_id"], name: "index_team_memberships_on_team_id"
+    t.index ["user_id"], name: "index_team_memberships_on_user_id"
+  end
+
+  create_table "teams", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_teams_on_slug", unique: true
+  end
+
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "email", null: false
     t.string "name"
@@ -141,6 +176,8 @@ ActiveRecord::Schema.define(version: 2019_07_22_153945) do
     t.datetime "updated_at", null: false
     t.string "role", default: "user"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["email"], name: "users_search_email_idx", opclass: :gin_trgm_ops, using: :gin
+    t.index ["name"], name: "users_search_name_idx", opclass: :gin_trgm_ops, using: :gin
   end
 
   add_foreign_key "admin_tasks", "users", column: "created_by_id"
@@ -148,4 +185,6 @@ ActiveRecord::Schema.define(version: 2019_07_22_153945) do
   add_foreign_key "integration_overrides", "projects"
   add_foreign_key "resources", "integrations"
   add_foreign_key "resources", "projects"
+  add_foreign_key "team_memberships", "teams"
+  add_foreign_key "team_memberships", "users"
 end

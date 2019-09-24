@@ -8,31 +8,43 @@
     class: 'resource-form',
     data: {
       controller: 'resource-form',
-      'resource-form-integration-id': @resource.integration_id
+      'resource-form-integration-id': @resource.integration_id,
+      target: 'resource-form.form'
     }
   ) do |form|
 %>
   <%= form.alert_message "Please fix the issues below:" %>
 
   <%= form.hidden_field :type %>
+  <%= form.hidden_field :parent_id %>
 
-  <%=
-    form.select :integration_id,
-      integrations.map { |i| [i.name, i.id] },
-      {
-        label: label_with_tooltip(
-          'For integration',
-          'These are set up by a hub admin'
-        ),
-        required: true
-      },
-      {
-        class: 'selectpicker',
-        data: {
-          action: 'resource-form#setCurrentIntegration'
+  <% if resource_type[:id] == 'ServiceCatalogInstance' %>
+    <%= form.hidden_field :integration_id %>
+    <div>
+      <p>
+        For integration: <%= icon_with_tooltip 'These are set up and allocated by a hub admin' -%>
+        <%= resource.integration.name %>
+      </p>
+    </div>
+  <% else %>
+    <%=
+      form.select :integration_id,
+        integrations.transform_values { |l| l.map { |i| [i.name, i.id] } },
+        {
+          label: label_with_tooltip(
+            'For integration',
+            'These are set up and allocated by a hub admin'
+          ),
+          required: true
+        },
+        {
+          class: 'selectpicker',
+          data: {
+            action: 'resource-form#setCurrentIntegration'
+          }
         }
-      }
-  %>
+    %>
+  <% end %>
 
   <%=
     form.text_field :name,
@@ -40,71 +52,132 @@
       pattern: "^#{Resource::SLUG_FORMAT_REGEX}$"
   %>
 
-  <% integrations.each do |i| %>
-    <div data-target="resource-form.section" data-integration-id="<%= i.id -%>">
-      <%- case i.provider_id -%>
-      <%- when 'git_hub' -%>
-        <div class="card my-4">
-          <div class="card-header">
-            Initialise from a template?
-          </div>
-          <div class="card-body">
-            <% enabled = current_user.identities.exists?(integration_id: i.id) %>
+  <% integrations.values.each do |l| %>
+    <% l.each do |i| %>
+      <fieldset data-target="resource-form.section" data-integration-id="<%= i.id -%>">
+        <%- case i.provider_id -%>
+        <%- when 'git_hub' -%>
+          <div class="card my-4">
+            <div class="card-header">
+              Initialise from a template?
+            </div>
+            <div class="card-body">
+              <% enabled = current_user.identities.exists?(integration_id: i.id) %>
 
-            <% unless enabled %>
-              <div class="card bg-light mb-3">
-                <div class="card-body p-2">
-                  You can only use templates once you've
-                  <%= link_to 'connected up your GitHub identity', me_access_path(anchor: i.id) %>.
-                  This is because we use the
-                  <%= link_to 'GitHub Source Imports API', 'https://developer.github.com/v3/migrations/source_imports/' %>
-                  which requires a User-to-Server auth token.
+              <% unless enabled %>
+                <div class="card bg-light mb-3">
+                  <div class="card-body p-2">
+                    You can only use templates once you've
+                    <%= link_to 'connected up your GitHub identity', me_access_path(anchor: i.id) %>.
+                    This is because we use the
+                    <%= link_to 'GitHub Source Imports API', 'https://developer.github.com/v3/migrations/source_imports/' %>
+                    which requires a User-to-Server auth token.
+                  </div>
                 </div>
-              </div>
-            <% end %>
+              <% end %>
 
-            <%= form.fields_for :git_hub do |integration_form| %>
-              <% templates = i.config['templates'] %>
-              <% if templates.present? %>
+              <%= form.fields_for :git_hub do |integration_form| %>
+                <% templates = i.config['templates'] %>
+                <% if templates.present? %>
+                  <%=
+                    integration_form.select :template_url,
+                      templates.map { |t|
+                        [
+                          "#{t['name']} (#{t['repo_url']})",
+                          t['repo_url']
+                        ]
+                      },
+                      {
+                        label: label_with_tooltip(
+                          'Choose from existing options',
+                          'These are set up by a hub admin'
+                        ),
+                        selected: params.dig('resource', 'git_hub', 'template_url'),
+                        include_blank: true
+                      },
+                      {
+                        class: 'selectpicker',
+                        disabled: !enabled
+                      }
+                  %>
+
+                  <p class="font-weight-bold">
+                    OR
+                  </p>
+                <% end %>
+
                 <%=
-                  integration_form.select :template_url,
-                    templates.map { |t|
-                      [
-                        "#{t['name']} (#{t['repo_url']})",
-                        t['repo_url']
-                      ]
-                    },
+                  integration_form.url_field :template_url_custom,
+                    value: params.dig('resource', 'git_hub', 'template_url_custom'),
+                    disabled: !enabled,
+                    label: 'Specify a custom template repo URL',
+                    help: "Needs to be compatible with #{link_to('the GitHub Source Imports API', 'https://developer.github.com/v3/migrations/source_imports/', target: '_blank')}".html_safe
+                %>
+              <% end %>
+            </div>
+          </div>
+        <%- when 'service_catalog' -%>
+          <div class="card my-4">
+            <div class="card-header">
+              Instance details
+            </div>
+            <div class="card-body">
+              <%= form.fields_for :service_catalog do |service_catalog_form| %>
+                <%=
+                  service_catalog_form.select :service_class,
+                    sb_service.generate_service_class_select_options,
                     {
                       label: label_with_tooltip(
-                        'Choose from existing options',
-                        'These are set up by a hub admin'
+                        'Type',
+                        'The type of cloud resource you would like to request'
                       ),
-                      selected: params.dig('resource', 'git_hub', 'template_url'),
-                      include_blank: true
+                      selected: params.dig('resource', 'service_catalog', 'service_class'),
+                      include_blank: true,
+                      required: true
                     },
-                    {
-                      class: 'selectpicker',
-                      disabled: !enabled
+                    data: {
+                      action: 'resource-form#submitForm'
                     }
                 %>
 
-                <p class="font-weight-bold">
-                  OR
-                </p>
+                <%=
+                  service_plans = sb_service.generate_service_plans_select_options(resource.class_name)
+                  service_catalog_form.select :service_plan,
+                    service_plans,
+                    {
+                      label: label_with_tooltip(
+                        'Plan',
+                        'The plan for the selected type'
+                      ),
+                      selected: params.dig('resource', 'service_catalog', 'service_plan'),
+                      include_blank: true,
+                      required: true,
+                    },
+                    {
+                      disabled: service_plans.empty?,
+                      data: {
+                        action: 'resource-form#submitForm'
+                      }
+                    }
+                %>
+                <% service_plan_schema = sb_service.service_plan_schema(resource.class_name, resource.plan_name) %>
+                <% unless service_plan_schema.nil? %>
+                  <%=
+                    render partial: 'application/forms/json_schema/fields',
+                      locals: {
+                        form: service_catalog_form,
+                        namespace: :plan_parameters,
+                        spec: service_plan_schema,
+                        current: params.dig('resource', 'service_catalog', 'plan_parameters') || {}
+                      }
+                  %>
+                <% end %>
               <% end %>
-
-              <%=
-                integration_form.url_field :template_url_custom,
-                  value: params.dig('resource', 'git_hub', 'template_url_custom'),
-                  disabled: !enabled,
-                  label: 'Specify a custom template repo URL',
-                  help: "Needs to be compatible with #{link_to('the GitHub Source Imports API', 'https://developer.github.com/v3/migrations/source_imports/', target: '_blank')}".html_safe
-              %>
-            <% end %>
+            </div>
           </div>
-        </div>
-      <%- end -%>
-    </div>
+        <%- end -%>
+      </fieldset>
+    <% end %>
   <% end %>
 
   <%= form.primary 'Request' %>

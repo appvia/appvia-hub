@@ -18,9 +18,13 @@ RSpec.describe 'Me - Identity Flows', type: :request do
         create_mocked_integration
       end
 
+      let :make_request do
+        get me_identity_flow_git_hub_start_path(integration_id: integration.id)
+      end
+
       it_behaves_like 'unauthenticated not allowed' do
         before do
-          get me_identity_flow_git_hub_start_path(integration_id: integration.id)
+          make_request
         end
       end
 
@@ -41,15 +45,34 @@ RSpec.describe 'Me - Identity Flows', type: :request do
             .and_return(base_url)
         end
 
-        it 'redirects to the GitHub OAuth authorize endpoint with an appropriate callback_url' do
-          git_hub_auth_url = 'git_hub_auth_url'
-          expect(git_hub_identity_service).to receive(:authorize_url)
-            .with(current_user, callback_url)
-            .and_return(git_hub_auth_url)
+        context 'when user is not in any teams (and thus does not have access to the integration)' do
+          it 'does not have access' do
+            make_request
 
-          get me_identity_flow_git_hub_start_path(integration_id: integration.id)
+            expect(response).to redirect_to(root_path)
+            expect(flash[:alert]).not_to be_empty
+          end
+        end
 
-          expect(response).to redirect_to(git_hub_auth_url)
+        context 'when user is in a team that has the integraton allocated to it' do
+          let(:team) { create :team }
+
+          before do
+            create :allocation, allocatable: integration, allocation_receivable: team
+
+            create :team_membership, user: current_user, team: team
+          end
+
+          it 'redirects to the GitHub OAuth authorize endpoint with an appropriate callback_url' do
+            git_hub_auth_url = 'https://git_hub_auth_url'
+            expect(git_hub_identity_service).to receive(:authorize_url)
+              .with(current_user, callback_url)
+              .and_return(git_hub_auth_url)
+
+            make_request
+
+            expect(response).to redirect_to(git_hub_auth_url)
+          end
         end
       end
     end

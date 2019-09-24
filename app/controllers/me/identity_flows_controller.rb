@@ -5,13 +5,17 @@ module Me
       'git_hub_callback' => 'git_hub'
     }.freeze
 
+    # The git_hub_callback action is an open endpoint since GitHub will call back into it.
     skip_before_action :require_authentication, only: :git_hub_callback
+    skip_authorization_check only: :git_hub_callback
 
     before_action :find_integration
 
     before_action :ensure_valid_action_for_integration
 
     def git_hub_start
+      authorize! :connect_identity, @integration
+
       callback_url = URI.join(
         Rails.configuration.base_url,
         me_identity_flow_git_hub_callback_path(integration_id: @integration.id)

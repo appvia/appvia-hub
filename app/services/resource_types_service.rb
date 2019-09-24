@@ -51,6 +51,14 @@ module ResourceTypesService
           providers: %w[loki].freeze,
           top_level: false,
           depends_on: %w[kubernetes].freeze
+        },
+        {
+          id: 'ServiceCatalogInstance',
+          class: 'Resources::ServiceCatalogInstance',
+          name: 'Service Catalog',
+          providers: %w[service_catalog].freeze,
+          top_level: false,
+          depends_on: %w[kubernetes].freeze
         }
       ].map(&:freeze).freeze
     end
@@ -71,14 +79,6 @@ module ResourceTypesService
 
     def for_integration(integration)
       for_provider integration.provider_id
-    end
-
-    def integrations_for(id)
-      entry = get id
-
-      Integration
-        .where(provider_id: entry[:providers])
-        .order(:created_at)
     end
   end
 end

@@ -7,7 +7,6 @@ RSpec.describe 'Code Repos - GitHub' do
     let :integration_config do
       {
         'org' => 'foo',
-        'all_team_id' => 1000,
         'app_id' => 12_345,
         'app_private_key' => 'foo_private_key',
         'app_installation_id' => 1_010_101,
@@ -24,7 +23,6 @@ RSpec.describe 'Code Repos - GitHub' do
     let(:agent_class) { GitHubAgent }
     let :agent_initializer_params do
       integration_config.symbolize_keys.except(
-        :all_team_id,
         :enforce_best_practices,
         :app_client_id,
         :app_client_secret
@@ -41,8 +39,10 @@ RSpec.describe 'Code Repos - GitHub' do
 
     let :agent_create_method_call_success do
       lambda do |agent, resource|
+        team_name = "hub-#{resource.project.team.slug}"
+
         expect(agent).to receive(:create_repository)
-          .with(resource.name, team_id: 1000, auto_init: true)
+          .with(resource.name, team_name: team_name, auto_init: true)
           .and_return(agent_create_response)
 
         expect(agent).to receive(:apply_best_practices)
@@ -62,8 +62,10 @@ RSpec.describe 'Code Repos - GitHub' do
 
     let :agent_create_method_call_error do
       lambda do |agent, resource|
+        team_name = "hub-#{resource.project.team.slug}"
+
         expect(agent).to receive(:create_repository)
-          .with(resource.name, team_id: 1000, auto_init: true)
+          .with(resource.name, team_name: team_name, auto_init: true)
           .and_raise('Something broked')
       end
     end

@@ -27,6 +27,8 @@ Layout/MultilineMethodCallIndentation:
 
 Metrics/AbcSize:
   Max: 40
+  Exclude:
+    - "spec/**/*"
 
 Metrics/BlockLength:
   Exclude:
@@ -35,6 +37,11 @@ Metrics/BlockLength:
 
 Metrics/ClassLength:
   Max: 150
+  Exclude:
+    - "spec/**/*"
+
+Metrics/CyclomaticComplexity:
+  Max: 8
   Exclude:
     - "spec/**/*"
 

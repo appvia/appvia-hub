@@ -9,7 +9,7 @@ module.exports = {
         runner: `${
           /^win/.test(process.platform) ? 'ruby ' : ''
         }bin/rails runner`,
-        timeoutMs: 20000,
+        timeoutMs: 30000,
         env: {
           ...process.env,
           DISABLE_SPRING: 1

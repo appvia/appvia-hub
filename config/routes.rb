@@ -3,12 +3,16 @@ require 'sidekiq/web'
 # rubocop:disable Metrics/BlockLength
 Rails.application.routes.draw do
   namespace :admin do
-    resources :integrations, except: %i[show]
+    resources :integrations, except: %i[show destroy]
     resource :settings, only: %i[show update]
 
     get '/create', to: 'create#show', as: 'create'
 
     resources :tasks, only: %i[new create destroy]
+  end
+
+  resources :teams do
+    resources :memberships, controller: 'team_memberships', only: %i[update destroy]
   end
 
   resources :projects, path: 'spaces' do
@@ -23,6 +27,10 @@ Rails.application.routes.draw do
   end
 
   resources :users, only: %i[index] do
+    collection do
+      get :search, constraints: { format: 'json' }
+    end
+
     resource :role, only: %i[update], controller: 'users', action: :update_role
   end
 

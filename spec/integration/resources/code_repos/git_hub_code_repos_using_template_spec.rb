@@ -10,7 +10,6 @@ RSpec.describe 'Code Repo - GitHub - using a template' do
   let :integration_config do
     {
       'org' => 'foo',
-      'all_team_id' => 1000,
       'app_id' => 12_345,
       'app_private_key' => 'foo_private_key',
       'app_installation_id' => 1_010_101,
@@ -38,7 +37,6 @@ RSpec.describe 'Code Repo - GitHub - using a template' do
 
   let :agent_initializer_params do
     integration_config.symbolize_keys.except(
-      :all_team_id,
       :enforce_best_practices,
       :app_client_id,
       :app_client_secret
@@ -60,8 +58,13 @@ RSpec.describe 'Code Repo - GitHub - using a template' do
   let(:user_auth_token) { 'user_auth_token' }
 
   let! :identity do
+    user = resource.requested_by
+
+    # User needs to be in at least one team to access integrations
+    create :team_membership, user: user
+
     create :identity,
-      user: resource.requested_by,
+      user: user,
       integration: integration,
       access_token: user_auth_token
   end
@@ -83,9 +86,11 @@ RSpec.describe 'Code Repo - GitHub - using a template' do
   end
 
   describe 'request create' do
-    it 'agent should receive the overriden config option' do
+    it 'agent should set up the repo and import from the template' do
+      team_name = "hub-#{resource.project.team.slug}"
+
       expect(agent).to receive(:create_repository)
-        .with(resource.name, team_id: 1000, auto_init: false)
+        .with(resource.name, team_name: team_name, auto_init: false)
         .and_return(agent_create_response)
 
       expect(agent).to receive(:apply_best_practices)

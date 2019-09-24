@@ -4,7 +4,7 @@
 import { Controller } from 'stimulus';
 
 export default class extends Controller {
-  static targets = ['section'];
+  static targets = ['section', 'form'];
 
   initialize() {
     this.showCurrentSection();
@@ -16,10 +16,14 @@ export default class extends Controller {
 
   showCurrentSection() {
     this.sectionTargets.forEach(el => {
-      el.classList.toggle(
-        'd-none',
-        el.dataset.integrationId !== this.integrationId
-      );
+      /* eslint-disable-next-line prettier/prettier */
+      const isSelectedIntegration = el.dataset.integrationId === this.integrationId;
+      el.classList.toggle('d-none', !isSelectedIntegration);
+      if (isSelectedIntegration) {
+        el.removeAttribute('disabled');
+      } else {
+        el.setAttribute('disabled', 'disabled');
+      }
     });
   }
 
@@ -30,5 +34,9 @@ export default class extends Controller {
   set integrationId(value) {
     this.data.set('integrationId', value);
     this.showCurrentSection();
+  }
+
+  submitForm() {
+    this.formTarget.submit();
   }
 }

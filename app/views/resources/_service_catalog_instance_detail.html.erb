@@ -1,0 +1,29 @@
+<div class="mt-3 indented">
+  <% sub_resource_panel_id = "resource-service-catalog-instance-detail-#{SecureRandom.hex(10)}" %>
+  <%=
+    tag.a(
+      href: '#',
+      data: {
+        toggle: 'collapse',
+        target: "##{sub_resource_panel_id}"
+      },
+      aria: {
+        controls: sub_resource_panel_id
+      }
+    ) do
+  %>
+    <%= icon icon %>
+    <%= link_text %>
+    <%= icon 'caret-down', css_class: 'ml-1' %>
+  <% end %>
+  <%=
+    tag.div(
+      id: sub_resource_panel_id,
+      class: 'collapse'
+    ) do
+  %>
+    <div class="mt-2 card p-2 bg-light overflow-auto">
+      <pre class="mb-0" style="white-space:pre;"><%= body_text %></pre>
+    </div>
+  <% end %>
+</div>

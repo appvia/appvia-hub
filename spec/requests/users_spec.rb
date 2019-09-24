@@ -26,6 +26,32 @@ RSpec.describe 'Users', type: :request do
     end
   end
 
+  describe 'search - GET /user/search' do
+    let(:query) { 'bob' }
+
+    it_behaves_like 'unauthenticated not allowed' do
+      before do
+        get search_users_path, params: { q: query }
+      end
+    end
+
+    it_behaves_like 'authenticated' do
+      let!(:bob) { create :user, email: 'bob@example.com' }
+
+      before do
+        create_list :user, 2
+      end
+
+      it 'finds the user bob and only returns JSON' do
+        get search_users_path, params: { q: query }
+        expect(response).to be_successful
+        expect(is_json_response?).to be true
+        expect(json_response.size).to eq 1
+        expect(pluck_from_json_response('id')).to contain_exactly bob.id
+      end
+    end
+  end
+
   describe 'update_role - PUT/PATCH /users/:user_id/role' do
     before do
       @user = create :user, role: 'user'

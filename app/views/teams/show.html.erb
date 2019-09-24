@@ -1,0 +1,109 @@
+<% if can? :edit, @team %>
+  <div class="btn-group float-right" role="group" aria-label="Team actions">
+    <button id="teamActionsGroupDropdown" type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Actions
+    </button>
+    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="teamActionsGroupDropdown">
+      <%= link_to 'Edit', edit_team_path(@team), class: 'dropdown-item' %>
+    </div>
+  </div>
+<% end %>
+
+<h1>
+  <%= team_icon %>
+  <%= @team.name %>
+</h1>
+
+<div class="mb-4">
+  <span class="badge badge-info text-monospace mr-2">
+    <%= @team.slug %>
+  </span>
+  <small class="text-muted">
+    Created <%= local_time_ago(@team.created_at) %>
+  </small>
+</div>
+
+<% if @team.description.present? %>
+  <div class="lead mb-4">
+    <%= simple_format @team.description %>
+  </div>
+<% end %>
+
+<ul class="nav nav-tabs" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="spaces-tab" data-toggle="tab" href="#spaces" role="tab" aria-controls="spaces" aria-selected="true">
+      Spaces
+      <%= count_badge @team.projects.count %>
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="people-tab" data-toggle="tab" href="#people" role="tab" aria-controls="people" aria-selected="false">
+      People
+      <%= count_badge @team.members.count %>
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="activity-tab" data-toggle="tab" href="#activity" role="tab" aria-controls="activity" aria-selected="false">Activity</a>
+  </li>
+</ul>
+
+<div class="tab-content border border-top-0">
+  <div class="tab-pane active" id="spaces" role="tabpanel" aria-labelledby="spaces-tab">
+    <% if @team.projects.count.zero? %>
+      <div class="p-3 border-bottom">
+        <div class="card bg-light p-3 text-center">
+          <p class="lead">
+            This team has no spaces at the moment.
+          </p>
+
+          <p>
+            Spaces allow you to provision and group resources for your team.
+          </p>
+
+          <div>
+            <%=
+              link_to 'Create a new space...',
+                new_project_path(team_id: @team.id),
+                class: 'btn btn-primary',
+                role: 'button'
+            %>
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <div class="text-right">
+        <%=
+          link_to 'New space',
+            new_project_path(team_id: @team.id),
+            class: 'btn btn-sm btn-primary my-2 mr-3',
+            role: 'button'
+        %>
+      </div>
+    <% end %>
+
+    <%= render partial: 'projects', locals: { team: @team } %>
+  </div>
+
+  <div class="tab-pane" id="people" role="tabpanel" aria-labelledby="people-tab">
+    <% if can? :edit, @team %>
+      <div id="add-user-to-team" class="border-bottom" style="min-height: 82px;">
+        <add-user-to-team
+          team-id="<%= @team.id -%>"
+          team-url="<%= team_path(@team, anchor: 'people') -%>"
+        ></add-user-to-team>
+      </div>
+    <% end %>
+
+    <% if @team.members.count.zero? %>
+      <p class="none-text text-center p-3 mb-0">
+        No team members yet
+      </p>
+    <% end %>
+
+    <%= render partial: 'people', locals: { team: @team } %>
+  </div>
+
+  <div class="tab-pane" id="activity" role="tabpanel" aria-labelledby="activity-tab">
+    <%= render partial: 'activity/stream', locals: { activity: @activity } %>
+  </div>
+</div>

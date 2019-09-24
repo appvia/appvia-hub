@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Code Repo - GitHub - with overriden config option' do
+RSpec.describe 'Code Repo - GitHub - with overridden config option' do
   let! :provisioning_service do
     ResourceProvisioningService.new
   end
@@ -10,7 +10,6 @@ RSpec.describe 'Code Repo - GitHub - with overriden config option' do
   let :integration_config do
     {
       'org' => 'foo',
-      'all_team_id' => 1000,
       'app_id' => 12_345,
       'app_private_key' => 'foo_private_key',
       'app_installation_id' => 1_010_101,
@@ -43,7 +42,6 @@ RSpec.describe 'Code Repo - GitHub - with overriden config option' do
 
   let :agent_initializer_params do
     integration_config.symbolize_keys.except(
-      :all_team_id,
       :enforce_best_practices,
       :app_client_id,
       :app_client_secret
@@ -72,9 +70,11 @@ RSpec.describe 'Code Repo - GitHub - with overriden config option' do
   end
 
   describe 'request create' do
-    it 'agent should receive the overriden config option' do
+    it 'agent should receive the overridden config option' do
+      team_name = "hub-#{resource.project.team.slug}"
+
       expect(agent).to receive(:create_repository)
-        .with(resource.name, team_id: 1000, auto_init: false)
+        .with(resource.name, team_name: team_name, auto_init: false)
         .and_return(agent_create_response)
 
       expect do

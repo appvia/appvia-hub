@@ -2,7 +2,6 @@ module JsonSchemaHelpers
   # Processes a flat Hash of values, ensuring fields are converted to the data
   # type specified in the provided JsonSchema spec.
   #
-  # rubocop:disable Metrics/CyclomaticComplexity
   def self.ensure_data_types(data, spec)
     return data if data.blank?
 
@@ -27,5 +26,4 @@ module JsonSchemaHelpers
 
     data
   end
-  # rubocop:enable Metrics/CyclomaticComplexity
 end

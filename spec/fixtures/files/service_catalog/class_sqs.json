@@ -1,0 +1,46 @@
+{
+  "apiVersion": "servicecatalog.k8s.io/v1beta1",
+  "kind": "ClusterServiceClass",
+  "metadata": {
+    "creationTimestamp": "2019-08-30T08:44:52Z",
+    "name": "dab9f158-8e72-523b-b3a0-7d28636053e3",
+    "ownerReferences": [
+      {
+        "apiVersion": "servicecatalog.k8s.io/v1beta1",
+        "blockOwnerDeletion": false,
+        "controller": true,
+        "kind": "ClusterServiceBroker",
+        "name": "aws-sb",
+        "uid": "3daf1889-cb02-11e9-819a-76d9ac1d491b"
+      }
+    ],
+    "resourceVersion": "31",
+    "selfLink": "/apis/servicecatalog.k8s.io/v1beta1/clusterserviceclasses/dab9f158-8e72-523b-b3a0-7d28636053e3",
+    "uid": "6f342d4d-cb02-11e9-819a-76d9ac1d491b"
+  },
+  "spec": {
+    "bindable": true,
+    "bindingRetrievable": false,
+    "clusterServiceBrokerName": "aws-sb",
+    "description": "AWS Service Broker - Amazon SQS",
+    "externalID": "dab9f158-8e72-523b-b3a0-7d28636053e3",
+    "externalMetadata": {
+      "displayName": "Amazon SQS",
+      "documentationUrl": "https://aws.amazon.com/documentation/sqs/",
+      "imageUrl": "https://s3.amazonaws.com/awsservicebroker/icons/Messaging_AmazonSQS_LARGE.png",
+      "longDescription": "Amazon Simple Queue Service (Amazon SQS) is a fully managed message queuing service that makes it easy to decouple and scale microservices, distributed systems, and serverless applications. Amazon SQS moves data between distributed application components and helps you decouple these components.\"",
+      "outputsAsIs": false,
+      "providerDisplayName": "Amazon Web Services"
+    },
+    "externalName": "sqs",
+    "planUpdatable": false,
+    "tags": [
+      "AWS",
+      "SQS",
+      "message queing"
+    ]
+  },
+  "status": {
+    "removedFromBrokerCatalog": false
+  }
+}
