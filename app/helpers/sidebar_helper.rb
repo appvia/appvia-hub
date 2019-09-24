@@ -16,4 +16,11 @@ module SidebarHelper
       nav_item text, path, icon: icon
     end
   end
+
+  def show_new_project
+    current_user.teams.count.positive? || (
+      current_user.admin? &&
+      Team.count.positive?
+    )
+  end
 end
