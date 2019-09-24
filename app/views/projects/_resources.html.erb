@@ -23,18 +23,16 @@
       <span class="text-muted ml-2">(<%= resources.count -%>)</span>
     </h2>
 
-    <div class="list-group list-group-flush">
-      <% if resources.present? %>
-        <% resources.each do |r| %>
-          <%= render partial: 'resources/list-item', locals: { resource: r } %>
-        <% end %>
-      <% else %>
-        <div class="list-group-item text-center">
-          <span class="none-text inline-block">
-            No resources of this type yet
-          </span>
-        </div>
+    <% if resources.present? %>
+      <% resources.each do |r| %>
+        <%= render partial: 'resources/card', locals: { resource: r } %>
       <% end %>
-    </div>
+    <% else %>
+      <div class="text-center p-3">
+        <span class="none-text inline-block">
+          No resources of this type yet
+        </span>
+      </div>
+    <% end %>
   <% end %>
 </div>
