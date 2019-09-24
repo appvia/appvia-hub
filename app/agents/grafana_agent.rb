@@ -50,6 +50,22 @@ class GrafanaAgent
     end.body
   end
 
+  def sync_teams(memberships)
+    users = memberships.map do |membership|
+      {
+        name: membership.user,
+        login: membership.user,
+        email: membership.user
+      }
+    end
+    body = users.to_json
+    client.put do |req|
+      add_grafana_headers req
+      req.url path
+      req.body = body
+    end.body
+  end
+
   private
 
   def add_grafana_headers(req)
@@ -57,6 +73,7 @@ class GrafanaAgent
     req.headers['X-Grafana-API-Key'] = @grafana_api_key
     req.headers['X-Grafana-Basic-Auth'] = Base64.strict_encode64("#{@grafana_admin_username}:#{@grafana_admin_password}")
     req.headers['X-Grafana-CA'] = @grafana_ca_cert
+    req.headers['X-Grafana-Basic-Auth'] = Base64.strict_encode64("#{@grafana_admin_username}:#{@grafana_admin_password}")
   end
 
   def dashboard_path(name)
