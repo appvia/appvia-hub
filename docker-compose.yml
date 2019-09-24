@@ -89,7 +89,7 @@ services:
       - 10003:10003
 
   grafana_agent:
-    image: quay.io/appvia/hub-grafana-agent:v0.0.1
+    image: quay.io/appvia/hub-grafana-agent:v0.0.3
     environment:
       - DEBUG=true
       - HTTP_PORT=10004
