@@ -50,7 +50,7 @@ class GrafanaAgent
     end.body
   end
 
-  def sync_teams(memberships)
+  def sync_team(memberships)
     users = memberships.map do |membership|
       {
         name: membership.user,
