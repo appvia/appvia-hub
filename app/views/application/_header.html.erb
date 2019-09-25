@@ -12,6 +12,11 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarUserDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <%= current_user.email %>
+              <% if current_user.admin? %>
+                <span class="badge badge-success ml-1">
+                  Hub admin
+                </span>
+              <% end %>
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarUserDropdown">
               <%= link_to 'Log out', Rails.configuration.x.auth.logout_url, class: 'dropdown-item', data: { turbolinks: false } %>
