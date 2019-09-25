@@ -54,7 +54,7 @@
 
   <% integrations.values.each do |l| %>
     <% l.each do |i| %>
-      <fieldset data-target="resource-form.section" data-integration-id="<%= i.id -%>">
+      <fieldset class="border-0 p-0" data-target="resource-form.section" data-integration-id="<%= i.id -%>">
         <%- case i.provider_id -%>
         <%- when 'git_hub' -%>
           <div class="card my-4">

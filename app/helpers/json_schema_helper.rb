@@ -6,4 +6,12 @@ module JsonSchemaHelper
         "Example(s): #{e.join(', ')}" if e.present?
       end
   end
+
+  def json_schema_one_of_select_list(property_spec)
+    property_spec['oneOf'].map { |o| [o['title'], o['enum']&.first || o['title']] }
+  end
+
+  def json_schema_process_for_display(data)
+    JsonSchemaHelpers.transform_additional_properties data
+  end
 end
