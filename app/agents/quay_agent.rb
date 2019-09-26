@@ -40,6 +40,22 @@ class QuayAgent
     end.body
   end
 
+  def get_vulnerabilities_image(name, image_id)
+    path = "/api/v1/repository/#{@org}/#{name}/image/#{image_id}/security"
+    client.get do |req|
+      add_direct_quay_header req
+      req.url path
+    end.body
+  end
+
+  def get_vulnerabilities_manifest(name, manifest_ref)
+    path = "/api/v1/repository/#{@org}/#{name}/manifestref/#{manifest_ref}/security"
+    client.get do |req|
+      add_direct_quay_header req
+      req.url path
+    end.body
+  end
+
   private
 
   def add_quay_access_token_header(req)
