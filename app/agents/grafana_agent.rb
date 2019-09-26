@@ -30,6 +30,14 @@ class GrafanaAgent
     end.body
   end
 
+  def get_dashboard_alerts(name)
+    path = dashboard_alert_path name
+    client.get do |req|
+      add_grafana_headers req
+      req.url path
+    end.body
+  end
+
   private
 
   def add_grafana_headers(req)
@@ -40,5 +48,9 @@ class GrafanaAgent
 
   def dashboard_path(name)
     "dashboards/#{name}"
+  end
+
+  def dashboard_alert_path(name)
+    "dashboards/#{name}/alerts"
   end
 end
