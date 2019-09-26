@@ -39,7 +39,7 @@ class KubernetesAgent
     end.body
   end
 
-  def get_deployed_versions(namespace, imageuri)
+  def get_deployed_versions_of_image(namespace, imageuri)
     body = {
       imageuri: imageuri
     }
@@ -47,6 +47,13 @@ class KubernetesAgent
       add_kube_auth_headers req
       req.url "versions/#{namespace}"
       req.body body
+    end.body
+  end
+
+  def get_all_deployed_versions(namespace)
+    client.get do |req|
+      add_kube_auth_headers req
+      req.url "versions/#{namespace}"
     end.body
   end
 
