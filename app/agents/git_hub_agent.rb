@@ -47,12 +47,9 @@ class GitHubAgent
 
   def apply_best_practices(repo)
     client = app_installation_client
-
     # Only apply best practices if the `master` branch exists
-
     # Will raise a `Octokit::NotFound` error if branch doesn't exist
     client.branch repo, 'master'
-
     # https://github.community/t5/GitHub-API-Development-and/REST-API-v3-wildcard-branch-protection/td-p/14547
     client.protect_branch(
       repo,
@@ -142,7 +139,6 @@ class GitHubAgent
       exp: Time.now.to_i + (10 * 60), # Max is 10 mins
       iss: @app_id.to_s
     }
-
     jwt = JWT.encode payload, @app_private_key, 'RS256'
 
     @client = Octokit::Client.new bearer_token: jwt
@@ -175,8 +171,7 @@ class GitHubAgent
         context: status['context'],
         description: status['description'],
         state: status['state'],
-        target_url: status['target_url'],
-        avatar_url: status['avatar_url']
+        target_url: status['target_url']
       }
     end
   end
@@ -192,8 +187,7 @@ class GitHubAgent
 
       vulnerabilities << {
         description: notification['description'],
-        reason: notification['reason'],
-        updated_at: notification['updated_at']
+        reason: notification['reason']
       }
     end
   end

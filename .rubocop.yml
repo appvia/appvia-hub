@@ -39,6 +39,7 @@ Metrics/ClassLength:
   Max: 150
   Exclude:
     - "spec/**/*"
+    - "app/agents/**/*"
 
 Metrics/CyclomaticComplexity:
   Max: 8
