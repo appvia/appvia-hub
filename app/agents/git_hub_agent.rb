@@ -163,6 +163,41 @@ class GitHubAgent
       auto_init: auto_init
   end
 
+  def get_statuses(repo)
+    status_branch = 'master'
+    client = app_installation_client
+
+    response = client.statuses(repo, status_branch)
+
+    statuses = []
+    response.each do |status|
+      statuses << {
+        context: status['context'],
+        description: status['description'],
+        state: status['state'],
+        target_url: status['target_url'],
+        avatar_url: status['avatar_url']
+      }
+    end
+  end
+
+  def get_security_notifications(repo)
+    client = app_installation_client
+
+    response = client.repository_notifications(repo)
+
+    vulnerabilities = []
+    response.each do |notification|
+      next unless notification['reason'] == 'security_alert'
+
+      vulnerabilities << {
+        description: notification['description'],
+        reason: notification['reason'],
+        updated_at: notification['updated_at']
+      }
+    end
+  end
+
   def find_team(client, name)
     # NOTE: only checks the first 100 teams for now
     teams = client.org_teams @org, per_page: 100
