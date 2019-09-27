@@ -31,6 +31,8 @@ class ProjectsController < ApplicationController
     end.compact
 
     @activity = ActivityService.new.for_project @project
+
+    @unmask = params.key? 'unmask'
   end
 
   def new

@@ -52,6 +52,12 @@
     </a>
   </li>
   <li class="nav-item">
+    <a class="nav-link" id="credentials-tab" data-toggle="tab" href="#credentials" role="tab" aria-controls="credentials" aria-selected="false">
+      Credentials
+      <%= count_badge @project.credentials.count %>
+    </a>
+  </li>
+  <li class="nav-item">
     <a class="nav-link" id="activity-tab" data-toggle="tab" href="#activity" role="tab" aria-controls="activity" aria-selected="false">
       Activity
     </a>
@@ -89,6 +95,10 @@
     <% end %>
 
     <%= render partial: 'resources', locals: { project: @project, grouped_resources: @grouped_resources } %>
+  </div>
+
+  <div class="tab-pane" id="credentials" role="tabpanel" aria-labelledby="credentials-tab">
+    <%= render partial: 'credentials', locals: { project: @project, unmask: @unmask } %>
   </div>
 
   <div class="tab-pane" id="activity" role="tabpanel" aria-labelledby="activity-tab">
