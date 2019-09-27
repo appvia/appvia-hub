@@ -40,16 +40,8 @@ class QuayAgent
     end.body
   end
 
-  def get_vulnerabilities_image(name, image_id)
-    path = "/api/v1/repository/#{@org}/#{name}/image/#{image_id}/security"
-    client.get do |req|
-      add_direct_quay_header req
-      req.url path
-    end.body
-  end
-
-  def get_vulnerabilities_manifest(name, manifest_ref)
-    path = "/api/v1/repository/#{@org}/#{name}/manifestref/#{manifest_ref}/security"
+  def get_repo_status(name)
+    path = repo_status_path name
     client.get do |req|
       add_direct_quay_header req
       req.url path
@@ -64,5 +56,9 @@ class QuayAgent
 
   def repo_path(name)
     "registry/#{@org}/#{name}"
+  end
+
+  def repo_status_path(name)
+    "registry/#{@org}/#{name}/status"
   end
 end
