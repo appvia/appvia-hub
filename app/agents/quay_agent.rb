@@ -43,7 +43,7 @@ class QuayAgent
   def get_repo_status(name)
     path = repo_status_path name
     client.get do |req|
-      add_direct_quay_header req
+      add_quay_access_token_header req
       req.url path
     end.body
   end

@@ -116,41 +116,24 @@
       Requested by: <%= resource.requested_by.email %>
     </p>
   </div>
-  <div class="card-footer bg-light">
-      <div class="row border mb-1 bg-white">
-          <div class="col-1  p-1 bg-warning text-center text-white">Warning</div>
+
+  <% statuses = resource_status resource %>
+  <% if statuses %>
+    <div class="card-footer bg-light">
+      <% statuses.each do |s| %>
+        <div class="row border mb-1 bg-white">
+          <% if s[:url] %>
+          <div class="col-1 p-1 bg-<%= s[:colour] %> text-center text-white"><%= s[:status] %></div>
+          <% else %>
+          <div class="col-1 p-1 bg-<%= s[:colour] %> text-center text-white"><%= s[:status] %></div>
+          <% end %>
           <div class="col-11 p-1">
-              <div class="ml-2">
-                  <span class="text-muted">This is the description of this status it goes here</span>
-              </div>
+            <div class="ml-2">
+              <span class="text-muted"><%= s[:text] %></span>
+            </div>
           </div>
-      </div>
-      <div class="row border mb-1 bg-white">
-          <div class="col-1  bg-danger p-1 text-center text-white">Error</div>
-          <div class="col-11 p-1">
-              <div class="ml-2">
-                  <span class="text-muted">This is the description of this status it goes here</span>
-              </div>
-          </div>
-      </div>
-      <div class="row border mb-1 bg-white">
-          <div class="col-1 bg-success p-1 text-center text-white">Success</div>
-          <div class="col-11 p-1">
-              <div class="ml-2"><span class="text-muted">This is the description of this status it goes here</span></div>
-          </div>
-      </div>
-      <div class="row border mb-1 bg-white">
-          <div class="col-1 bg-secondary p-1 text-center text-white">Pending</div>
-          <div class="col-11 p-1">
-              <div class="ml-2">
-                  <span class="text-muted">This is the description of this status it goes here</span><span class="float-right"><strong>Version 1.1</strong></span></div>
-          </div>
-      </div>
-      <div class="row border bg-white">
-          <div class="col-1 bg-info p-1 text-center text-white">Runing</div>
-          <div class="col-11 p-1">
-              <div class="ml-2"><span class="text-muted">This is the description of this status it goes here</span></div>
-          </div>
-      </div>
-  </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
 </div>

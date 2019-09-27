@@ -32,6 +32,31 @@ module ResourcesHelper
       ] + Array(css_class)
   end
 
+  def resource_status(resource)
+    agent = AgentsService.get resource.integration.provider_id, resource.integration.config
+
+    case resource.integration.provider_id
+    when 'git_hub'
+      status = agent.get_repo_status(resource.name)
+    when 'kubernetes'
+      status = agent.get_all_deployed_versions(resource.name)
+      response = []
+      status.each do |s|
+        response << {
+          colour: 'info',
+          text: s,
+          status: 'Deployed',
+          url: false
+        }
+      end
+      response
+    when 'quay'
+      status = agent.get_repo_status(resource.name)
+    when 'grafana'
+      status = agent.get_dashboard_alerts(resource.name)
+    end
+  end
+
   def delete_resource_link(project_id, resource, css_class: [])
     link_to 'Delete',
       project_resource_path(project_id, resource),
