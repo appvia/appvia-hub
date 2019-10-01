@@ -22,6 +22,10 @@ module Teams
 
     def process_team_added(integration, team)
       SyncIntegrationTeamService.sync_team integration, team
+
+      team.projects.each do |p|
+        ProjectRobotCredentialsService.create_or_update integration, p
+      end
     rescue StandardError => e
       logger.error [
         "Failed to process integration #{integration.id}",
@@ -33,6 +37,16 @@ module Teams
 
     def process_team_removed(integration, team_slug)
       SyncIntegrationTeamService.remove_team integration, team_slug
+
+      team = Team.friendly.find team_slug
+
+      team.projects.each do |p|
+        ProjectRobotCredentialsService.remove(
+          integration,
+          p.id,
+          p.slug
+        )
+      end
     rescue StandardError => e
       logger.error [
         "Failed to process integration #{integration.id}",

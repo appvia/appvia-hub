@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_20_151439) do
+ActiveRecord::Schema.define(version: 2019_09_13_100202) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -71,6 +71,22 @@ ActiveRecord::Schema.define(version: 2019_08_20_151439) do
     t.index ["request_uuid"], name: "index_audits_on_request_uuid"
     t.index ["user_email"], name: "index_audits_on_user_email"
     t.index ["user_type", "user_id"], name: "index_audits_on_user_type_and_user_id"
+  end
+
+  create_table "credentials", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "integration_id", null: false
+    t.string "owner_type", null: false
+    t.uuid "owner_id", null: false
+    t.string "kind", null: false
+    t.string "name", null: false
+    t.text "value", null: false
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["integration_id"], name: "index_credentials_on_integration_id"
+    t.index ["kind"], name: "index_credentials_on_kind"
+    t.index ["name", "integration_id"], name: "index_credentials_on_name_and_integration_id", unique: true
+    t.index ["owner_type", "owner_id"], name: "index_credentials_on_owner_type_and_owner_id"
   end
 
   create_table "hash_records", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

@@ -10,7 +10,13 @@ module Resources
 
         with_agent(resource.integration, config) do |agent|
           with_handler(resource) do |handler|
-            result = handler.call resource, agent, config
+            result = handler.call(
+              resource,
+              agent,
+              config,
+              logger
+            )
+
             result ? finalise(resource) : resource.failed!
           rescue StandardError => e
             logger.error [

@@ -7,9 +7,7 @@ RSpec.describe 'Docker Repos – Quay' do
     let :integration_config do
       {
         'api_access_token' => 'quay API token',
-        'org' => 'foo',
-        'global_robot_name' => 'global robot name',
-        'global_robot_token' => 'global robot token'
+        'org' => 'foo'
       }
     end
 
@@ -23,8 +21,7 @@ RSpec.describe 'Docker Repos – Quay' do
         agent_base_url: Rails.configuration.agents.quay.base_url,
         agent_token: Rails.configuration.agents.quay.token,
         quay_access_token: integration_config['api_access_token'],
-        org: integration_config['org'],
-        global_robot_name: integration_config['global_robot_name']
+        org: integration_config['org']
       }
     end
 
@@ -40,7 +37,7 @@ RSpec.describe 'Docker Repos – Quay' do
     let :agent_create_method_call_success do
       lambda do |agent, resource|
         expect(agent).to receive(:create_repository)
-          .with(resource.name)
+          .with(resource.name, robots: [])
           .and_return(agent_create_response)
       end
     end
@@ -55,7 +52,7 @@ RSpec.describe 'Docker Repos – Quay' do
     let :agent_create_method_call_error do
       lambda do |agent, resource|
         expect(agent).to receive(:create_repository)
-          .with(resource.name)
+          .with(resource.name, robots: [])
           .and_raise('Something broked')
       end
     end

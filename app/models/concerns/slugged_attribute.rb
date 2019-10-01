@@ -6,6 +6,10 @@ module SluggedAttribute
 
   class_methods do
     def slugged_attribute(attribute_name, presence:, uniqueness:, readonly:)
+      scope "by_#{attribute_name}".to_sym, lambda { |value|
+        where attribute_name.to_sym => value
+      }
+
       validates attribute_name,
         presence: presence,
         uniqueness: uniqueness,

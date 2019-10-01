@@ -1,5 +1,10 @@
 module SluggedAttributeExamples
   RSpec.shared_examples 'slugged_attribute' do |attribute_name, presence:, uniqueness:, readonly:|
+    it 'defines a scope for the slugged attribute' do
+      scope_name = "by_#{attribute_name}".to_sym
+      expect(subject.class).to respond_to(scope_name)
+    end
+
     it { is_expected.to validate_presence_of(attribute_name) } if presence
 
     if uniqueness
