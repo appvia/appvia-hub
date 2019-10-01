@@ -59,7 +59,7 @@ services:
       - 6379:6379
 
   quay_agent:
-    image: quay.io/appvia/hub-quay-agent:v0.0.5
+    image: quay.io/appvia/hub-quay-agent:v0.0.6
     environment:
       - DEBUG=true
       - HTTP_PORT=10001

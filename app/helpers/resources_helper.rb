@@ -5,6 +5,26 @@ module ResourcesHelper
     'deleting' => 'warning',
     'failed' => 'danger'
   }.freeze
+  GITHUB_STATUS_TO_COLOUR = {
+    'pending' => 'warning',
+    'success' => 'success',
+    'failure' => 'danger'
+  }.freeze
+  QUAY_STATUS_TO_COLOUR = {
+    'High' => 'danger',
+    'Medium' => 'warning',
+    'Low' => 'info',
+    'Negligible' => 'secondary',
+    'Unknown' => 'secondary'
+  }.freeze
+  GRAFANA_STATUS_TO_COLOUR = {
+    'ALL' => 'info',
+    'no_data' => 'warning',
+    'paused' => 'info',
+    'pending' => 'info',
+    'alerting' => 'danger',
+    'ok' => 'success'
+  }.freeze
 
   def resource_icon(resource_class_or_name = nil)
     case resource_class_or_name
@@ -37,7 +57,17 @@ module ResourcesHelper
 
     case resource.integration.provider_id
     when 'git_hub'
-      status = agent.get_repo_status(resource.name)
+      status = agent.get_statuses(resource.name)
+      response = []
+      status.each do |s|
+        response << {
+          colour: GITHUB_STATUS_TO_COLOUR[s[:state]],
+          text: s[:context] + ' ' + s[:description],
+          status: s[:state],
+          url: s[:target_url]
+        }
+      end
+      response
     when 'kubernetes'
       status = agent.get_all_deployed_versions(resource.name)
       response = []
@@ -52,6 +82,15 @@ module ResourcesHelper
       response
     when 'quay'
       status = agent.get_repo_status(resource.name)
+      response = []
+      status.each do |s|
+        response << {
+          colour: 'info',
+          text: s,
+          status: 'Deployed',
+          url: false
+        }
+      end
     when 'grafana'
       status = agent.get_dashboard_alerts(resource.name)
     end

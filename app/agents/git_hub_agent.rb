@@ -131,6 +131,25 @@ class GitHubAgent
     )
   end
 
+  def get_statuses(name)
+    full_name = "#{@org}/#{name}"
+    status_branch = 'master'
+    client = app_installation_client
+
+    response = client.statuses(full_name, status_branch)
+
+    statuses = []
+    response.each do |status|
+      statuses << {
+        context: status['context'],
+        description: status['description'],
+        status: status['state'],
+        target_url: status['target_url']
+      }
+    statuses
+    end
+  end
+
   private
 
   def setup_client
@@ -157,23 +176,6 @@ class GitHubAgent
       organization: @org,
       private: private,
       auto_init: auto_init
-  end
-
-  def get_statuses(repo)
-    status_branch = 'master'
-    client = app_installation_client
-
-    response = client.statuses(repo, status_branch)
-
-    statuses = []
-    response.each do |status|
-      statuses << {
-        context: status['context'],
-        description: status['description'],
-        state: status['state'],
-        target_url: status['target_url']
-      }
-    end
   end
 
   def get_security_notifications(repo)

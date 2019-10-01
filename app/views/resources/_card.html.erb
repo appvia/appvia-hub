@@ -121,18 +121,20 @@
   <% if statuses %>
     <div class="card-footer bg-light">
       <% statuses.each do |s| %>
+        <% if s[:url] %>
+        <a href="<%= s[:url] %>" target="_new" rel="noopener noreferrer" class="card-link ml-0">
+        <% end %>
         <div class="row border mb-1 bg-white">
-          <% if s[:url] %>
           <div class="col-1 p-1 bg-<%= s[:colour] %> text-center text-white"><%= s[:status] %></div>
-          <% else %>
-          <div class="col-1 p-1 bg-<%= s[:colour] %> text-center text-white"><%= s[:status] %></div>
-          <% end %>
           <div class="col-11 p-1">
             <div class="ml-2">
-              <span class="text-muted"><%= s[:text] %></span>
+              <span class="card-text text-muted"><%= s[:text] %></span>
             </div>
           </div>
         </div>
+        <% if s[:url] %>
+        </a>
+        <% end %>
       <% end %>
     </div>
   <% end %>
