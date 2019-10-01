@@ -46,6 +46,15 @@ class Credential < ApplicationRecord
     name
   end
 
+  def full_name
+    case integration.provider_id
+    when 'quay'
+      "#{integration.config['org']}+#{name}"
+    else
+      name
+    end
+  end
+
   private
 
   def check_integration_is_allowed
