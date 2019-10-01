@@ -25,7 +25,7 @@ The hub should then be available at http://localhost:3000
 
 ### Prerequisites
 
-- Ruby 2.5.5
+- Ruby 2.5.7
   - with Bundler v1.17+
   - Postgres client ([platform lib required](https://stackoverflow.com/questions/6040583/cant-find-the-libpq-fe-h-header-when-trying-to-install-pg-gem?answertab=votes#tab-top))
 - NodeJS 10+
