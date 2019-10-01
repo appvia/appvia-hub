@@ -1,27 +1,33 @@
 class KubernetesAgent
   include AgentHttpClient
 
-  def initialize(agent_base_url:, agent_token:, kube_api_url:, kube_ca_cert:, kube_token:, global_service_account_name:)
+  SERVICE_ACCOUNTS_NAMESPACE = 'default'.freeze
+
+  def initialize(agent_base_url:, agent_token:, kube_api_url:, kube_ca_cert:, kube_token:)
     @agent_base_url = agent_base_url
     @agent_token = agent_token
 
     @kube_api_url = kube_api_url
     @kube_ca_cert = kube_ca_cert
     @kube_token = kube_token
-
-    @global_service_account_name = global_service_account_name
   end
 
-  def create_namespace(name)
+  # `service_accounts` is expected to be an array of hashes, of the form:
+  # [
+  #   { name: '<name>' },
+  #   ...
+  # ]
+  def create_namespace(name, service_accounts: [])
+    service_accounts = service_accounts.map do |e|
+      e[:namespace] = SERVICE_ACCOUNTS_NAMESPACE
+      e
+    end
+
     path = namespace_path name
     body = {
       name: name,
       spec: {
-        service_accounts: [
-          {
-            name: @global_service_account_name
-          }
-        ]
+        service_accounts: service_accounts
       }
     }
     client.put do |req|
@@ -39,6 +45,28 @@ class KubernetesAgent
     end.body
   end
 
+  def create_service_account(name)
+    path = service_account_path name
+    body = {
+      spec: {
+        name: name
+      }
+    }
+    client.put do |req|
+      add_kube_auth_headers req
+      req.url path
+      req.body = body
+    end.body
+  end
+
+  def delete_service_account(name)
+    path = service_account_path name
+    client.delete do |req|
+      add_kube_auth_headers req
+      req.url path
+    end.body
+  end
+
   private
 
   def add_kube_auth_headers(req)
@@ -49,5 +77,9 @@ class KubernetesAgent
 
   def namespace_path(name)
     "namespaces/#{name}"
+  end
+
+  def service_account_path(name)
+    "service-accounts/#{SERVICE_ACCOUNTS_NAMESPACE}/#{name}"
   end
 end

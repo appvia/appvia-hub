@@ -9,9 +9,7 @@ RSpec.describe 'Kube Namespaces – Kubernetes' do
         'cluster_name' => 'Our Kube Cluster',
         'api_url' => 'url-to-kube-api',
         'ca_cert' => 'kube CA cert',
-        'token' => 'kube API token',
-        'global_service_account_name' => 'default',
-        'global_service_account_token' => 'service account token'
+        'token' => 'kube API token'
       }
     end
 
@@ -26,8 +24,7 @@ RSpec.describe 'Kube Namespaces – Kubernetes' do
         agent_token: Rails.configuration.agents.kubernetes.token,
         kube_api_url: integration_config['api_url'],
         kube_ca_cert: integration_config['ca_cert'],
-        kube_token: integration_config['token'],
-        global_service_account_name: integration_config['global_service_account_name']
+        kube_token: integration_config['token']
       }
     end
 
@@ -61,7 +58,7 @@ RSpec.describe 'Kube Namespaces – Kubernetes' do
     let :agent_create_method_call_success do
       lambda do |agent, resource|
         expect(agent).to receive(:create_namespace)
-          .with(resource.name)
+          .with(resource.name, service_accounts: [])
           .and_return(agent_create_response)
       end
     end
@@ -74,7 +71,7 @@ RSpec.describe 'Kube Namespaces – Kubernetes' do
     let :agent_create_method_call_error do
       lambda do |agent, resource|
         expect(agent).to receive(:create_namespace)
-          .with(resource.name)
+          .with(resource.name, service_accounts: [])
           .and_raise('Something broked')
       end
     end

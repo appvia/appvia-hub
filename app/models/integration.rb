@@ -36,6 +36,10 @@ class Integration < ApplicationRecord
     dependent: :restrict_with_exception,
     inverse_of: :integration
 
+  has_many :credentials,
+    dependent: :destroy,
+    inverse_of: :integration
+
   validate :ensure_only_one_parent, if: ->(i) { i.provider_id == 'service_catalog' }
 
   validate :check_parents

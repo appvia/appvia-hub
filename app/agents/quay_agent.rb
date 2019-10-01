@@ -1,27 +1,26 @@
 class QuayAgent
   include AgentHttpClient
 
-  def initialize(agent_base_url:, agent_token:, quay_access_token:, org:, global_robot_name:)
+  def initialize(agent_base_url:, agent_token:, quay_access_token:, org:)
     @agent_base_url = agent_base_url
     @agent_token = agent_token
 
     @quay_access_token = quay_access_token
     @org = org
-    @global_robot_name = global_robot_name
   end
 
-  def create_repository(name, visibility: 'public')
+  # `robots` is expected to be an array of hashes, of the form:
+  # [
+  #   { name: '<name>', permission: 'admin|none|read|write' },
+  #   ...
+  # ]
+  def create_repository(name, visibility: 'public', robots: [])
     path = repo_path name
     body = {
       namespace: @org,
       name: name,
       spec: {
-        robots: [
-          {
-            name: @global_robot_name,
-            permission: 'write'
-          }
-        ],
+        robots: robots,
         visibility: visibility
       }
     }
@@ -40,6 +39,30 @@ class QuayAgent
     end.body
   end
 
+  def create_robot_token(name, description)
+    path = robot_path name
+    body = {
+      namespace: @org,
+      name: name,
+      spec: {
+        description: description
+      }
+    }
+    client.put do |req|
+      add_quay_access_token_header req
+      req.url path
+      req.body = body
+    end.body
+  end
+
+  def delete_robot_token(name)
+    path = robot_path name
+    client.delete do |req|
+      add_quay_access_token_header req
+      req.url path
+    end.body
+  end
+
   private
 
   def add_quay_access_token_header(req)
@@ -48,5 +71,9 @@ class QuayAgent
 
   def repo_path(name)
     "registry/#{@org}/#{name}"
+  end
+
+  def robot_path(name)
+    "robots/#{@org}/#{name}"
   end
 end

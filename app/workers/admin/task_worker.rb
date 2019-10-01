@@ -30,9 +30,7 @@ module Admin
             'cluster_name' => cluster_name,
             'api_url' => results[:cluster][:endpoint],
             'ca_cert' => results[:cluster][:ca],
-            'token' => results[:cluster][:service_account_token],
-            'global_service_account_name' => results[:cluster][:global_service_account_name],
-            'global_service_account_token' => results[:cluster][:global_service_account_token]
+            'token' => results[:cluster][:service_account_token]
           }
         )
 

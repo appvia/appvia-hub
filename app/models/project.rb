@@ -10,6 +10,10 @@ class Project < ApplicationRecord
     dependent: :destroy,
     inverse_of: :project
 
+  has_many :credentials,
+    as: :owner,
+    dependent: :destroy
+
   has_many :resources,
     -> { includes :integration },
     dependent: :restrict_with_exception,

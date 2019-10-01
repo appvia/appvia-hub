@@ -41,7 +41,7 @@
               locals: {
                 icon: 'keyboard',
                 link_text: 'Create parameters',
-                body_text: JSON.pretty_generate(r.create_parameters)
+                body_text: JSON.pretty_generate(json_schema_process_for_display(r.create_parameters))
               }
           %>
 

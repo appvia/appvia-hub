@@ -40,9 +40,9 @@ class ProjectsController < ApplicationController
   def edit; end
 
   def create
-    @project = Project.new project_params
+    @project, success = ProjectsService.create project_params
 
-    if @project.save
+    if success
       redirect_to @project, notice: 'Space was successfully created.'
     else
       render :new
@@ -50,7 +50,7 @@ class ProjectsController < ApplicationController
   end
 
   def update
-    if @project.update project_params
+    if ProjectsService.update(@project, project_params)
       redirect_to @project, notice: 'Space was successfully updated.'
     else
       render :edit
@@ -60,7 +60,7 @@ class ProjectsController < ApplicationController
   def destroy
     team_id = @project.team_id
 
-    @project.destroy
+    ProjectsService.destroy! @project
 
     redirect_to team_path(team_id), notice: 'Space was successfully deleted.'
   end
