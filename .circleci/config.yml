@@ -66,6 +66,8 @@ jobs:
       - store_artifacts:
           path: /tmp/test-results
           destination: test-results
+      - store_artifacts:
+          path: coverage
 
       # Build assets (in production mode)
       # - to test that the build process goes through okay
