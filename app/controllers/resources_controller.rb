@@ -118,7 +118,7 @@ class ResourcesController < ApplicationController
   def set_from_integration_specific_params(resource, params)
     return if resource.integration.blank?
 
-    integration_specific_params = params['resource'][@resource.integration.provider_id]
+    integration_specific_params = params[:resource][@resource.integration.provider_id]
     return if integration_specific_params.blank?
 
     case @resource.integration.provider_id
@@ -128,11 +128,15 @@ class ResourcesController < ApplicationController
 
       resource.template_url = template_url
     when 'service_catalog'
+      integration_specific_params[:plan_parameters]&.permit!
       service_class = integration_specific_params['service_class']
       service_plan = integration_specific_params['service_plan']
       @sb_service.service_class_plan_names(service_class, service_plan)
         .each { |k, v| resource.send "#{k}=", v }
       resource.create_parameters = integration_specific_params['plan_parameters'] || {}
+      unless resource.create_parameters.empty?
+        resource.create_parameters_schema = @sb_service.service_plan_schema resource.class_name, resource.plan_name
+      end
     end
   end
 
