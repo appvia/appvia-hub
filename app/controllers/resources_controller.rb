@@ -133,9 +133,9 @@ class ResourcesController < ApplicationController
       service_plan = integration_specific_params['service_plan']
       @sb_service.service_class_plan_names(service_class, service_plan)
         .each { |k, v| resource.send "#{k}=", v }
-      resource.create_parameters = integration_specific_params['plan_parameters'] || {}
+      resource.create_parameters = (integration_specific_params['plan_parameters'] || {}).to_hash
       unless resource.create_parameters.empty?
-        resource.create_parameters_schema = @sb_service.service_plan_schema resource.class_name, resource.plan_name
+        resource.create_parameters_json_schema = @sb_service.service_plan_schema resource.class_name, resource.plan_name
       end
     end
   end

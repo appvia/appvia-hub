@@ -40,4 +40,8 @@ module JsonSchemaHelpers
       transform_additional_properties param_value
     end
   end
+
+  def self.prepare_for_schema_validation(data, schema)
+    transform_additional_properties ensure_data_types data, schema
+  end
 end
