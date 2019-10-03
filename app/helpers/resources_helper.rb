@@ -57,7 +57,7 @@ module ResourcesHelper
 
     case resource.integration.provider_id
     when 'git_hub'
-      status = agent.get_statuses(resource.name)
+      status = agent.get_status(resource.name)
       response = []
       status.each do |s|
         response << {
@@ -80,19 +80,6 @@ module ResourcesHelper
         }
       end
       response
-    when 'quay'
-      status = agent.get_repo_status(resource.name)
-      response = []
-      status.each do |s|
-        response << {
-          colour: 'info',
-          text: s,
-          status: 'Deployed',
-          url: false
-        }
-      end
-    when 'grafana'
-      status = agent.get_dashboard_alerts(resource.name)
     end
   end
 

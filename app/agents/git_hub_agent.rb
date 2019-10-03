@@ -131,6 +131,25 @@ class GitHubAgent
     )
   end
 
+  def get_status(name)
+    full_name = "#{@org}/#{name}"
+    status_branch = 'master'
+    client = app_installation_client
+
+    response = client.status(full_name, status_branch)
+
+    statuses = []
+    response[:statuses].each do |status|
+      statuses << {
+        context: status['context'],
+        description: status['description'],
+        status: status['state'],
+        target_url: status['target_url']
+      }
+    statuses
+    end
+  end
+
   def get_statuses(name)
     full_name = "#{@org}/#{name}"
     status_branch = 'master'
