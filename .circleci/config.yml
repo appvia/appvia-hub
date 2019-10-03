@@ -69,6 +69,11 @@ jobs:
       - store_artifacts:
           path: coverage
 
+      # Brakeman security analysis
+      - run:
+          name: Brakeman security analysis
+          command: bundle exec brakeman
+
       # Build assets (in production mode)
       # - to test that the build process goes through okay
       - run: yarn install --frozen-lockfile --production && NODE_ENV=production bin/rails assets:precompile
