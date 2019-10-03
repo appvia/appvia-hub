@@ -65,6 +65,15 @@ RSpec.describe 'Admin - Integrations', type: :request do
             expect(assigns(:potential_teams)).not_to be nil
           end
         end
+
+        context 'when provider is for a dependent resource type and no parent integrations are currently available' do
+          it 'renders an error page' do
+            expect(Integration.count).to be 0
+            get new_admin_integration_path(provider_id: 'grafana')
+            expect(response).to redirect_to root_path
+            expect(flash[:alert]).not_to be_empty
+          end
+        end
       end
     end
   end

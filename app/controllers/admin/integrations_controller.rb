@@ -30,6 +30,13 @@ module Admin
       unprocessable_entity_error && return unless Integration.provider_ids.key?(provider_id)
 
       @potential_parents = find_potential_parents provider_id
+
+      if !ResourceTypesService.for_provider(provider_id)[:top_level] &&
+         @potential_parents.blank?
+        alert = 'Unable to create a new integration for the specified provider, as no parent integrations are available yet for it.'
+        redirect_to root_path, alert: alert
+      end
+
       @potential_teams = find_potential_teams provider_id
 
       @integration = Integration.new provider_id: provider_id
