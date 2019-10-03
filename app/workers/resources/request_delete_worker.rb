@@ -2,41 +2,41 @@ module Resources
   class RequestDeleteWorker < BaseWorker
     HANDLERS = {
       'Resources::CodeRepo' => {
-        'git_hub' => lambda do |resource, agent, _config|
+        'git_hub' => lambda do |resource, agent, _config, _logger|
           agent.delete_repository(resource.full_name) if resource.full_name.present?
           true
         end
       },
       'Resources::DockerRepo' => {
-        'quay' => lambda do |resource, agent, _config|
+        'quay' => lambda do |resource, agent, _config, _logger|
           agent.delete_repository(resource.name)
           true
         end,
-        'ecr' => lambda do |resource, agent, _config|
+        'ecr' => lambda do |resource, agent, _config, _logger|
           agent.delete_repository(resource.name)
           true
         end
       },
       'Resources::KubeNamespace' => {
-        'kubernetes' => lambda do |resource, agent, _config|
+        'kubernetes' => lambda do |resource, agent, _config, _logger|
           agent.delete_namespace(resource.name)
           true
         end
       },
       'Resources::MonitoringDashboard' => {
-        'grafana' => lambda do |resource, agent, _config|
+        'grafana' => lambda do |resource, agent, _config, _logger|
           agent.delete_dashboard resource.name
           true
         end
       },
       'Resources::LoggingDashboard' => {
-        'loki' => lambda do |resource, agent, _config|
+        'loki' => lambda do |resource, agent, _config, _logger|
           agent.delete_logging_dashboard resource.name
           true
         end
       },
       'Resources::ServiceCatalogInstance' => {
-        'service_catalog' => lambda do |resource, agent, _config|
+        'service_catalog' => lambda do |resource, agent, _config, _logger|
           agent.delete_resource(
             namespace: resource.parent.name,
             name: resource.name

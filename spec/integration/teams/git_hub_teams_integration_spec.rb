@@ -331,6 +331,8 @@ RSpec.describe 'GitHub teams end-to-end' do
 
       process_jobs
 
+      expect(code_repo.reload.active?).to be true
+
       # Now create a new integration that's available to all teams, and thus
       # should sync up existing teams as expected.
 
