@@ -52,6 +52,7 @@ group :development do
   gem 'rubocop-rails', '~> 2.2', '>= 2.2.1', require: false
   gem 'better_errors', '~> 2.5.1'
   gem 'binding_of_caller', '~> 0.8.0'
+  gem 'brakeman', '~> 4.6'
 end
 
 group :test do
