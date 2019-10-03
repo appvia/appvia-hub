@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.5.5'
+ruby '2.5.7'
 
 gem 'rails', '~> 5.2.3'
 gem 'pg', '>= 0.18', '< 2.0'
@@ -59,6 +59,7 @@ group :test do
   gem 'timecop', '~> 0.9.1'
   gem 'shoulda-matchers', '~> 4.1', '>= 4.1.2'
   gem 'with_model', '~> 2.1', '>= 2.1.2'
+  gem 'simplecov', '~> 0.17.1', require: false
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
