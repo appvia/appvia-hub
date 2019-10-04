@@ -149,8 +149,8 @@ class GitHubAgent
         status: status['state'],
         target_url: status['target_url']
       }
-    statuses
     end
+    statuses
   end
 
   def get_statuses(name)
@@ -168,8 +168,8 @@ class GitHubAgent
         status: status['state'],
         target_url: status['target_url']
       }
-    statuses
     end
+    statuses
   end
 
   def get_security_notifications(repo)
