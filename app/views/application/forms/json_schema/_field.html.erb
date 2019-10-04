@@ -24,23 +24,46 @@
         class: 'selectpicker'
       }
   %>
-<%- when 'integer'  %>
-  <%=
-    form.number_field name,
-      value: value,
-      required: is_required,
-      label: label_with_tooltip(
-        config_field_title(name, property_spec),
-        property_spec['description']
-      ),
-      pattern: property_spec['pattern'],
-      help: help_text
-  %>
-<%- else -%>
-  <% if property_spec['oneOf'].present? %>
+<%- when 'integer' %>
+  <% if property_spec['oneOf'].present? || property_spec['enum'].present? %>
     <%=
       form.select name,
-        json_schema_one_of_select_list(property_spec),
+        json_schema_string_select_list(property_spec),
+        {
+          value: value,
+          selected: value,
+          required: is_required,
+          label: label_with_tooltip(
+              config_field_title(name, property_spec),
+              property_spec['description']
+          ),
+          include_blank: include_blank,
+          help: help_text
+        },
+        {
+          multiple: multiple,
+          required: is_required,
+          class: 'selectpicker'
+        }
+    %>
+  <% else %>
+    <%=
+      form.number_field name,
+        value: value,
+        required: is_required,
+        label: label_with_tooltip(
+          config_field_title(name, property_spec),
+          property_spec['description']
+        ),
+        pattern: property_spec['pattern'],
+        help: help_text
+    %>
+  <% end %>
+<%- else -%>
+  <% if property_spec['oneOf'].present? || property_spec['enum'].present? %>
+    <%=
+      form.select name,
+        json_schema_string_select_list(property_spec),
         {
           value: value,
           selected: value,

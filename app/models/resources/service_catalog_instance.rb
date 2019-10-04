@@ -1,5 +1,9 @@
 module Resources
   class ServiceCatalogInstance < Resource
+    include JsonSchemaValidation
+
+    attr_accessor :create_parameters_json_schema
+
     attr_json :class_name, :string
     attr_json :class_external_name, :string
     attr_json :class_display_name, :string
@@ -21,5 +25,13 @@ module Resources
     validates :plan_name, presence: true
     validates :plan_external_name, presence: true
     validates :plan_display_name, presence: true
+
+    def json_schema
+      create_parameters_json_schema
+    end
+
+    def json_data_property_name
+      :create_parameters
+    end
   end
 end

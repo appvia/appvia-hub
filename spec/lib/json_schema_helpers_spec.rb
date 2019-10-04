@@ -14,7 +14,8 @@ RSpec.describe JsonSchemaHelpers do
               'a_string' => { 'type' => 'string' },
               'a_boolean' => { 'type' => 'boolean' },
               'an_integer' => { 'type' => 'integer' }
-            }
+            },
+            'required' => ['a_string']
           },
           'embedded_array_of_objects' => {
             'type' => 'array',
@@ -24,10 +25,12 @@ RSpec.describe JsonSchemaHelpers do
                 'a_string' => { 'type' => 'string' },
                 'a_boolean' => { 'type' => 'boolean' },
                 'an_integer' => { 'type' => 'integer' }
-              }
+              },
+              'required' => ['a_string']
             }
           }
-        }
+        },
+        'required' => ['a_string']
       )
     end
 
@@ -80,7 +83,48 @@ RSpec.describe JsonSchemaHelpers do
         ]
       }
     end
+
+    def input_empty_strings
+      input_data['a_string'] = ''
+      input_data['embedded_object']['a_string'] = ''
+      input_data['embedded_array_of_objects'].map { |i| i['a_string'] = '' }
+    end
+
+    def expect_string_value(value, optional: false)
+      expected_output['a_string'] = value
+      expected_output['embedded_object']['a_string'] = value
+      expected_output['embedded_array_of_objects'].map { |i| i['a_string'] = value }
+
+      return unless optional
+
+      input_spec.required = []
+      input_spec.properties['embedded_object'].required = []
+      input_spec.properties['embedded_array_of_objects'].items.required = []
+    end
+
     it 'converts data types to the expected schema data types as expected' do
+      expect(
+        JsonSchemaHelpers.ensure_data_types(
+          input_data,
+          input_spec
+        )
+      ).to eq expected_output
+    end
+
+    it 'converts empty string to nil when property is required' do
+      input_empty_strings
+      expect_string_value nil
+      expect(
+        JsonSchemaHelpers.ensure_data_types(
+          input_data,
+          input_spec
+        )
+      ).to eq expected_output
+    end
+
+    it 'maintains empty string value if property is not required' do
+      input_empty_strings
+      expect_string_value '', optional: true
       expect(
         JsonSchemaHelpers.ensure_data_types(
           input_data,
