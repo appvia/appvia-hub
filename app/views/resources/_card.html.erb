@@ -118,24 +118,24 @@
   </div>
 
   <% statuses = resource_status resource %>
-  <% if statuses %>
+  <% if statuses.present? %>
     <div class="card-footer bg-light">
-      <% statuses.each do |s| %>
-        <% if s[:url] %>
+    <% statuses.each do |s| %>
+      <% if s[:url] %>
         <a href="<%= s[:url] %>" target="_new" rel="noopener noreferrer" class="card-link ml-0">
-        <% end %>
-        <div class="row border mb-1 bg-white">
-          <div class="col-1 p-1 bg-<%= s[:colour] %> text-center text-white"><%= s[:status] %></div>
-          <div class="col-11 p-1">
-            <div class="ml-2">
-              <span class="card-text text-muted"><%= s[:text] %></span>
-            </div>
+      <% end %>
+      <div class="row border mb-1 bg-white">
+        <div class="col-1 p-1 bg-<%= s[:colour] %> text-center text-white"><%= s[:status] %></div>
+        <div class="col-11 p-1">
+          <div class="ml-2">
+            <span class="card-text text-muted"><%= s[:text] %></span>
           </div>
         </div>
-        <% if s[:url] %>
+      </div>
+      <% if s[:url] %>
         </a>
-        <% end %>
       <% end %>
+    <% end %>
     </div>
   <% end %>
 </div>

@@ -10,20 +10,6 @@ module ResourcesHelper
     'success' => 'success',
     'failure' => 'danger'
   }.freeze
-  QUAY_STATUS_TO_COLOUR = {
-    'High' => 'danger',
-    'Medium' => 'warning',
-    'Low' => 'info',
-    'Negligible' => 'secondary',
-    'Unknown' => 'secondary'
-  }.freeze
-  GRAFANA_STATUS_TO_COLOUR = {
-    'no_data' => 'warning',
-    'paused' => 'info',
-    'pending' => 'info',
-    'alerting' => 'danger',
-    'ok' => 'success'
-  }.freeze
 
   def resource_icon(resource_class_or_name = nil)
     case resource_class_or_name
