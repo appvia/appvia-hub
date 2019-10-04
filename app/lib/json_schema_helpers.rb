@@ -1,7 +1,7 @@
 module JsonSchemaHelpers
   # Processes a flat Hash of values, ensuring fields are converted to the data
   # type specified in the provided JsonSchema spec.
-  #
+  # rubocop:disable Metrics/PerceivedComplexity
   def self.ensure_data_types(data, spec)
     return data if data.blank?
 
@@ -18,7 +18,7 @@ module JsonSchemaHelpers
           data[name] = ActiveRecord::Type::Boolean.new.cast(data[name])
         elsif property_spec.type.include?('integer')
           data[name] = data[name].to_i
-        elsif data[name] == ''
+        elsif data[name] == '' && Array(spec.required).include?(name)
           data[name] = nil
         end
       end
@@ -26,6 +26,7 @@ module JsonSchemaHelpers
 
     data
   end
+  # rubocop:enable Metrics/PerceivedComplexity
 
   def self.transform_additional_properties(data)
     data.each do |_key, param_value|
@@ -38,5 +39,9 @@ module JsonSchemaHelpers
       param_value.delete 'additional_properties'
       transform_additional_properties param_value
     end
+  end
+
+  def self.prepare_for_schema_validation(data, schema)
+    transform_additional_properties ensure_data_types data, schema
   end
 end

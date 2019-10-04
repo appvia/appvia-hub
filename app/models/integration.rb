@@ -1,5 +1,6 @@
 class Integration < ApplicationRecord
   include EncryptedConfigHashAttribute
+  include JsonSchemaValidation
   include Allocatable
 
   audited
@@ -46,13 +47,22 @@ class Integration < ApplicationRecord
 
   validate :check_teams
 
+  def config=(hash)
+    super hash.try(:to_json)
+  end
+
+  def config
+    value = super
+    value.present? ? JSON.parse(value) : nil
+  end
+
   def provider
     return if provider_id.blank?
 
     PROVIDERS_REGISTRY.get provider_id
   end
 
-  def config_schema
+  def json_schema
     return nil if provider_id.blank?
 
     schema = PROVIDERS_REGISTRY.config_schemas[provider_id]
@@ -60,6 +70,10 @@ class Integration < ApplicationRecord
     raise "Missing config schema for provider '#{provider_id}'" if schema.blank?
 
     schema
+  end
+
+  def json_data_property_name
+    :config
   end
 
   def descriptor

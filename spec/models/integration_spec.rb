@@ -140,7 +140,7 @@ RSpec.describe Integration, type: :model do
           subject.config = { 'foo' => 1 }
           expect(subject).not_to be_valid
           expect(subject.errors).to_not be_empty
-          expect(subject.errors[:config]).to be_present
+          expect(subject.errors['config Foo']).to be_present
         end
       end
 
@@ -164,7 +164,7 @@ RSpec.describe Integration, type: :model do
             cp.config = cp.config.merge('foo' => 1)
             expect(cp).not_to be_valid
             expect(cp.errors).to_not be_empty
-            expect(cp.errors[:config]).to be_present
+            expect(cp.errors['config Foo']).to be_present
           end
         end
       end

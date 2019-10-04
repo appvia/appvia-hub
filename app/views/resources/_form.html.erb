@@ -160,7 +160,7 @@
                       }
                     }
                 %>
-                <% service_plan_schema = sb_service.service_plan_schema(resource.class_name, resource.plan_name) %>
+                <% service_plan_schema = sb_service.service_plan_schema(resource.class_name, resource.plan_name, parse: false) %>
                 <% unless service_plan_schema.nil? %>
                   <%=
                     render partial: 'application/forms/json_schema/fields',
