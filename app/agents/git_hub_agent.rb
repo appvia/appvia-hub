@@ -47,9 +47,12 @@ class GitHubAgent
 
   def apply_best_practices(repo)
     client = app_installation_client
+
     # Only apply best practices if the `master` branch exists
+
     # Will raise a `Octokit::NotFound` error if branch doesn't exist
     client.branch repo, 'master'
+
     # https://github.community/t5/GitHub-API-Development-and/REST-API-v3-wildcard-branch-protection/td-p/14547
     client.protect_branch(
       repo,
@@ -169,6 +172,22 @@ class GitHubAgent
     end
   end
 
+  def get_security_notifications(repo)
+    client = app_installation_client
+
+    response = client.repository_notifications(repo)
+
+    vulnerabilities = []
+    response.each do |notification|
+      next unless notification['reason'] == 'security_alert'
+
+      vulnerabilities << {
+        description: notification['description'],
+        reason: notification['reason']
+      }
+    end
+  end
+
   private
 
   def setup_client
@@ -177,6 +196,7 @@ class GitHubAgent
       exp: Time.now.to_i + (10 * 60), # Max is 10 mins
       iss: @app_id.to_s
     }
+
     jwt = JWT.encode payload, @app_private_key, 'RS256'
 
     @client = Octokit::Client.new bearer_token: jwt
@@ -195,22 +215,6 @@ class GitHubAgent
       organization: @org,
       private: private,
       auto_init: auto_init
-  end
-
-  def get_security_notifications(repo)
-    client = app_installation_client
-
-    response = client.repository_notifications(repo)
-
-    vulnerabilities = []
-    response.each do |notification|
-      next unless notification['reason'] == 'security_alert'
-
-      vulnerabilities << {
-        description: notification['description'],
-        reason: notification['reason']
-      }
-    end
   end
 
   def find_team(client, name)

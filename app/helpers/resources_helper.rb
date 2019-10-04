@@ -18,7 +18,6 @@ module ResourcesHelper
     'Unknown' => 'secondary'
   }.freeze
   GRAFANA_STATUS_TO_COLOUR = {
-    'ALL' => 'info',
     'no_data' => 'warning',
     'paused' => 'info',
     'pending' => 'info',
