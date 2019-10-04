@@ -134,6 +134,60 @@ class GitHubAgent
     )
   end
 
+  def get_status(name)
+    full_name = "#{@org}/#{name}"
+    status_branch = 'master'
+    client = app_installation_client
+
+    response = client.status(full_name, status_branch)
+
+    statuses = []
+    response[:statuses].each do |status|
+      statuses << {
+        context: status['context'],
+        description: status['description'],
+        status: status['state'],
+        target_url: status['target_url']
+      }
+    end
+    statuses
+  end
+
+  def get_statuses(name)
+    full_name = "#{@org}/#{name}"
+    status_branch = 'master'
+    client = app_installation_client
+
+    response = client.statuses(full_name, status_branch)
+
+    statuses = []
+    response.each do |status|
+      statuses << {
+        context: status['context'],
+        description: status['description'],
+        status: status['state'],
+        target_url: status['target_url']
+      }
+    end
+    statuses
+  end
+
+  def get_security_notifications(repo)
+    client = app_installation_client
+
+    response = client.repository_notifications(repo)
+
+    vulnerabilities = []
+    response.each do |notification|
+      next unless notification['reason'] == 'security_alert'
+
+      vulnerabilities << {
+        description: notification['description'],
+        reason: notification['reason']
+      }
+    end
+  end
+
   private
 
   def setup_client
