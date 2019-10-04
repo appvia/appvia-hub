@@ -17,6 +17,12 @@ module ProjectRobotCredentialsService
         .first
     end
 
+    def for_projects(project_ids)
+      Credential
+        .robot
+        .by_owner(Project.name, project_ids)
+    end
+
     def create_or_update(integration, project)
       name = build_name project.slug
       description = "Robot token for space #{project.slug}. Automatically managed by the hub."
