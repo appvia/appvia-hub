@@ -1,0 +1,96 @@
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">
+        <i class="fas fa-book"></i>Catalog
+      </h5>
+      <h6 class="card-subtitle mb-2 text-muted">details on the catalog the operator was published</h6>
+      <hr/>
+      <dl class="dl-horizontal">
+        <dt>Name</dt>
+        <dd><%= catalog[:namespace] %>/<%= catalog[:source] %></dd>
+      </dl>
+      <dl class="dl-horizontal">
+        <dt>Publisher</dt>
+        <dd><%= catalog[:publisher] %></dd>
+      </dl>
+      <dl class="dl-horizontal">
+        <dt>Publisher</dt>
+        <dd><%= catalog[:display_name] %></dd>
+      </dl>
+    </div>
+    <div class="card-footer">
+      <%- if catalog[:healthy] -%>
+      <i class="fas fa-heartbeat"></i>Catalog Healthy
+      <%- else -%>
+      <i class="fas fa-heart-broken"></i>Catalog Issue
+      <%- end -%>
+      <small class="text-muted">Last updated was <%= catalog[:last_sync] %></small>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">
+        <i class="fas fa-cube"></i>Package
+      </h5>
+      <h6 class="card-subtitle mb-2 text-muted">details on the operator package / channel</h6>
+      <hr/>
+      <dl class="dl-horizontal">
+        <dt>Channel/Name/Version</dt>
+        <dd><%= info[:channel_name] %>/<%= info[:name] %>:<%= info[:version] %></dd>
+      </dl>
+      <dl class="dl-horizontal">
+        <dt>Provider</dt>
+        <dd><%= info[:provider] %></dd>
+      </dl>
+      <dl class="dl-horizontal">
+        <dt>Repository</dt>
+        <dd><%= info[:repository] %></dd>
+      </dl>
+    </div>
+    <div class="card-footer">
+      <small class="text-muted">&nbsp;</small>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">
+        <i class="fas fa-play"></i>Installation
+      </h5>
+      <h6 class="card-subtitle mb-2 text-muted">details the mode of operator installation</h6>
+      <hr/>
+      <dl class="dl-horizontal">
+        <dt>Subscription (Namespace/Name)</dt>
+        <dd><%= subscription[:namespace] %>/<%= subscription[:name] %></dd>
+      </dl>
+      <dl class="dl-horizontal">
+        <%-
+          tooltop = case subscription[:approvals]
+          when 'manual'
+            'The subscription must be manually approved to upgrade'
+          when 'automatic'
+            'The subscription is automatically approved and will upgrade itself'
+          else
+            'Unknown installplan approval'
+          end
+        -%>
+
+        <dt data-toggle="tooltip" data-placement="top" title="<%= tooltop %>">Approvals</dt>
+        <dd><%= subscription[:approvals] %></dd>
+      </dl>
+      <dl class="dl-horizontal" >
+        <dt data-toggle="tooltip" data-placement="top" title="Use kubectl -n <%= subscription[:namespace] %> get installplan <%= subscription[:installplan] %>" >InstallPlan</dt>
+        <dd><%= subscription[:installplan] %></dd>
+      </dl>
+      <dl class="dl-horizontal">
+        <dt>Is Running</dt>
+        <dd><%= subscription[:running] == 'running' ? 'yes' : 'no' %></dd>
+      </dl>
+    </div>
+    <div class="card-footer">
+      <small class="text-muted">&nbsp;</small>
+    </div>
+  </div>
+</div>

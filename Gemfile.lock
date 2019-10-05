@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/appvia/hub-clusters-creator.git
-  revision: 61cdf26bc02a0b89fa06d472de735ba1bb79a41f
-  tag: v0.0.9
+  revision: d599e0a181419b2ba0481db952fb2c03f9a71eb0
+  tag: v0.1.0
   specs:
-    hub-clusters-creator (0.0.8)
+    hub-clusters-creator (0.1.0)
       aws-sdk-cloudformation (~> 1.25)
       aws-sdk-route53 (~> 1.29.0)
       aws-sigv4 (~> 1.1)

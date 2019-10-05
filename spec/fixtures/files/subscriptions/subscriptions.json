@@ -1,0 +1,79 @@
+{
+    "apiVersion": "operators.coreos.com/v1alpha1",
+    "kind": "Subscription",
+    "metadata": {
+        "annotations": {
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"operators.coreos.com/v1alpha1\",\"kind\":\"Subscription\",\"metadata\":{\"annotations\":{},\"name\":\"promethus-operator\",\"namespace\":\"operators\"},\"spec\":{\"channel\":\"beta\",\"installPlanApproval\":\"Automatic\",\"name\":\"prometheus\",\"source\":\"appvia-catalog\",\"sourceNamespace\":\"olm\",\"startingCSV\":\"prometheusoperator.0.33.0\"}}\n"
+        },
+        "creationTimestamp": "2019-10-10T10:28:09Z",
+        "generation": 1,
+        "name": "promethus-operator",
+        "namespace": "operators",
+        "resourceVersion": "1132",
+        "selfLink": "/apis/operators.coreos.com/v1alpha1/namespaces/operators/subscriptions/promethus-operator",
+        "uid": "d627a0f9-3560-4211-a5b3-a110d4636b96"
+    },
+    "spec": {
+        "channel": "beta",
+        "installPlanApproval": "Automatic",
+        "name": "prometheus",
+        "source": "appvia-catalog",
+        "sourceNamespace": "olm",
+        "startingCSV": "prometheusoperator.0.33.0"
+    },
+    "status": {
+        "catalogHealth": [
+            {
+                "catalogSourceRef": {
+                    "apiVersion": "operators.coreos.com/v1alpha1",
+                    "kind": "CatalogSource",
+                    "name": "appvia-catalog",
+                    "namespace": "olm",
+                    "resourceVersion": "954",
+                    "uid": "65d3ca5d-26d1-46e6-af36-92e94cca9205"
+                },
+                "healthy": true,
+                "lastUpdated": "2019-10-10T10:28:09Z"
+            },
+            {
+                "catalogSourceRef": {
+                    "apiVersion": "operators.coreos.com/v1alpha1",
+                    "kind": "CatalogSource",
+                    "name": "operatorhubio-catalog",
+                    "namespace": "olm",
+                    "resourceVersion": "923",
+                    "uid": "3ca86f78-c54f-4381-8ff1-98aad67e536e"
+                },
+                "healthy": true,
+                "lastUpdated": "2019-10-10T10:28:09Z"
+            }
+        ],
+        "conditions": [
+            {
+                "lastTransitionTime": "2019-10-10T10:28:09Z",
+                "message": "all available catalogsources are healthy",
+                "reason": "AllCatalogSourcesHealthy",
+                "status": "False",
+                "type": "CatalogSourcesUnhealthy"
+            }
+        ],
+        "currentCSV": "prometheusoperator.0.33.0",
+        "installPlanRef": {
+            "apiVersion": "operators.coreos.com/v1alpha1",
+            "kind": "InstallPlan",
+            "name": "install-6ckh9",
+            "namespace": "operators",
+            "resourceVersion": "1068",
+            "uid": "505d75c9-05db-4c5b-a301-d0c17d578cab"
+        },
+        "installedCSV": "prometheusoperator.0.33.0",
+        "installplan": {
+            "apiVersion": "operators.coreos.com/v1alpha1",
+            "kind": "InstallPlan",
+            "name": "install-6ckh9",
+            "uuid": "505d75c9-05db-4c5b-a301-d0c17d578cab"
+        },
+        "lastUpdated": "2019-10-10T10:28:12Z",
+        "state": "AtLatestKnown"
+    }
+}

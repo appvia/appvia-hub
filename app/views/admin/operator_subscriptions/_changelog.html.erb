@@ -1,0 +1,22 @@
+<%- if changelog.size.positive? -%>
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">
+      <i class="fas fa-clipboard-list"></i><strong>Changelog for <%= update %></strong>
+    </h5>
+    <h6 class="card-subtitle mb-2 text-muted">provides a list of the changes contained within the update</h6>
+    </br>
+    <ul class="list-group">
+    <%- changelog.each do |x| -%>
+      <li class="list-group-item">
+        <strong>- </strong> <%= x %>
+      </li>
+    <%- end -%>
+    </ul>
+  </div>
+  <div class="card-footer">
+    <small class="text-muted"><%= changelog.size %> changes in the update</small>
+  </div>
+</div>
+<br/><br/>
+<%- end -%>
