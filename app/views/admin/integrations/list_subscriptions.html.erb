@@ -1,0 +1,57 @@
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">
+      <i class="fas fa-book-reader"></i><strong>Cluster Subscriptions</strong>
+    </h5>
+    Provides a list of subscriptions currently installed within the cluster
+    </div>
+</div>
+</br></br>
+
+<%-
+  upgrades = []
+  latest = []
+  @subscriptions.each do |x|
+    x[:upgrade] ? upgrades.push(x) : latest.push(x)
+  end
+-%>
+<%- if upgrades.size > 0 -%>
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">
+      <i class="fas fa-upload"></i><strong>Upgrades Available</strong>
+    </h5>
+    A list of subscriptions which have upgrades / updates pending.
+    <%=
+      render partial: 'subscriptions',
+        locals: {
+          integration: @integration,
+          operators: upgrades,
+      }
+    %>
+  </div>
+  <div class="card-footer">
+    <small class="text-muted"><%= upgrades.size %> available</small>
+  </div>
+</div>
+</br></br>
+<%- end -%>
+
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">
+      <i class="fas fa-shield-alt"></i><strong>Installed</strong>
+    </h5>
+    <h6 class="card-subtitle mb-2 text-muted">Provides a list of subscriptions which are currently installed in your cluster.</h6>
+    <%=
+      render partial: 'subscriptions',
+        locals: {
+          integration: @integration,
+          operators: latest,
+        }
+    %>
+  </div>
+  <div class="card-footer">
+    <small class="text-muted"><%= latest.size %> subscriptions</small>
+  </div>
+</div>

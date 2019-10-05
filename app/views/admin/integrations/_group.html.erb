@@ -45,10 +45,13 @@
         <% if integrations.present? %>
           <% integrations.each do |i| %>
             <%=
+              agent = agents.get('operator', i.config) if i.operator?
+
               render partial: 'card',
                 locals: {
-                  integration: i,
+                  agent: agent,
                   group: group,
+                  integration: i,
                   unmask: unmask
                 }
             %>

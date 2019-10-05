@@ -30,6 +30,13 @@ module ResourceTypesService
           top_level: true
         },
         {
+          id: 'Operator',
+          class: 'Resources::Operator',
+          name: 'Operator',
+          providers: %w[operator].freeze,
+          top_level: true,
+        },
+        {
           id: 'KubeNamespace',
           class: 'Resources::KubeNamespace',
           name: 'Kubernetes Namespaces',

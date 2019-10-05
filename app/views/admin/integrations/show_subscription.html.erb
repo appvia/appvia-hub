@@ -1,0 +1,105 @@
+<%-
+  base_path = admin_integration_operators_subscriptions_path(@integration)
+  subscription_path = "#{base_path}/#{subscription[:namespace]}/#{subscription[:name]}"
+  approve_path = "#{subscription_path}/approve"
+  delete_path = "#{subscription_path}/delete"
+-%>
+
+<!-- subscription header -->
+<div class="page-header">
+  <span>
+    <h2>
+      <%- unless info[:icon].nil? -%>
+        <img width="32px" height="32px" src="data:image/svg+xml;base64,<%= info[:icon] %>"/>
+      <%- end -%>
+      <%= channel.displayName %>
+    </h2>
+    <span class="badge badge-warning"><%= info[:capabilibilities] %></span>
+    <span class="badge badge-info"><%= info[:channel] %>/<%= info[:version] %></span>
+    <%- if info[:upgradable] %>
+    <span class="badge badge-primary">upgradable</span>
+    <%- end -%>
+    <span class="badge badge-secondary"><%= info[:categories] %></span>
+    <%- if info[:certified] -%>
+    <span class="badge badge-success">certified</span>
+    <%- end -%>
+  </span>
+</div>
+<hr/>
+
+<!-- subscription notifications -->
+<%=
+  render partial: 'subscription_notifications',
+    locals: {
+      catalog: catalog,
+      info: info
+    }
+%>
+
+<%- unless info[:short_description].empty? -%>
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">
+      <i class="fas fa-book-reader"></i><strong>Overview</strong>
+    </h5>
+    <%= info[:short_description] %>
+  </div>
+</div>
+</br></br>
+<%- end -%>
+
+<!-- subscription summary cards -->
+<%=
+  render partial: 'subscription_summary',
+    locals: {
+      agent: @agent,
+      catalog: catalog,
+      info: info,
+      subscription: subscription
+    }
+%>
+<br/><br/>
+
+<!-- operator owned crds -->
+<%- if info[:crds].size.positive? -%>
+<%=
+  render partial: 'subscription_crds',
+    locals: {
+      agent: @agent,
+      info: info
+    }
+%>
+<br/><br/>
+<%- end -%>
+
+<!-- full description -->
+<%=
+  render partial: 'subscription_desc',
+    locals: {
+      info: info,
+      subscription: subscription
+    }
+%>
+<br/><br/>
+
+<!-- example usage of operator -->
+<%=
+  render partial: 'subscription_usage',
+    locals: {
+      agent: @agent,
+      catalog: catalog,
+      info: info,
+      subscription: subscription
+    }
+%>
+<br/><br/>
+
+<!-- action buttons -->
+<div id="subscription_id" class="card mb-3">
+  <div class="card-footer">
+    <%- if info[:upgradable] -%>
+      <%= link_to 'Approve Upgrade', approve_path, class: 'btn btn-success' %>
+    <%- end -%>
+    <%= link_to 'Delete Subscription', delete_path, class: 'btn btn-warning' %>
+  </div>
+</div>

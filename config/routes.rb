@@ -3,7 +3,11 @@ require 'sidekiq/web'
 # rubocop:disable Metrics/BlockLength
 Rails.application.routes.draw do
   namespace :admin do
-    resources :integrations, except: %i[show destroy]
+    resources :integrations, except: %i[show destroy] do
+      get  '/operators/subscriptions', to: 'integrations#list_subscriptions'
+      get  '/operators/subscriptions/:namespace/:name', to: 'integrations#show_subscription'
+      get '/operators/subscriptions/:namespace/:name/approve', to: 'integrations#approve_subscription'
+    end
     resource :settings, only: %i[show update]
 
     get '/create', to: 'create#show', as: 'create'

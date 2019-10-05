@@ -4,6 +4,7 @@
   <%=
     render partial: 'group',
       locals: {
+        agents: @agents,
         group: group,
         unmask: @unmask,
         expanded: group[:id] == @group_to_expand

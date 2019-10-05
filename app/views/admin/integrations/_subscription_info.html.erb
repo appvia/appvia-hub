@@ -1,0 +1,79 @@
+<%-
+  name = subscription.metadata.name
+  namespace = subscription.metadata.namespace
+
+  base_path = admin_integration_operators_subscriptions_path(@integration)
+  subscription_path = "#{base_path}/#{namespace}/#{name}"
+  approve_path = "#{subscription_path}/approve"
+  delete_path = "#{subscription_path}/delete"
+-%>
+
+<%- unless info[:short_description].empty? -%>
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title"><strong>Overview</strong></h5>
+    <%= info[:short_description] %>
+  </div>
+</div>
+<%- end -%>
+</br></br>
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">
+         <span class="glyphicon glyphicon-tags" aria-hidden="true"></span>
+         Package Catalog
+      </h5>
+      <h6 class="card-subtitle mb-2 text-muted">software catalog for operator</h6>
+
+
+
+
+    </div>
+    <div class="card-footer">
+      <small class="text-muted">Last updated 3 mins ago</small>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">
+        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+        Package Details
+      </h5>
+      <h6 class="card-subtitle mb-2 text-muted">provides and overview of the package</h6>
+
+
+    </div>
+    <div class="card-footer">
+      <small class="text-muted">Last updated 3 mins ago</small>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Installation Modes</h5>
+      <h6 class="card-subtitle mb-2 text-muted">details the mode of operator installation</h6>
+
+
+    </div>
+    <div class="card-footer">
+      <small class="text-muted">Last updated 3 mins ago</small>
+    </div>
+  </div>
+</div>
+<br/>
+<br/>
+
+
+<div id="" class="card mb-3">
+  <div class="card-body">
+    <h5 class="card-title"></h5>
+  </div>
+
+
+  <div class="card-footer">
+    <%= link_to 'Approve Upgrade', approve_path, class: 'btn btn-success' %>
+    <%= link_to 'Delete Subscription', delete_path, class: 'btn btn-warning' %>
+  </div>
+</div>

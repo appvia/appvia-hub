@@ -1,0 +1,29 @@
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">
+      <i class="fas fa-cogs"></i><strong>Kubernetes CRDs</strong>
+    </h5>
+    <h6 class="card-subtitle mb-2 text-muted">is a list of kubernetes custom resource definitions which are owned or used by this operator</h6>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">CRD</th>
+          <th scope="col">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%- info[:crds].each_with_index do |x,i| -%>
+        <tr>
+          <td><%= x[:display_name] %></td>
+          <td><%= x[:name] %>/<%= x[:version] %></td>
+          <td><%= x[:description] %></td>
+        </tr>
+        <%- end -%>
+      </tbody>
+    </table>
+  </div>
+  <div class="card-footer">
+    <small class="text-muted"><%= info[:crds].size %> crds owned by this operator</small>
+  </div>
+</div>
