@@ -63,7 +63,7 @@ module AgentsService
       'operator' => lambda do |config|
         OperatorAgent.new(
           url: config['api_url'],
-          ca: config['ca_cert'],
+          ca_cert: config['ca_cert'],
           token: config['token']
         )
       end

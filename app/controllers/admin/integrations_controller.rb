@@ -1,4 +1,5 @@
 module Admin
+  # rubocop:disable Metrics/ClassLength
   class IntegrationsController < BaseController
     before_action :find_integration, only: %i[edit update]
     before_action :find_subscription_integration, only: %i[list_subscriptions show_subscription approve_subscription]
@@ -66,9 +67,9 @@ module Admin
 
     # GET /admin/integrations/:integration_id/operators/:id/subscriptions
     def list_subscriptions
-      cache_key = "#{params[:integration_id]}"
+      cache_key = params[:integration_id].to_s
 
-      unless Rails.cache.exist?(cache_key, :expires_in => 5.minutes)
+      unless Rails.cache.exist?(cache_key, expires_in: 5.minutes)
         @subscriptions = @agent.list_subscriptions_updates unless Rails.cache.exist?(cache_key)
 
         Rails.cache.write(cache_key, @subscriptions)
@@ -83,9 +84,7 @@ module Admin
       namespace = params[:namespace]
 
       subscription = @agent.get_subscription(namespace, name)
-      if subscription.nil?
-        raise ArgumentError, "subscription does not exist, name: #{namespace}/#{name}"
-      end
+      raise ArgumentError, "subscription does not exist, name: #{namespace}/#{name}" if subscription.nil?
 
       package = @agent.get_package(
         subscription.spec.name,
@@ -102,7 +101,7 @@ module Admin
         channel: channel,
         info: generate_package_model(package, channel, subscription),
         package: package,
-        subscription: generate_subscription_model(subscription),
+        subscription: generate_subscription_model(subscription)
       }
     end
 
@@ -170,75 +169,75 @@ module Admin
     end
 
     # generate_package_model generates a model
+    # rubocop:disable Lint/HandleExceptions,Metrics/MethodLength,Metrics/AbcSize
     def generate_package_model(package, channel, subscription)
       model = {
-        capabilibilities: extract{channel.annotations.capabilities.downcase},
-        categories: extract{channel.annotations.categories.downcase},
-        certified: extract('false'){channel.annotations.certified},
-        channel_name: extract{subscription.spec.channel},
+        capabilibilities: extract { channel.annotations.capabilities.downcase },
+        categories: extract { channel.annotations.categories.downcase },
+        certified: extract('false') { channel.annotations.certified },
+        channel_name: extract { subscription.spec.channel },
         crds: [],
-        full_description: extract(''){channel.description},
-        name: extract(''){package.status.packageName},
-        package_display_name: extract{channel.displayName},
-        provider: extract(''){package.status.provider.name},
-        repository: extract{channel.annotations.repository},
-        short_description: extract(''){channel.annotations.description},
+        full_description: extract('') { channel.description },
+        name: extract('') { package.status.packageName },
+        package_display_name: extract { channel.displayName },
+        provider: extract('') { package.status.provider.name },
+        repository: extract { channel.annotations.repository },
+        short_description: extract('') { channel.annotations.description },
         upgradable: false,
         usage: {},
-        version: @agent.parse_version(extract{subscription.status.installedCSV}),
+        version: @agent.parse_version(extract { subscription.status.installedCSV })
       }
 
       # do we have provider details
-      state = extract{subscription.status.state.downcase}
+      state = extract { subscription.status.state.downcase }
       if state == 'upgradepending'
         model[:upgradable] = true
-        model[:upgrade_version] = @agent.parse_version(extract{subscription.status.currentCSV})
+        model[:upgrade_version] = @agent.parse_version(extract { subscription.status.currentCSV })
       end
 
-      if extract(false){channel.icon.first.mediatype} == 'image/svg+xml'
-        model[:icon] = extract{channel.icon.first.base64data}
-      end
+      model[:icon] = extract { channel.icon.first.base64data } if extract(false) { channel.icon.first.mediatype } == 'image/svg+xml'
 
       # do we have any own crds?
-      crds = extract([]){channel.customresourcedefinitions.owned}
+      crds = extract([]) { channel.customresourcedefinitions.owned }
       crds.each do |x|
         model[:crds].push(
           description: x.description,
           display_name: x.displayName,
           kind: x.kind,
           name: x.name,
-          version: x.version,
+          version: x.version
         )
       end
 
       # do we have examples?
-      data = extract('[]'){channel.annotations['alm-examples']}
+      data = extract('[]') { channel.annotations['alm-examples'] }
       begin
         JSON.parse(data).each do |x|
           model[:usage][x['kind']] = x.to_yaml
         end
-      rescue Exception => _; end
-
+      rescue StandardError => _e; end
       model
     end
+    # rubocop:enable Lint/HandleExceptions,Metrics/MethodLength,Metrics/AbcSize
 
     # generate_subscription_model creates a model for the subscription
     def generate_subscription_model(subscription)
       model = {
-        approvals: extract{subscription.spec.installPlanApproval.downcase},
+        approvals: extract { subscription.spec.installPlanApproval.downcase },
         name: subscription.metadata.name,
         namespace: subscription.metadata.namespace,
-        installplan: extract{subscription.status.installplan.name},
-        running: 'unknown',
+        installplan: extract { subscription.status.installplan.name },
+        running: 'unknown'
       }
       # check if the pod is running
-      state = extract(''){subscription.status.state.downcase}
+      state = extract('') { subscription.status.state.downcase }
       model[:running] = 'running' if %w[atlatestknown upgradepending].include?(state)
 
       model
     end
 
     # extract is a helper method to aid in extracting values from the resource
+    # rubocop:disable Lint/RescueException,Lint/HandleExceptions
     def extract(default_value = 'unknown', &block)
       begin
         value = yield block
@@ -246,30 +245,33 @@ module Admin
           return value unless value.class == String.class
           return value unless value.empty?
         end
-      rescue Exception => _; end
+      rescue Exception => _e; end
       default_value
     end
+    # rubocop:enable Lint/RescueException,Lint/HandleExceptions
 
     # generate_catalog_model creates a model for the catalog
     def generate_catalog_model(package, subscription)
       catalog = {
-        display_name: extract{package.status.catalogSourceDisplayName},
+        display_name: extract { package.status.catalogSourceDisplayName },
         healthy: true,
-        namespace: extract{package.status.catalogSourceNamespace},
-        publisher: extract{package.status.catalogSourcePublisher},
-        source: extract{package.status.catalogSource},
+        namespace: extract { package.status.catalogSourceNamespace },
+        publisher: extract { package.status.catalogSourcePublisher },
+        source: extract { package.status.catalogSource }
       }
 
       status = subscription.status
       return catalog if status.nil?
 
       (extract([]) { status.catalogHealth }).each do |x|
-        next unless extract{x.catalogSourceRef.name} == subscription.spec.source
-        catalog[:healthy] = extract(false){x.healthy}
-        catalog[:last_sync] = extract{x.lastUpdated}
+        next unless extract { x.catalogSourceRef.name } == subscription.spec.source
+
+        catalog[:healthy] = extract(false) { x.healthy }
+        catalog[:last_sync] = extract { x.lastUpdated }
       end
 
       catalog
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end
