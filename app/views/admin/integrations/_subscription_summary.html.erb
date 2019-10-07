@@ -38,7 +38,7 @@
       <hr/>
       <dl class="dl-horizontal">
         <dt>Channel/Name/Version</dt>
-        <dd><%= info[:channel] %>/<%= info[:name] %>:<%= info[:version] %></dd>
+        <dd><%= info[:channel_name] %>/<%= info[:name] %>:<%= info[:version] %></dd>
       </dl>
       <dl class="dl-horizontal">
         <dt>Provider</dt>
@@ -48,12 +48,6 @@
         <dt>Repository</dt>
         <dd><%= info[:repository] %></dd>
       </dl>
-      <%- unless info[:replaces].empty? -%>
-      <dl class="dl-horizontal">
-        <dt>Replaces</dt>
-        <dd><%= info[:replaces] %></dd>
-      </dl>
-      <%- end -%>
     </div>
     <div class="card-footer">
       <small class="text-muted">Last</small>

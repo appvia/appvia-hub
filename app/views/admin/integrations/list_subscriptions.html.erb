@@ -27,7 +27,7 @@
         locals: {
           integration: @integration,
           operators: upgrades,
-      }
+        }
     %>
   </div>
   <div class="card-footer">
@@ -43,13 +43,15 @@
       <i class="fas fa-shield-alt"></i><strong>Installed</strong>
     </h5>
     <h6 class="card-subtitle mb-2 text-muted">Provides a list of subscriptions which are currently installed in your cluster.</h6>
+    <%- cache "hello" do -%>
     <%=
       render partial: 'subscriptions',
         locals: {
           integration: @integration,
           operators: latest,
         }
-    %>
+    -%>
+    <%- end -%>
   </div>
   <div class="card-footer">
     <small class="text-muted"><%= latest.size %> subscriptions</small>

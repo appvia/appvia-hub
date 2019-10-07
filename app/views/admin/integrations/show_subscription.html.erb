@@ -12,14 +12,14 @@
       <%- unless info[:icon].nil? -%>
         <img width="32px" height="32px" src="data:image/svg+xml;base64,<%= info[:icon] %>"/>
       <%- end -%>
-      <%= channel.displayName %>
+      <%= info[:package_display_name] %>
     </h2>
-    <span class="badge badge-warning"><%= info[:capabilibilities] %></span>
-    <span class="badge badge-info"><%= info[:channel] %>/<%= info[:version] %></span>
+    <span class="badge badge-warning" data-toggle="tooltip" data-placement="top" title="The capability of the operator"><%= info[:capabilibilities] %></span>
+    <span class="badge badge-info" data-toggle="tooltip" data-placement="top" title="The channel the package comes from"><%= info[:channel_name] %>/<%= info[:version] %></span>
     <%- if info[:upgradable] %>
     <span class="badge badge-primary">upgradable</span>
     <%- end -%>
-    <span class="badge badge-secondary"><%= info[:categories] %></span>
+    <span class="badge badge-secondary" data-toggle="tooltip" data-placement="top" title="The category the operator falls under"><%= info[:categories] %></span>
     <%- if info[:certified] -%>
     <span class="badge badge-success">certified</span>
     <%- end -%>
@@ -52,7 +52,6 @@
 <%=
   render partial: 'subscription_summary',
     locals: {
-      agent: @agent,
       catalog: catalog,
       info: info,
       subscription: subscription
@@ -82,24 +81,16 @@
 %>
 <br/><br/>
 
-<!-- example usage of operator -->
-<%=
-  render partial: 'subscription_usage',
-    locals: {
-      agent: @agent,
-      catalog: catalog,
-      info: info,
-      subscription: subscription
-    }
-%>
-<br/><br/>
-
 <!-- action buttons -->
 <div id="subscription_id" class="card mb-3">
   <div class="card-footer">
     <%- if info[:upgradable] -%>
-      <%= link_to 'Approve Upgrade', approve_path, class: 'btn btn-success' %>
+      <%= link_to approve_path, class: 'btn btn-success' do %>
+        <i class="fas fa-check-square" style="color: white;"></i>Approve Upgrade
+      <%- end -%>
     <%- end -%>
-    <%= link_to 'Delete Subscription', delete_path, class: 'btn btn-warning' %>
+    <%= link_to delete_path, class: 'btn btn-warning' do %>
+      <i class="fas fa-trash" style="color: white;"></i>Delete Subscription
+    <%- end -%>
   </div>
 </div>

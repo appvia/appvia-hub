@@ -68,12 +68,18 @@ module Admin
 
     # GET /admin/integrations/:integration_id/operators/:id/subscriptions/:namespace/:name
     def show_subscription
-      subscription = @agent.get_subscription(params[:namespace], params[:name])
+      name = params[:name]
+      namespace = params[:namespace]
+
+      subscription = @agent.get_subscription(namespace, name)
       if subscription.nil?
-        raise ArgumentError, "subscription does not exist, name: #{params[:name]}/#{params[:namespace]}"
+        raise ArgumentError, "subscription does not exist, name: #{namespace}/#{name}"
       end
 
-      package = @agent.get_package(subscription.spec.name, subscription.spec.source)
+      package = @agent.get_package(
+        subscription.spec.name,
+        subscription.spec.source
+      )
       channel = @agent.get_package_by_channel(
         subscription.spec.name,
         subscription.spec.source,
@@ -152,71 +158,53 @@ module Admin
       params.require(:integration).permit(:provider_id, :name, parent_ids: [], config: {}, team_ids: [])
     end
 
-    def unknown(value, default_value = 'unknown', downcase = true)
-      return default_value if value.nil? || value.empty?
-
-      return value.downcase if downcase
-
-      value
-    end
-
-    # generate_package_model generates a package model
+    # generate_package_model generates a model
     def generate_package_model(package, channel, subscription)
       model = {
-        capabilibilities: unknown(channel.annotations.capabilities),
-        categories: unknown(channel.annotations.categories),
-        certified: unknown(channel.annotations.certified, 'false'),
+        capabilibilities: extract{channel.annotations.capabilities.downcase},
+        categories: extract{channel.annotations.categories.downcase},
+        certified: extract('false'){channel.annotations.certified},
+        channel_name: extract{subscription.spec.channel},
         crds: [],
-        full_description: unknown(channel.description, '', false),
-        name: package.status.packageName,
-        provider: 'unknown',
-        repository: unknown(channel.annotations.repository),
-        short_description: unknown(channel.annotations.description, '', false),
+        full_description: extract(''){channel.description},
+        name: extract(''){package.status.packageName},
+        package_display_name: extract{channel.displayName},
+        provider: extract(''){package.status.provider.name},
+        repository: extract{channel.annotations.repository},
+        short_description: extract(''){channel.annotations.description},
         upgradable: false,
-        usage: [],
-        version: unknown(subscription.status.installedCSV),
+        usage: {},
+        version: @agent.parse_version(extract{subscription.status.installedCSV}),
       }
 
       # do we have provider details
-      unless package.status.provider.nil?
-        model[:provider] = package.status.provider.name
-      end
-      if unknown(subscription.status.state) == 'upgradepending'
+      state = extract{subscription.status.state.downcase}
+      if state == 'upgradepending'
         model[:upgradable] = true
-        model[:upgrade_version] = '0.0.3'
+        model[:upgrade_version] = @agent.parse_version(extract{subscription.status.currentCSV})
       end
 
-      if !channel.icon.nil? && channel.icon.size.positive?
-        if channel.icon.first.mediatype = 'image/svg+xml'
-          model[:icon] = channel.icon.first.base64data
-        end
+      if extract(false){channel.icon.first.mediatype} == 'image/svg+xml'
+        model[:icon] = extract{channel.icon.first.base64data}
       end
 
       # do we have any own crds?
-      unless channel.customresourcedefinitions.nil?
-        unless channel.customresourcedefinitions.owned.nil?
-          channel.customresourcedefinitions.owned.each do |x|
-            model[:crds].push(
-              description: x.description,
-              display_name: x.displayName,
-              kind: x.kind,
-              name: x.name,
-              version: x.version,
-            )
-          end
-        end
+      crds = extract([]){channel.customresourcedefinitions.owned}
+      crds.each do |x|
+        model[:crds].push(
+          description: x.description,
+          display_name: x.displayName,
+          kind: x.kind,
+          name: x.name,
+          version: x.version,
+        )
       end
 
       # do we have examples?
+      data = extract('[]'){channel.annotations['alm-examples']}
       begin
-        if !channel.annotations.nil? && !channel.annotations['alm-examples'].nil?
-          JSON.parse(channel.annotations['alm-examples']).each do |x|
-            usage.push(
-              kind: x.kind,
-              api: x.apiVersion,
-              example: x,
-            )
-          end
+        JSON.parse(data).each do |x|
+          model[:usage][x['kind']] = x.to_yaml
         end
       rescue Exception => _; end
 
@@ -225,64 +213,52 @@ module Admin
 
     # generate_subscription_model creates a model for the subscription
     def generate_subscription_model(subscription)
-      sub = {
-        approvals: subscription.spec.installPlanApproval.downcase,
+      model = {
+        approvals: extract{subscription.spec.installPlanApproval.downcase},
         name: subscription.metadata.name,
         namespace: subscription.metadata.namespace,
-        installplan: 'none',
+        installplan: extract{subscription.status.installplan.name},
         running: 'unknown',
       }
+      # check if the pod is running
+      state = extract(''){subscription.status.state.downcase}
+      model[:running] = 'running' if %w[atlatestknown upgradepending].include?(state)
 
-      #parse(subscription.status.installplan)
-
-      unless subscription.status.nil?
-        status = subscription.status
-        unless status.installplan.nil?
-          sub[:installplan] = status.installplan.name
-        end
-        unless status.state.nil?
-          case status.state.downcase
-          when 'atlatestknown','upgradepending'
-            sub[:running] = 'running'
-          end
-        end
-      end
-
-      sub
+      model
     end
 
-    def parse_value(default_value = 'unknown', &block)
+    # extract is a helper method to aid in extracting values from the resource
+    def extract(default_value = 'unknown', &block)
       begin
         value = yield block
-        return value unless value.nil? && value.empty?
+        unless value.nil?
+          return value unless value.class == String.class
+          return value unless value.empty?
+        end
       rescue Exception => _; end
-
       default_value
     end
 
     # generate_catalog_model creates a model for the catalog
     def generate_catalog_model(package, subscription)
       catalog = {
-        display_name: package.status.catalogSourceDisplayName,
-        namespace: package.status.catalogSourceNamespace,
-        publisher: package.status.catalogSourcePublisher,
-        source: package.status.catalogSource,
+        display_name: extract{package.status.catalogSourceDisplayName},
         healthy: true,
+        namespace: extract{package.status.catalogSourceNamespace},
+        publisher: extract{package.status.catalogSourcePublisher},
+        source: extract{package.status.catalogSource},
       }
 
-      unless subscription.nil?
-        status = subscription.status
-        unless status.catalogHealth.nil? && status.catalogHealth.size.negative?
-          status.catalogHealth.each do |x|
-            next unless x.catalogSourceRef.name == subscription.spec.source
-            catalog[:healthy] = x.healthy
-            catalog[:last_sync] = x.lastUpdated
-          end
-        end
+      status = subscription.status
+      return catalog if status.nil?
+
+      (extract([]) { status.catalogHealth }).each do |x|
+        next unless extract{x.catalogSourceRef.name} == subscription.spec.source
+        catalog[:healthy] = extract(false){x.healthy}
+        catalog[:last_sync] = extract{x.lastUpdated}
       end
 
       catalog
     end
-
   end
 end
