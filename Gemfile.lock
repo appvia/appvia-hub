@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/appvia/hub-clusters-creator.git
-  revision: 61cdf26bc02a0b89fa06d472de735ba1bb79a41f
-  tag: v0.0.9
+  revision: 0519b84a2513e9de26df1c3fd515f68097de3df0
+  tag: v0.1.0
   specs:
-    hub-clusters-creator (0.0.8)
+    hub-clusters-creator (0.1.0)
       aws-sdk-cloudformation (~> 1.25)
       aws-sdk-route53 (~> 1.29.0)
       aws-sigv4 (~> 1.1)
@@ -75,11 +75,11 @@ GEM
     audited (4.9.0)
       activerecord (>= 4.2, < 6.1)
     aws-eventstream (1.0.3)
-    aws-partitions (1.210.0)
+    aws-partitions (1.220.0)
     aws-sdk-cloudformation (1.25.0)
       aws-sdk-core (~> 3, >= 3.61.1)
       aws-sigv4 (~> 1.1)
-    aws-sdk-core (3.66.0)
+    aws-sdk-core (3.68.1)
       aws-eventstream (~> 1.0, >= 1.0.2)
       aws-partitions (~> 1.0)
       aws-sigv4 (~> 1.1)
@@ -182,7 +182,7 @@ GEM
       activerecord (>= 4.0.0)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
-    google-api-client (0.30.9)
+    google-api-client (0.32.1)
       addressable (~> 2.5, >= 2.5.1)
       googleauth (>= 0.5, < 0.10.0)
       httpclient (>= 2.8.1, < 3.0)
