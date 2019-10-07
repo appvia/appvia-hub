@@ -48,6 +48,17 @@
 </br></br>
 <%- end -%>
 
+<!-- show changelog on updates -->
+<%- if info[:upgradable] -%>
+<%=
+  render partial: 'subscription_changelog',
+    locals: {
+      changelog: info[:changelog],
+      update: info[:upgrade_version]
+    }
+%>
+<%- end -%>
+
 <!-- subscription summary cards -->
 <%=
   render partial: 'subscription_summary',
@@ -85,12 +96,39 @@
 <div id="subscription_id" class="card mb-3">
   <div class="card-footer">
     <%- if info[:upgradable] -%>
-      <%= link_to approve_path, class: 'btn btn-success' do %>
-        <i class="fas fa-check-square" style="color: white;"></i>Approve Upgrade
-      <%- end -%>
+    <button type="button" class="btn btn-success" data-toggle="modal" data-target=".approve-update">
+      <i class="fas fa-check-square" style="color: white;"></i>Approve Upgrade
+    </button>
     <%- end -%>
     <%= link_to delete_path, class: 'btn btn-warning' do %>
       <i class="fas fa-trash" style="color: white;"></i>Delete Subscription
     <%- end -%>
   </div>
 </div>
+
+<%- if info[:upgradable] -%>
+<div class="modal fade approve-update" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Subscription Update</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="tenor-gif-embed" data-postid="4705306" data-share-method="host" data-width="100%" data-aspect-ratio="1.2820512820512822"><a href="https://tenor.com/view/jonah-hill-shriek-excited-scream-shout-gif-4705306">Jonah Hill Shriek GIF</a> from <a href="https://tenor.com/search/jonahhill-gifs">Jonahhill GIFs</a></div><script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+        <strong>Are you sure you wish to update the operator?</strong>
+      </div>
+      <div class="modal-footer">
+        <%= link_to approve_path, class: 'btn btn-success' do %>
+          <i class="fas" style="color: white;"></i>Yes
+        <%- end -%>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">No</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<%- end -%>

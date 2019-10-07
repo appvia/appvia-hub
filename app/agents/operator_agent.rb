@@ -34,8 +34,7 @@ class OperatorAgent
       }],
       current_context: 'default'
     )
-    @client = K8s::Client.config(config,
-                                   ssl_verify_peer: verify_tls)
+    @client = K8s::Client.config(config, ssl_verify_peer: verify_tls)
   end
 
   # approve_subscription is responsible for approving the installation of an operator

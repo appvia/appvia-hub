@@ -60,22 +60,21 @@ module Admin
       @agent.approve_subscription(namespace, name)
 
       # invalidate the cache
-      Rails.cache.delete(params[:integration_id])
+      #Rails.cache.delete(params[:integration_id])
 
-      redirect_to admin_integration_operators_subscriptions_path(@integration), notice: 'Upgrade has been approved'
+      redirect_to admin_integration_operators_subscriptions_path(@integration), notice: 'Upgrade has been approved and will be upgraded in background'
     end
 
     # GET /admin/integrations/:integration_id/operators/:id/subscriptions
     def list_subscriptions
-      cache_key = params[:integration_id].to_s
+      #cache_key = params[:integration_id].to_s
+      #unless Rails.cache.exist?(cache_key, expires_in: 5.minutes)
+      #  @subscriptions = @agent.list_subscriptions_updates unless Rails.cache.exist?(cache_key)
+      #  Rails.cache.write(cache_key, @subscriptions)
+      #end
 
-      unless Rails.cache.exist?(cache_key, expires_in: 5.minutes)
-        @subscriptions = @agent.list_subscriptions_updates unless Rails.cache.exist?(cache_key)
-
-        Rails.cache.write(cache_key, @subscriptions)
-      end
-
-      @subscriptions = Rails.cache.read(cache_key)
+      #@subscriptions = Rails.cache.read(cache_key)
+      @subscriptions = @agent.list_subscriptions_updates
     end
 
     # GET /admin/integrations/:integration_id/operators/:id/subscriptions/:namespace/:name
@@ -169,13 +168,14 @@ module Admin
     end
 
     # generate_package_model generates a model
-    # rubocop:disable Lint/HandleExceptions,Metrics/MethodLength,Metrics/AbcSize
+    # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
     def generate_package_model(package, channel, subscription)
       model = {
         capabilibilities: extract { channel.annotations.capabilities.downcase },
         categories: extract { channel.annotations.categories.downcase },
         certified: extract('false') { channel.annotations.certified },
         channel_name: extract { subscription.spec.channel },
+        changelog: extract([]) { JSON.parse(channel.annotations.changelog) },
         crds: [],
         full_description: extract('') { channel.description },
         icon: nil,
@@ -211,15 +211,13 @@ module Admin
       end
 
       # do we have examples?
-      data = extract('[]') { channel.annotations['alm-examples'] }
-      begin
-        JSON.parse(data).each do |x|
-          model[:usage][x['kind']] = x.to_yaml
-        end
-      rescue StandardError => _e; end
+      (extract('[]') { JSON.parse(channel.annotations['alm-examples']) }).each do |x|
+        model[:usage][x['kind']] = x.to_yaml
+      end
+
       model
     end
-    # rubocop:enable Lint/HandleExceptions,Metrics/MethodLength,Metrics/AbcSize
+    # rubocop:enable Metrics/MethodLength,Metrics/AbcSize
 
     # generate_subscription_model creates a model for the subscription
     def generate_subscription_model(subscription)
