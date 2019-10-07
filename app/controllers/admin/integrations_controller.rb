@@ -178,6 +178,7 @@ module Admin
         channel_name: extract { subscription.spec.channel },
         crds: [],
         full_description: extract('') { channel.description },
+        icon: nil,
         name: extract('') { package.status.packageName },
         package_display_name: extract { channel.displayName },
         provider: extract('') { package.status.provider.name },

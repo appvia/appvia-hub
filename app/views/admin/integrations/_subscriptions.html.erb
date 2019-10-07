@@ -22,7 +22,7 @@
         <tr>
           <!-- package icon -->
           <td align="center">
-            <%-- if x[:icon] -%>
+            <%- unless x[:icon].nil? -%>
             <img width="32px" height="32px" src="data:image/svg+xml;base64,<%= x[:icon] %>"/>
             <%- end %>
           </td>

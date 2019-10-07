@@ -66,11 +66,22 @@
         <dd><%= subscription[:namespace] %>/<%= subscription[:name] %></dd>
       </dl>
       <dl class="dl-horizontal">
-        <dt>Approvals</dt>
+        <%-
+          tooltop = case subscription[:approvals]
+          when 'manual'
+            'The subscription must be manually approved to upgrade'
+          when 'automatic'
+            'The subscription is automatically approved and will upgrade itself'
+          else
+            'Unknown installplan approval'
+          end
+        -%>
+
+        <dt data-toggle="tooltip" data-placement="top" title="<%= tooltop %>">Approvals</dt>
         <dd><%= subscription[:approvals] %></dd>
       </dl>
       <dl class="dl-horizontal" >
-        <dt data-toggle="tooltip" data-placement="left" title="Use kubectl -n <%= subscription[:namespace] %> get installplan <%= subscription[:installplan] %>" >InstallPlan</dt>
+        <dt data-toggle="tooltip" data-placement="top" title="Use kubectl -n <%= subscription[:namespace] %> get installplan <%= subscription[:installplan] %>" >InstallPlan</dt>
         <dd><%= subscription[:installplan] %></dd>
       </dl>
       <dl class="dl-horizontal">
