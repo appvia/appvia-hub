@@ -46,9 +46,9 @@ module ResourcesHelper
       response = []
       status.each do |s|
         response << {
-          colour: GITHUB_STATUS_TO_COLOUR[s[:state]],
+          colour: GITHUB_STATUS_TO_COLOUR[s[:status]],
           text: s[:context] + ' ' + s[:description],
-          status: s[:state],
+          status: s[:status],
           url: s[:target_url]
         }
       end
