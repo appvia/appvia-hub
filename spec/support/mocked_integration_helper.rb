@@ -12,8 +12,8 @@ module MockedIntegrationHelper
       allow(PROVIDERS_REGISTRY).to receive(:config_schemas)
         .and_return(updated_config_schemas)
 
-      allow(schema).to receive(:validate!)
-        .and_return(true)
+      allow(schema).to receive(:validate)
+        .and_return([true, []])
     end
 
     def create_mocked_integration(provider_id: Integration.provider_ids.keys.first, config: { 'foo' => 'bar' }, schema: nil, parent_ids: [])

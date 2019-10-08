@@ -18,8 +18,10 @@ class ServiceCatalogService
     service_plans(class_name).find { |p| p.metadata.name == plan_name }
   end
 
-  def service_plan_schema(class_name, plan_name)
+  def service_plan_schema(class_name, plan_name, parse: true)
     schema = service_plan(class_name, plan_name)&.spec&.instanceCreateParameterSchema
+    return JsonSchema.parse!(schema.to_hash.deep_stringify_keys) if schema.present? && parse
+
     schema.to_hash.deep_stringify_keys if schema.present?
   end
 

@@ -142,7 +142,7 @@ class GitHubAgent
     response = client.status(full_name, status_branch)
 
     statuses = []
-    response[:statuses].each do |status|
+    Array(response[:statuses]).flatten.each do |status|
       statuses << {
         context: status['context'],
         description: status['description'],

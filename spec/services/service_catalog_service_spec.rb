@@ -76,14 +76,21 @@ RSpec.describe ServiceCatalogService, type: :service do
 
   describe '#service_plan_schema' do
     it 'retrieves the schema for a specific plan' do
-      plan_schema = @service.service_plan_schema s3_class_name, s3_prod_plan_name
+      plan_schema = @service.service_plan_schema s3_class_name, s3_prod_plan_name, parse: false
       expect(plan_schema['$schema']).to eq 'http://json-schema.org/draft-06/schema#'
       expect(plan_schema['properties']).not_to be_empty
     end
 
+    it 'retrieves the parsed JSON schema for a specific plan' do
+      plan_schema = @service.service_plan_schema s3_class_name, s3_prod_plan_name, parse: true
+      expect(plan_schema).to be_a(JsonSchema::Schema)
+    end
+
     it 'returns nil if no schema can be found' do
-      expect(@service.service_plan_schema(s3_class_name, 'invalid_plan')).to eq nil
-      expect(@service.service_plan_schema('invalid_class', 'invalid_plan')).to eq nil
+      expect(@service.service_plan_schema(s3_class_name, 'invalid_plan', parse: false)).to eq nil
+      expect(@service.service_plan_schema('invalid_class', 'invalid_plan', parse: false)).to eq nil
+      expect(@service.service_plan_schema(s3_class_name, 'invalid_plan', parse: true)).to eq nil
+      expect(@service.service_plan_schema('invalid_class', 'invalid_plan', parse: true)).to eq nil
     end
   end
 
