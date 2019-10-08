@@ -60,20 +60,20 @@ module Admin
       @agent.approve_subscription(namespace, name)
 
       # invalidate the cache
-      #Rails.cache.delete(params[:integration_id])
+      # Rails.cache.delete(params[:integration_id])
 
       redirect_to admin_integration_operators_subscriptions_path(@integration), notice: 'Upgrade has been approved and will be upgraded in background'
     end
 
     # GET /admin/integrations/:integration_id/operators/:id/subscriptions
     def list_subscriptions
-      #cache_key = params[:integration_id].to_s
-      #unless Rails.cache.exist?(cache_key, expires_in: 5.minutes)
+      # cache_key = params[:integration_id].to_s
+      # unless Rails.cache.exist?(cache_key, expires_in: 5.minutes)
       #  @subscriptions = @agent.list_subscriptions_updates unless Rails.cache.exist?(cache_key)
       #  Rails.cache.write(cache_key, @subscriptions)
-      #end
+      # end
 
-      #@subscriptions = Rails.cache.read(cache_key)
+      # @subscriptions = Rails.cache.read(cache_key)
       @subscriptions = @agent.list_subscriptions_updates
     end
 

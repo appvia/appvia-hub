@@ -83,7 +83,7 @@ module Admin
           'loki' => loki_integration.id
         }
 
-        if results[:services][:aws_sb]
+        if results[:services].key?(:catalog) && results[:services][:catalog][:enabled]
           service_catalog_integration = Integration.create!(
             provider_id: 'service_catalog',
             parent_ids: [kube_integration.id],
