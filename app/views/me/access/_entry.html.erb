@@ -1,0 +1,147 @@
+<% integration = entry[:integration] %>
+<% identity = entry[:identity] %>
+<% project_robot_credentials = entry[:project_robot_credentials] %>
+<% global_credentials = global_credentials_for integration %>
+
+<% requires_identity = ProviderIdentitiesService.requires_identity? integration.provider_id %>
+
+<div id="<%= integration.id -%>" class="card shadow-sm mb-4">
+  <div class="card-header">
+    <strong>
+      Integration: <%= integration.name %>
+    </strong>
+
+    <%= link_to me_access_path(anchor: integration.id) do %>
+      <%= icon 'link', css_class: ['ml-1', 'text-muted'] %>
+    <% end %>
+  </div>
+
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">
+      <h6 class="font-weight-bold">
+        Personal Access
+      </h6>
+
+      <% if requires_identity %>
+        <% if identity.present? %>
+          <p>
+            <%= icon 'check-circle', css_class: 'green' %>
+            Connected
+          </p>
+
+          <%= render partial: 'identity', locals: { identity: identity } %>
+        <% else %>
+          <p class="mb-0">
+            <%- case integration.provider_id -%>
+            <%- when 'git_hub' -%>
+              <%=
+                link_to(
+                  'Connect your GitHub identity',
+                  me_identity_flow_git_hub_start_path(integration_id: integration.id),
+                  class: 'btn btn-primary float-right ml-4',
+                  role: 'button'
+                )
+              %>
+            <%- end -%>
+
+            <%= icon 'exclamation-triangle', css_class: 'yellow' %>
+
+            <span>
+              Not connected
+            </span>
+          </p>
+        <% end %>
+      <% else %>
+        <p class="mb-0">
+          <%= icon 'info-circle', css_class: 'light-gray' %>
+          The hub doesn't manage personal access for this integration – you may need to speak to your admin to give you access.
+        </p>
+      <% end %>
+    </li>
+
+    <li class="list-group-item">
+      <h6 class="font-weight-bold">
+        Robot Access
+
+        <% if project_robot_credentials.present? %>
+          <%= count_badge project_robot_credentials.size %>
+        <% end %>
+
+        <% if global_credentials.present? %>
+          <%= count_badge 1 %>
+        <% end %>
+      </h6>
+
+      <% project_robot_credentials.each do |prc| %>
+        <div class="card mb-2">
+          <div class="card-body p-3">
+            <p class="card-title font-weight-bold">
+              <%= prc.full_name -%>
+            </p>
+
+            <p class="card-text">
+              For space: <%= prc.owner.name %>
+              (<%= prc.owner.slug %>)
+            </p>
+
+            <div>
+              <% if @unmask %>
+                <pre class="text-wrap bg-light p-3"><code><%= prc.value -%></code></pre>
+
+                <%=
+                  render partial: 'integrations/set_up_access',
+                    locals: {
+                      integration: integration,
+                      credential: prc
+                    }
+                %>
+              <% else %>
+                <%=
+                  link_to 'Reveal all credential values',
+                    {
+                      unmask: true,
+                      anchor: integration.id,
+                    }
+                %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <% if global_credentials.present? %>
+        <% if @unmask %>
+          <%=
+            render partial: 'integrations/global_credentials',
+              locals: {
+                integration: integration,
+                credentials: global_credentials
+              }
+          %>
+
+          <%=
+            render partial: 'integrations/set_up_access',
+              locals: {
+                integration: integration
+              }
+          %>
+        <% else %>
+          <%=
+            link_to 'Reveal all credential values',
+              {
+                unmask: true,
+                anchor: integration.id,
+              }
+          %>
+        <% end %>
+      <% end %>
+
+      <% if global_credentials.blank? && project_robot_credentials.blank? %>
+        <p class="mb-0">
+          <%= icon 'info-circle', css_class: 'light-gray' %>
+          No robot access available for this integration.
+        </p>
+      <% end %>
+    </li>
+  </ul>
+</div>

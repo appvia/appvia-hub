@@ -10,9 +10,8 @@ module Me
         .group_by(&:integration_id)
         .transform_values(&:first)
 
-      integrations_by_provider = TeamIntegrationsService
-        .for_user(current_user)
-        .group_by(&:provider_id)
+      users_integrations = TeamIntegrationsService.for_user current_user
+      integrations_by_provider = users_integrations.group_by(&:provider_id)
 
       project_ids = current_user
         .teams
@@ -22,7 +21,24 @@ module Me
         .for_projects(project_ids)
         .group_by(&:integration_id)
 
-      @groups = ResourceTypesService.all.map do |rt|
+      @groups = build_groups(
+        integrations_by_provider,
+        identities_by_integration,
+        project_robot_credentials_by_integration
+      )
+
+      users_integrations_ids = users_integrations.map(&:id)
+      @unused_identities = identities_by_integration.reject do |integration_id, _|
+        users_integrations_ids.include? integration_id
+      end.values
+
+      @unmask = params.key? 'unmask'
+    end
+
+    private
+
+    def build_groups(integrations_by_provider, identities_by_integration, project_robot_credentials_by_integration)
+      ResourceTypesService.all.map do |rt|
         integrations = rt[:providers].reduce([]) do |acc, p|
           acc + Array(integrations_by_provider[p])
         end
@@ -37,8 +53,6 @@ module Me
 
         rt.merge entries: entries
       end
-
-      @unmask = params.key? 'unmask'
     end
   end
 end
