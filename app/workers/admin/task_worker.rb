@@ -64,8 +64,21 @@ module Admin
           }
         )
 
+        operator_integration = Integration.create!(
+          provider_id: 'operator',
+          parent_ids: [kube_integration.id],
+          name: "OLM on cluster #{cluster_name}",
+          config: {
+            'cluster_name' => cluster_name,
+            'api_url' => results[:cluster][:endpoint],
+            'ca_cert' => results[:cluster][:ca],
+            'token' => results[:cluster][:service_account_token]
+          }
+        )
+
         intergrations = {
           'kubernetes' => kube_integration.id,
+          'operator' => operator_integration.id,
           'grafana' => grafana_integration.id,
           'loki' => loki_integration.id
         }

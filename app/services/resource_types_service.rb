@@ -34,7 +34,8 @@ module ResourceTypesService
           class: 'Resources::Operator',
           name: 'Operator',
           providers: %w[operator].freeze,
-          top_level: true
+          top_level: false,
+          depends_on: %w[kubernetes].freeze
         },
         {
           id: 'KubeNamespace',

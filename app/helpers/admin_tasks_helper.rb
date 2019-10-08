@@ -20,6 +20,7 @@ module AdminTasksHelper
     return [] if task.integrations.blank?
 
     kube_integration = Integration.find_by id: task.integrations['kubernetes']
+    operator_integration = Integration.find_by id: task.integrations['operator']
     grafana_integration = Integration.find_by id: task.integrations['grafana']
     loki_integration = Integration.find_by id: task.integrations['loki']
     service_catalog_integration = Integration.find_by id: task.integrations['service_catalog']
@@ -30,6 +31,12 @@ module AdminTasksHelper
         integration: kube_integration,
         name: kube_integration&.name,
         path: kube_integration.present? ? admin_integrations_path_with_selected(kube_integration) : nil
+      },
+      {
+        type: 'Operator',
+        integration: operator_integration,
+        name: operator_integration&.name,
+        path: operator_integration.present? ? admin_integrations_path_with_selected(operator_integration) : nil
       },
       {
         type: 'Grafana',
