@@ -36,15 +36,15 @@ class GrafanaAgent
   def sync_team(memberships)
     users = memberships.map do |membership|
       {
-        name: membership.user,
-        login: membership.user,
-        email: membership.user
+        name: membership.user.email,
+        login: membership.user.email,
+        email: membership.user.email
       }
     end
     body = users.to_json
     client.put do |req|
       add_grafana_headers req
-      req.url path
+      req.url 'users'
       req.body = body
     end.body
   end

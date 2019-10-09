@@ -1,6 +1,6 @@
 module TeamIntegrationsService
   class << self
-    def get(team, include_dependents: false)
+    def get(team, include_dependents: true)
       # Assumption: dependent integrations are never allocated, so will only ever
       # be in the pool of unallocated (thus requiring checking their parents instead).
 
