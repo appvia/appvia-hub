@@ -1,0 +1,27 @@
+<div class="card p-2 bg-light">
+  <dl class="row mb-0">
+    <% data = identity.external_info %>
+    <% data.each do |(k, v)| %>
+      <dt class="col-sm-3"><%= k -%></dt>
+      <dd class="col-sm-9"><%= v -%></dd>
+    <% end %>
+  </dl>
+
+  <div>
+    <%=
+      link_to(
+        'Disconnect',
+        me_identity_path(integration_id: identity.integration.id),
+        method: :delete,
+        class: 'btn btn-primary float-right ml-4',
+        role: 'button',
+        data: {
+          confirm: 'Are you sure you want to disconnect this identity from this integration? This will remove you from any relevant teams within the org, so you may lose access to repositories.',
+          title: "Disconnect identity for this integration and lose access",
+          verify: 'yes',
+          verify_text: "Type 'yes' to confirm"
+        }
+      )
+    %>
+  </div>
+</div>

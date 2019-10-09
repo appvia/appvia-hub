@@ -11,7 +11,7 @@ module Resources
         end
       },
       'Resources::DockerRepo' => {
-        'quay' => lambda do |resource, agent, config, logger|
+        'quay' => lambda do |resource, agent, _config, logger|
           integration = resource.integration
           project = resource.project
           credential = ProjectRobotCredentialsService.get(
@@ -20,9 +20,8 @@ module Resources
             project.slug
           )
 
-          org = config['org']
           robots = if credential.present?
-                     [{ name: "#{org}+#{credential.name}", permission: 'write' }]
+                     [{ name: credential.full_name, permission: 'write' }]
                    else
                      logger.warn [
                        'No hub managed project level robot credential available for',
@@ -58,7 +57,7 @@ module Resources
           )
 
           service_accounts = if credential.present?
-                               [{ name: credential.name }]
+                               [{ name: credential.full_name }]
                              else
                                logger.warn [
                                  'No hub managed project level robot credential available for',

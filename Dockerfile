@@ -1,6 +1,6 @@
 ##############################################################
 # Stage: builder
-FROM ruby:2.5.5-alpine3.9 AS builder
+FROM ruby:2.5.7-alpine3.10 AS builder
 
 ENV APP_PATH="/app" \
     NODE_ENV="production" \
@@ -35,7 +35,7 @@ RUN BASE_URL=noop \
 
 ##############################################################
 # Stage: final
-FROM ruby:2.5.5-alpine3.9
+FROM ruby:2.5.7-alpine3.10
 
 LABEL maintainer="info@appvia.io"
 LABEL source="https://github.com/appvia/appvia-hub"

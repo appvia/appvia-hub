@@ -10,7 +10,7 @@ jobs:
       SECRET_SALT: test_secret_salt
 
     docker:
-      - image: circleci/ruby:2.5.5-node-browsers
+      - image: circleci/ruby:2.5.7-node-browsers
 
       - image: circleci/postgres:10.6-alpine
         environment:
@@ -66,6 +66,13 @@ jobs:
       - store_artifacts:
           path: /tmp/test-results
           destination: test-results
+      - store_artifacts:
+          path: coverage
+
+      # Brakeman security analysis
+      - run:
+          name: Brakeman security analysis
+          command: bundle exec brakeman
 
       # Build assets (in production mode)
       # - to test that the build process goes through okay
@@ -75,7 +82,7 @@ jobs:
     parallelism: 1
 
     docker:
-      - image: circleci/ruby:2.5.5-node-browsers
+      - image: circleci/ruby:2.5.7-node-browsers
 
     working_directory: ~/appvia-hub
 

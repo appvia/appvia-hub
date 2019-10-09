@@ -10,11 +10,35 @@ module Me
         .group_by(&:integration_id)
         .transform_values(&:first)
 
-      integrations_by_provider = TeamIntegrationsService
-        .for_user(current_user)
-        .group_by(&:provider_id)
+      users_integrations = TeamIntegrationsService.for_user current_user
+      integrations_by_provider = users_integrations.group_by(&:provider_id)
 
-      @groups = ResourceTypesService.all.map do |rt|
+      project_ids = current_user
+        .teams
+        .map(&:project_ids)
+        .flatten
+      project_robot_credentials_by_integration = ProjectRobotCredentialsService
+        .for_projects(project_ids)
+        .group_by(&:integration_id)
+
+      @groups = build_groups(
+        integrations_by_provider,
+        identities_by_integration,
+        project_robot_credentials_by_integration
+      )
+
+      users_integrations_ids = users_integrations.map(&:id)
+      @unused_identities = identities_by_integration.reject do |integration_id, _|
+        users_integrations_ids.include? integration_id
+      end.values
+
+      @unmask = params.key? 'unmask'
+    end
+
+    private
+
+    def build_groups(integrations_by_provider, identities_by_integration, project_robot_credentials_by_integration)
+      ResourceTypesService.all.map do |rt|
         integrations = rt[:providers].reduce([]) do |acc, p|
           acc + Array(integrations_by_provider[p])
         end
@@ -22,7 +46,8 @@ module Me
         entries = integrations.map do |i|
           {
             integration: i,
-            identity: identities_by_integration[i.id]
+            identity: identities_by_integration[i.id],
+            project_robot_credentials: Array(project_robot_credentials_by_integration[i.id])
           }
         end
 
