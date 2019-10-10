@@ -38,14 +38,17 @@ module ResourcesHelper
   end
 
   # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/AbcSize
   def resource_status(resource)
+    return [] if resource.status != 'active'
+
     agent = AgentsService.get resource.integration.provider_id, resource.integration.config
 
     case resource.integration.provider_id
     when 'git_hub'
       response = []
       begin
-        status = agent.get_status(resource.name)
+        status = agent.get_status(resource.full_name)
       rescue StandardError => e
         logger.warn "Error getting status checks from Github: #{e}"
         response << {
@@ -97,6 +100,7 @@ module ResourcesHelper
     end
   end
   # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize
 
   def delete_resource_link(project_id, resource, css_class: [])
     link_to 'Delete',

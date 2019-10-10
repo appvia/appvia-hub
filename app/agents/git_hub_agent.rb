@@ -135,7 +135,6 @@ class GitHubAgent
   end
 
   def get_status(name)
-    full_name = "#{@org}/#{name}"
     status_branch = 'master'
     client = app_installation_client
     timeout = 0.5
@@ -143,7 +142,7 @@ class GitHubAgent
     client.connection_options[:request][:open_timeout] = timeout
     client.connection_options[:request][:timeout] = timeout
 
-    response = client.status(full_name, status_branch)
+    response = client.status(name, status_branch)
 
     statuses = []
     Array(response[:statuses]).flatten.each do |status|
