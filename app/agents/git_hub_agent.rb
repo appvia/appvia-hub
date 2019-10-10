@@ -139,7 +139,7 @@ class GitHubAgent
     status_branch = 'master'
     client = app_installation_client
 
-    Timeout::timeout(0.5) do
+    Timeout.timeout(0.5) do
       response = client.status(full_name, status_branch)
 
       statuses = []
