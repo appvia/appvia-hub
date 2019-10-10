@@ -45,7 +45,8 @@ module ResourcesHelper
       response = []
       begin
         status = agent.get_status(resource.name)
-      rescue Faraday::ConnectionFailed
+      rescue Exception => e
+        logger.warn "Error getting status checks from Github: #{e}"
         response << {
           colour: 'secondary',
           text: 'Status checks unavailable right now, please try refreshing the page later',
@@ -67,7 +68,8 @@ module ResourcesHelper
       response = []
       begin
         status = agent.get_all_deployed_versions(resource.name)
-      rescue Faraday::TimeoutError
+      rescue Exception => e
+        logger.warn "Error getting deployments from Kubernetes: #{e}"
         response << {
           colour: 'secondary',
           text: 'Deployment listing unavailable right now, please try refreshing the page later',
