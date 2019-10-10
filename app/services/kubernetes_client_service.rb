@@ -29,6 +29,13 @@ class KubernetesClientService
     @client = K8s::Client.config(config, ssl_verify_peer: certificate_authority.present?)
   end
 
+  # service_account_credential returns the credentials for a service account
+  def service_account_credential(namespace, name)
+    sa = @client.api('v1').resource('serviceaccounts', namespace: namespace).get(name)
+    secret = @client.api('v1').resource('secrets', namespace: namespace).get(sa.secrets.first.name)
+    secret.data.token
+  end
+
   # kubectl is used to apply a manifest
   def kubectl(manifest)
     resource = K8s::Resource.from_json(YAML.safe_load(manifest).to_json)
