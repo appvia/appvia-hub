@@ -52,7 +52,6 @@ Metrics/LineLength:
 Metrics/MethodLength:
   Max: 30
   Exclude:
-    - "app/helpers/resources_helper.rb"
     - "db/migrate/*"
     - "spec/**/*"
 

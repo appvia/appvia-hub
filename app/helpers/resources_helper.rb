@@ -37,6 +37,7 @@ module ResourcesHelper
       ] + Array(css_class)
   end
 
+  # rubocop:disable Metrics/MethodLength
   def resource_status(resource)
     agent = AgentsService.get resource.integration.provider_id, resource.integration.config
 
@@ -89,6 +90,7 @@ module ResourcesHelper
       end
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def delete_resource_link(project_id, resource, css_class: [])
     link_to 'Delete',
