@@ -138,8 +138,8 @@ class GitHubAgent
     full_name = "#{@org}/#{name}"
     status_branch = 'master'
     client = app_installation_client
-    client.connection_options[:request][:open_timeout] = 0.01
-    client.connection_options[:request][:timeout] = 0.01
+    client.connection_options[:request][:open_timeout] = 0.5
+    client.connection_options[:request][:timeout] = 0.5
 
     response = client.status(full_name, status_branch)
 

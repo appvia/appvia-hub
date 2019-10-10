@@ -68,8 +68,8 @@ class KubernetesAgent
   end
 
   def get_all_deployed_versions(namespace)
-    client.options.open_timeout = 0.01
-    client.options.timeout = 0.01
+    client.options.open_timeout = 0.5
+    client.options.timeout = 0.5
     client.get do |req|
       add_kube_auth_headers req
       req.url "versions/#{namespace}"

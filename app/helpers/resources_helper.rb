@@ -45,7 +45,7 @@ module ResourcesHelper
       response = []
       begin
         status = agent.get_status(resource.name)
-      rescue Exception => e
+      rescue StandardError => e
         logger.warn "Error getting status checks from Github: #{e}"
         response << {
           colour: 'secondary',
@@ -68,7 +68,7 @@ module ResourcesHelper
       response = []
       begin
         status = agent.get_all_deployed_versions(resource.name)
-      rescue Exception => e
+      rescue StandardError => e
         logger.warn "Error getting deployments from Kubernetes: #{e}"
         response << {
           colour: 'secondary',
