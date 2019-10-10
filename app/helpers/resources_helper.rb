@@ -45,7 +45,7 @@ module ResourcesHelper
       response = []
       begin
         status = agent.get_status(resource.name)
-      rescue Timeout::Error
+      rescue Faraday::ConnectionFailed
         response << {
           colour: 'secondary',
           text: 'Status checks unavailable right now, please try refreshing the page later',
@@ -55,9 +55,9 @@ module ResourcesHelper
       else
         status.each do |s|
           response << {
-            colour: GITHUB_STATUS_TO_COLOUR[s[:status]],
+            colour: GITHUB_STATUS_TO_COLOUR[s[:state]],
             text: s[:context] + ' ' + s[:description],
-            status: s[:status],
+            status: s[:state],
             url: s[:target_url]
           }
         end
@@ -67,7 +67,7 @@ module ResourcesHelper
       response = []
       begin
         status = agent.get_all_deployed_versions(resource.name)
-      rescue Timeout::Error
+      rescue Faraday::TimeoutError
         response << {
           colour: 'secondary',
           text: 'Deployment listing unavailable right now, please try refreshing the page later',
@@ -83,8 +83,8 @@ module ResourcesHelper
             url: false
           }
         end
+        response
       end
-      response
     end
   end
 
