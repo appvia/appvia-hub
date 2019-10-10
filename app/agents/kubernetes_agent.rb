@@ -67,12 +67,12 @@ class KubernetesAgent
     end.body
   end
 
-  def get_all_deployed_versions(namespace)
+  def get_pods(namespace)
     client.options.open_timeout = 0.5
     client.options.timeout = 0.5
     client.get do |req|
       add_kube_auth_headers req
-      req.url "versions/#{namespace}"
+      req.url "pods/#{namespace}"
     end.body
   end
 

@@ -68,20 +68,26 @@ module ResourcesHelper
     when 'kubernetes'
       response = []
       begin
-        status = agent.get_all_deployed_versions(resource.name)
+        status = agent.get_pods(resource.name)
       rescue StandardError => e
-        logger.warn "Error getting deployments from Kubernetes: #{e}"
+        logger.warn "Error getting pods from Kubernetes: #{e}"
         response << {
           colour: 'secondary',
-          text: 'Deployment listing unavailable right now, please try refreshing the page later',
+          text: 'Container listings unavailable right now, please try refreshing the page later',
           status: 'Timeout',
           url: false
         }
       else
-        status.each do |s|
+        containers = []
+        status[:items].each do |pod|
+          pod[:spec][:containers].each do |c|
+            containers << c[:image] unless containers.include? c[:image]
+          end
+        end
+        containers.each do |c|
           response << {
             colour: 'info',
-            text: s,
+            text: c,
             status: 'Deployed',
             url: false
           }
