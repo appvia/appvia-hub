@@ -139,18 +139,20 @@ class GitHubAgent
     status_branch = 'master'
     client = app_installation_client
 
-    response = client.status(full_name, status_branch)
+    Timeout::timeout(0.5) do
+      response = client.status(full_name, status_branch)
 
-    statuses = []
-    Array(response[:statuses]).flatten.each do |status|
-      statuses << {
-        context: status['context'],
-        description: status['description'],
-        status: status['state'],
-        target_url: status['target_url']
-      }
+      statuses = []
+      Array(response[:statuses]).flatten.each do |status|
+        statuses << {
+          context: status['context'],
+          description: status['description'],
+          status: status['state'],
+          target_url: status['target_url']
+        }
+      end
+      statuses
     end
-    statuses
   end
 
   private

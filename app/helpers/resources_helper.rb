@@ -42,27 +42,47 @@ module ResourcesHelper
 
     case resource.integration.provider_id
     when 'git_hub'
-      status = agent.get_status(resource.name)
       response = []
-      status.each do |s|
+      begin
+        status = agent.get_status(resource.name)
+      rescue Timeout::Error
         response << {
-          colour: GITHUB_STATUS_TO_COLOUR[s[:status]],
-          text: s[:context] + ' ' + s[:description],
-          status: s[:status],
-          url: s[:target_url]
-        }
-      end
-      response
-    when 'kubernetes'
-      status = agent.get_all_deployed_versions(resource.name)
-      response = []
-      status.each do |s|
-        response << {
-          colour: 'info',
-          text: s,
-          status: 'Deployed',
+          colour: 'secondary',
+          text: 'Status checks unavailable right now, please try refreshing the page later',
+          status: 'Timeout',
           url: false
         }
+      else
+        status.each do |s|
+          response << {
+            colour: GITHUB_STATUS_TO_COLOUR[s[:status]],
+            text: s[:context] + ' ' + s[:description],
+            status: s[:status],
+            url: s[:target_url]
+          }
+        end
+        response
+      end
+    when 'kubernetes'
+      response = []
+      begin
+        status = agent.get_all_deployed_versions(resource.name)
+      rescue Timeout::Error
+        response << {
+          colour: 'secondary',
+          text: 'Deployment listing unavailable right now, please try refreshing the page later',
+          status: 'Timeout',
+          url: false
+        }
+      else
+        status.each do |s|
+          response << {
+            colour: 'info',
+            text: s,
+            status: 'Deployed',
+            url: false
+          }
+        end
       end
       response
     end
