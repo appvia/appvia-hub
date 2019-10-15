@@ -24,35 +24,52 @@
       class: 'collapse'
     ) do
   %>
-    <div class="mt-2 card p-3 bg-light overflow-auto">
+    <div class="mt-2 card p-3 bg-light overflow">
       <%- case integration.provider_id -%>
       <%- when 'kubernetes' %>
-        <pre class="mb-0" style="white-space:normal;">
-          <code>
-            $ kubectl config set clusters.<%= integration.config['cluster_name'] %>.certificate-authority-data <%= integration.config['ca_cert'] %><br>
-            $ kubectl config set-cluster <%= integration.config['cluster_name'] %> --server=<%= integration.config['api_url'] %><br>
-            $ kubectl config set-credentials <%= integration.config['cluster_name'] %>-<%= credential.full_name %> --token=<%= credential.value %><br>
-            $ kubectl config set-context <%= integration.config['cluster_name'] %>-<%= credential.full_name %> --cluster=<%= integration.config['cluster_name'] %> --user=<%= integration.config['cluster_name'] %>-<%= credential.full_name %>
-          </code>
-        </pre>
+        <%= render partial: 'application/clipboard_copy',
+          locals: {
+            id: 'kubectl-setup-command-1',
+            copy_text: "kubectl config set clusters.#{integration.config['cluster_name']}.certificate-authority-data #{integration.config['ca_cert']}",
+            input_group_classes: ['mb-3']
+          }
+        %>
+        <%= render partial: 'application/clipboard_copy',
+          locals: {
+            id: 'kubectl-setup-command-2',
+            copy_text: "kubectl config set-cluster #{integration.config['cluster_name']} --server=#{integration.config['api_url']}",
+            input_group_classes: ['mb-3']
+          }
+        %>
+        <%= render partial: 'application/clipboard_copy',
+          locals: {
+            id: 'kubectl-setup-command-3',
+            copy_text: "kubectl config set-credentials #{integration.config['cluster_name']}-#{credential.full_name} --token=#{credential.value}",
+            input_group_classes: ['mb-3']
+          }
+        %>
+        <%= render partial: 'application/clipboard_copy',
+          locals: {
+            id: 'kubectl-setup-command-4',
+            copy_text: "kubectl config set-context #{integration.config['cluster_name']}-#{credential.full_name} --cluster=#{integration.config['cluster_name']} --user=#{integration.config['cluster_name']}-#{credential.full_name}"
+          }
+        %>
         <% documentation_url = 'https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#config' %>
       <%- when 'ecr' %>
-        <pre class="mb-0" style="white-space:normal;">
-          <code>
-            $ eval $(aws ecr get-login --region <%= integration.config['region'] %> --no-include-email --registry-ids <%= integration.config['account'] %>)
-          </code>
-        </pre>
+        <%= render partial: 'application/clipboard_copy',
+          locals: {
+            id: 'ecr-login-command',
+            copy_text: "eval $(aws ecr get-login --region #{integration.config['region']} --no-include-email --registry-ids #{integration.config['account']})"
+          }
+        %>
         <% documentation_url = 'https://docs.aws.amazon.com/AmazonECR/latest/userguide/ECR_AWSCLI.html' %>
       <%- when 'quay' %>
-        <pre class="mb-0" style="white-space:normal;">
-          <code>
-            $ docker login --username <%= credential.full_name %> quay.io<br>
-            login against server at https://quay.io/v1/<br>
-            password: <%= credential.value %><br>
-            email: you@example.com<br>
-            login succeeded
-          </code>
-        </pre>
+        <%= render partial: 'application/clipboard_copy',
+          locals: {
+            id: 'quay-login-command',
+            copy_text: "docker login --username #{credential.full_name} --password #{credential.value} quay.io"
+          }
+        %>
         <% documentation_url = 'https://docs.quay.io/solution/getting-started.html' %><% end %>
     </div>
     <div class="mt-2">

@@ -10,6 +10,8 @@ import 'bootstrap/dist/js/bootstrap';
 import 'bootstrap-select';
 import 'data-confirm-modal';
 
+import ClipboardJS from 'clipboard';
+
 import '../gem-dependencies.js.erb';
 
 import '../controllers';
@@ -65,5 +67,16 @@ document.addEventListener('turbolinks:load', () => {
 
   // Make bootstrap-select work with Turbolinks
   $(window).trigger('load.bs.select.data-api');
+});
+
+$(document).ready(function() {
+  const clipboard = new ClipboardJS('.copy-btn');
+  clipboard.on('success', function(e) {
+    const { originalTitle } = e.trigger.dataset;
+    $(e.trigger)
+      .attr('data-original-title', 'Copied!')
+      .tooltip('show');
+    $(e.trigger).attr('data-original-title', originalTitle);
+  });
 });
 /* eslint-enable no-undef */
