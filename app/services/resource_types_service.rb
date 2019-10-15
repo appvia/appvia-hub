@@ -55,7 +55,7 @@ module ResourceTypesService
         {
           id: 'ServiceCatalogInstance',
           class: 'Resources::ServiceCatalogInstance',
-          name: 'Service Catalog',
+          name: 'Cloud resources',
           providers: %w[service_catalog].freeze,
           top_level: false,
           depends_on: %w[kubernetes].freeze
