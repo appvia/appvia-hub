@@ -1,0 +1,17 @@
+<%- if info[:upgradable] -%>
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Upgrade Available</strong>: a newer version: <%= info[:upgrade_version] %> has been published.
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<%- end -%>
+<%- unless catalog[:healthy] -%>
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Catalog Issue</strong>: the <%= catalog[:namespace] %>/<%= catalog[:source] %> is experiencing a issue
+  please investigate
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<%- end -%>
