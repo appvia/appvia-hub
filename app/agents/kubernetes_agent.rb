@@ -67,6 +67,16 @@ class KubernetesAgent
     end.body
   end
 
+  def get_pods(namespace)
+    timeout = 0.5
+    client.options.open_timeout = timeout
+    client.options.timeout = timeout
+    client.get do |req|
+      add_kube_auth_headers req
+      req.url "pods/#{namespace}"
+    end.body
+  end
+
   private
 
   def add_kube_auth_headers(req)

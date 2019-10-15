@@ -31,6 +31,28 @@ class GitHubAgent
     resource
   end
 
+  def get_status(name)
+    status_branch = 'master'
+    client = app_installation_client
+    timeout = 0.5
+
+    client.connection_options[:request] = {
+      timeout: timeout,
+      open_timeout: timeout
+    }
+
+    response = client.status(name, status_branch)
+    statuses = []
+    Array(response[:statuses]).flatten.each do |status|
+      statuses << {
+        context: status['context'],
+        description: status['description'],
+        status: status['state'],
+        target_url: status['target_url']
+      }
+    end
+  end
+
   def import_from_template(repo, template_url, user_auth_token:)
     client = app_installation_client
     client.access_token = user_auth_token
