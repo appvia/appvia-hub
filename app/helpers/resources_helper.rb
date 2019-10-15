@@ -5,6 +5,11 @@ module ResourcesHelper
     'deleting' => 'warning',
     'failed' => 'danger'
   }.freeze
+  GITHUB_STATUS_TO_COLOUR = {
+    'pending' => 'warning',
+    'success' => 'success',
+    'failure' => 'danger'
+  }.freeze
 
   def resource_icon(resource_class_or_name = nil)
     case resource_class_or_name
@@ -31,6 +36,71 @@ module ResourcesHelper
         'text-capitalize'
       ] + Array(css_class)
   end
+
+  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/AbcSize
+  def resource_status(resource)
+    return [] if resource.status != 'active'
+
+    agent = AgentsService.get resource.integration.provider_id, resource.integration.config
+
+    case resource.integration.provider_id
+    when 'git_hub'
+      response = []
+      begin
+        status = agent.get_status(resource.full_name)
+      rescue StandardError => e
+        logger.warn "Error getting status checks from Github: #{e}"
+        response << {
+          colour: 'secondary',
+          text: 'Status checks unavailable right now, please try refreshing the page later',
+          status: 'Timeout',
+          url: false
+        }
+      else
+        status.each do |s|
+          response << {
+            colour: GITHUB_STATUS_TO_COLOUR[s[:state]],
+            text: s[:context] + ' ' + s[:description],
+            status: s[:state].capitalize,
+            url: s[:target_url]
+          }
+        end
+        response
+      end
+    when 'kubernetes'
+      response = []
+      begin
+        status = agent.get_pods(resource.name)
+      rescue StandardError => e
+        logger.warn "Error getting pods from Kubernetes: #{e}"
+        response << {
+          colour: 'secondary',
+          text: 'Container listings unavailable right now, please try refreshing the page later',
+          status: 'Timeout',
+          url: false
+        }
+      else
+        containers = []
+        status[:items].each do |pod|
+          pod[:spec][:containers].each do |c|
+            containers << c[:image] unless containers.include? c[:image]
+          end
+        end
+        containers.each do |c|
+          response << {
+            colour: 'info',
+            text: c,
+            status: 'Deployed',
+            url: false
+          }
+        end
+        response
+      end
+    end
+  end
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize
 
   def delete_resource_link(project_id, resource, css_class: [])
     link_to 'Delete',

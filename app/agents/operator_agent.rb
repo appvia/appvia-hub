@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/ClassLength
 class OperatorAgent
   # is the main api version
   API_V1 = 'operators.coreos.com/v1'.freeze
@@ -221,4 +220,3 @@ class OperatorAgent
     version.split('.').drop(1).join('.')
   end
 end
-# rubocop:enable Metrics/ClassLength
