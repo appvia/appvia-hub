@@ -59,6 +59,13 @@ module AgentsService
           kube_ca_cert: config['ca_cert'],
           kube_token: config['token']
         )
+      end,
+      'operator' => lambda do |config|
+        OperatorAgent.new(
+          url: config['api_url'],
+          ca_cert: config['ca_cert'],
+          token: config['token']
+        )
       end
     }.freeze
 

@@ -1,0 +1,117 @@
+<%-
+  subscription_path = admin_operator_subscription_path @integration, @subscription[:namespace], @subscription[:name]
+  approve_path = admin_approve_operator_subscription_path @integration, @subscription[:namespace], @subscription[:name]
+-%>
+
+<!-- subscription header -->
+<div class="page-header">
+  <span>
+    <h2>
+      <%- unless @info[:icon].nil? -%>
+        <img width="32px" height="32px" src="data:image/svg+xml;base64,<%= @info[:icon] %>"/>
+      <%- end -%>
+      <%= @info[:package_display_name] %>
+    </h2>
+    <span class="badge badge-warning" data-toggle="tooltip" data-placement="top" title="The capability of the operator"><%= @info[:capabilibilities] %></span>
+    <span class="badge badge-info" data-toggle="tooltip" data-placement="top" title="The channel the package comes from"><%= @info[:channel_name] %>/<%= @info[:version] %></span>
+    <%- if @info[:upgradable] %>
+    <span class="badge badge-primary">upgradable</span>
+    <%- end -%>
+    <span class="badge badge-secondary" data-toggle="tooltip" data-placement="top" title="The category the operator falls under"><%= @info[:categories] %></span>
+    <%- if @info[:certified] -%>
+    <span class="badge badge-success">certified</span>
+    <%- end -%>
+  </span>
+</div>
+<hr/>
+
+<!-- subscription notifications -->
+<%=
+  render partial: 'notifications',
+    locals: {
+      catalog: @catalog,
+      info: @info
+    }
+%>
+
+<%- unless @info[:short_description].empty? -%>
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">
+      <i class="fas fa-book-reader"></i><strong>Overview</strong>
+    </h5>
+    <%= @info[:short_description] %>
+  </div>
+</div>
+</br></br>
+<%- end -%>
+
+<!-- show changelog on updates -->
+<%- if @info[:upgradable] -%>
+<%=
+  render partial: 'changelog',
+    locals: {
+      changelog: @info[:changelog],
+      update: @info[:upgrade_version]
+    }
+%>
+<%- end -%>
+
+<!-- subscription summary cards -->
+<%=
+  render partial: 'summary',
+    locals: {
+      catalog: @catalog,
+      info: @info,
+      subscription: @subscription
+    }
+%>
+<br/><br/>
+
+<!-- operator owned crds -->
+<%- if @info[:crds].size.positive? -%>
+<%=
+  render partial: 'crds',
+    locals: {
+      info: @info
+    }
+%>
+<br/><br/>
+<%- end -%>
+
+<!-- action buttons -->
+<%- if @info[:upgradable] -%>
+<div id="subscription_id" class="card mb-3">
+  <div class="card-footer">
+    <button type="button" class="btn btn-success" data-toggle="modal" data-target=".approve-update">
+      <i class="fas fa-check-square" style="color: white;"></i>Approve Upgrade
+    </button>
+  </div>
+</div>
+<%- end -%>
+
+<%- if @info[:upgradable]-%>
+<div class="modal fade approve-update" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Subscription Update</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <strong>Are you sure you wish to update the operator?</strong>
+      </div>
+      <div class="modal-footer">
+        <%= link_to approve_path, class: 'btn btn-success' do %>
+          <i class="fas" style="color: white;"></i>Yes
+        <%- end -%>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">No</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<%- end -%>
