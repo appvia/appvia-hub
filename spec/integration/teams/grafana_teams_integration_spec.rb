@@ -72,15 +72,15 @@ RSpec.describe 'Grafana teams end-to-end' do
     end
 
     let :agent_initializer_params do
-      integration_config.symbolize_keys.except(
-        :agent_base_url,
-        :agent_token,
-        :url,
-        :api_key,
-        :ca_cert,
-        :admin_username,
-        :admin_password
-      )
+      {
+        agent_base_url: Rails.configuration.agents.grafana.base_url,
+        agent_token: Rails.configuration.agents.grafana.token,
+        url: integration_config['url'],
+        api_key: integration_config['api_key'],
+        ca_cert: integration_config['ca_cert'],
+        admin_username: integration_config['admin_username'],
+        admin_password: integration_config['admin_password']
+      }
     end
     let(:agent) { instance_double(agent_class) }
 
