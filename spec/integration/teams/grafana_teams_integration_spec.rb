@@ -98,7 +98,7 @@ RSpec.describe 'Grafana teams end-to-end' do
       expect(Integration.count).to be 0
 
       integration, success = Admin::IntegrationsService.create(
-        name: 'Integration 1',
+        name: 'Grafana Integration',
         provider_id: 'grafana',
         config: integration_config
       )
