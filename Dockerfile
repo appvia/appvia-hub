@@ -64,7 +64,8 @@ ENV HOME $APP_PATH
 ENV PORT 3001
 ENV RAILS_LOG_TO_STDOUT true
 ENV RAILS_SERVE_STATIC_FILES true
-ENV VERSION ${VERSION}
+
+RUN echo -n ${VERSION:-not-set} > public/version
 
 RUN bundle -v && \
     bundle config --global disable_shared_gems true
