@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ModuleLength
 module ResourcesHelper
   RESOURCE_STATUS_TO_CLASS = {
     'pending' => 'secondary',
@@ -9,6 +10,20 @@ module ResourcesHelper
     'pending' => 'warning',
     'success' => 'success',
     'failure' => 'danger'
+  }.freeze
+  QUAY_STATUS_TO_COLOUR = {
+    'High' => 'danger',
+    'Medium' => 'warning',
+    'Low' => 'info',
+    'Negligible' => 'secondary',
+    'Unknown' => 'secondary'
+  }.freeze
+  GRAFANA_STATUS_TO_COLOUR = {
+    'no_data' => 'warning',
+    'paused' => 'info',
+    'pending' => 'info',
+    'alerting' => 'danger',
+    'ok' => 'success'
   }.freeze
 
   def resource_icon(resource_class_or_name = nil)
@@ -97,6 +112,30 @@ module ResourcesHelper
         end
         response
       end
+    when 'quay'
+      status = agent.get_repo_status(resource.name)
+      items = status[:items]
+      response = []
+      items.each do |i|
+        image_tag = i[:name]
+        i[:spec][:features].each do |f|
+          cves = []
+          severities = []
+          f[:vulnerabilities].each do |v|
+            cves << v[:name]
+            severities << v[:severity]
+          end
+          highest_severity = get_highest_severity_quay(severities)
+          digest = i[:spec][:tag][:digest]
+          response << {
+            colour: QUAY_STATUS_TO_COLOUR[highest_severity],
+            text: image_tag + ' ' + cves.join(' '),
+            status: highest_severity,
+            url: vuln_url(resource.name, digest)
+          }
+        end
+      end
+      response
     end
   end
   # rubocop:enable Metrics/MethodLength
@@ -126,3 +165,4 @@ module ResourcesHelper
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength

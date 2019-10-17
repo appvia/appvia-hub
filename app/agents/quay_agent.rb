@@ -63,6 +63,14 @@ class QuayAgent
     end.body
   end
 
+  def get_repo_status(name)
+    path = repo_status_path name
+    client.get do |req|
+      add_quay_access_token_header req
+      req.url path
+    end.body
+  end
+
   private
 
   def add_quay_access_token_header(req)
@@ -71,6 +79,14 @@ class QuayAgent
 
   def repo_path(name)
     "registry/#{@org}/#{name}"
+  end
+
+  def vuln_url(name, digest)
+    "https://quay.io/repository/#{@org}/#{name}/manifest/#{digest}?tab=vulnerabilities"
+  end
+
+  def repo_status_path(name)
+    "registry/#{@org}/#{name}/status?limit=5"
   end
 
   def robot_path(name)
