@@ -112,7 +112,7 @@ jobs:
           name: Build image and push to Quay with tag latest
           command: |
             docker login quay.io --username $QUAY_USERNAME --password $QUAY_PASSWORD
-            docker build -t quay.io/appvia/appvia-hub:$CIRCLE_SHA1 . --build-arg=VERSION=${$CIRCLE_SHA1}
+            docker build -t quay.io/appvia/appvia-hub:$CIRCLE_SHA1 . --build-arg=VERSION=$CIRCLE_SHA1
             docker tag quay.io/appvia/appvia-hub:$CIRCLE_SHA1 quay.io/appvia/appvia-hub:latest
             docker push quay.io/appvia/appvia-hub:$CIRCLE_SHA1
             docker push quay.io/appvia/appvia-hub:latest
@@ -126,7 +126,7 @@ jobs:
           name: Build image and push to Quay with Git tag
           command: |
             docker login quay.io --username $QUAY_USERNAME --password $QUAY_PASSWORD
-            docker build -t quay.io/appvia/appvia-hub:$CIRCLE_TAG . --build-arg=VERSION=${$CIRCLE_TAG}
+            docker build -t quay.io/appvia/appvia-hub:$CIRCLE_TAG . --build-arg=VERSION=$CIRCLE_TAG
             docker push quay.io/appvia/appvia-hub:$CIRCLE_TAG
 
   make_docs:
