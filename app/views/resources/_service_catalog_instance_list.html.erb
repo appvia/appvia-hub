@@ -1,7 +1,8 @@
 <div class="indented mt-3">
   <h3 class="h6">
-    <strong>Service Catalog instances</strong>
-    <%= link_to 'New', new_project_resource_path(resource.project, type: 'ServiceCatalogInstance', parent_id: resource[:id]), class: 'btn btn-sm btn-primary mr-1 mt-n1' %>
+    <strong>Cloud resources</strong>
+    <span class="text-muted ml-2">(<%= grouped_resources.select { |gr| gr[:class] == 'Resources::ServiceCatalogInstance' }.count -%>)</span>
+    <span class="ml-3"><%= link_to 'New', new_project_resource_path(resource.project, type: 'ServiceCatalogInstance', parent_id: resource[:id]), class: 'btn btn-sm btn-primary mr-1 mt-n1' %></span>
   </h3>
   <% grouped_resources.each do |group| %>
     <% if group[:class] == 'Resources::ServiceCatalogInstance' %>

@@ -1,0 +1,266 @@
+{
+    "apiVersion": "packages.operators.coreos.com/v1",
+    "kind": "PackageManifest",
+    "metadata": {
+        "creationTimestamp": "2019-10-10T09:51:54Z",
+        "labels": {
+            "catalog": "operatorhubio-catalog",
+            "catalog-namespace": "olm",
+            "provider": "Red Hat",
+            "provider-url": ""
+        },
+        "name": "prometheus",
+        "namespace": "default",
+        "selfLink": "/apis/packages.operators.coreos.com/v1/namespaces/default/packagemanifests/prometheus"
+    },
+    "spec": {},
+    "status": {
+        "catalogSource": "operatorhubio-catalog",
+        "catalogSourceDisplayName": "Community Operators",
+        "catalogSourceNamespace": "olm",
+        "catalogSourcePublisher": "OperatorHub.io",
+        "channels": [
+            {
+                "currentCSV": "prometheusoperator.0.32.0",
+                "currentCSVDesc": {
+                    "annotations": {
+                        "alm-examples": "[{\"apiVersion\":\"monitoring.coreos.com/v1\",\"kind\":\"Prometheus\",\"metadata\":{\"name\":\"example\",\"labels\":{\"prometheus\":\"k8s\"}},\"spec\":{\"replicas\":2,\"serviceAccountName\":\"prometheus-k8s\",\"securityContext\": {}, \"serviceMonitorSelector\":{},\"ruleSelector\":{},\"alerting\":{\"alertmanagers\":[{\"namespace\":\"monitoring\",\"name\":\"alertmanager-main\",\"port\":\"web\"}]}}},{\"apiVersion\":\"monitoring.coreos.com/v1\",\"kind\":\"ServiceMonitor\",\"metadata\":{\"name\":\"example\",\"labels\":{\"k8s-app\":\"prometheus\"}},\"spec\":{\"selector\":{\"matchLabels\":{\"k8s-app\":\"prometheus\"}},\"endpoints\":[{\"port\":\"web\",\"interval\":\"30s\"}]}},{\"apiVersion\":\"monitoring.coreos.com/v1\",\"kind\":\"PodMonitor\",\"metadata\":{\"name\":\"example\",\"labels\":{\"k8s-app\":\"prometheus\"}},\"spec\":{\"selector\":{\"matchLabels\":{\"k8s-app\":\"prometheus\"}},\"podMetricsEndpoints\":[{\"port\":\"web\",\"interval\":\"30s\"}]}},{\"apiVersion\":\"monitoring.coreos.com/v1\",\"kind\":\"Alertmanager\",\"metadata\":{\"name\":\"alertmanager-main\"},\"spec\":{\"replicas\":3, \"securityContext\": {}}},{\"apiVersion\":\"monitoring.coreos.com/v1\",\"kind\":\"PrometheusRule\",\"metadata\":{\"creationTimestamp\":null,\"labels\":{\"prometheus\":\"example\",\"role\":\"alert-rules\"},\"name\":\"prometheus-example-rules\"},\"spec\":{\"groups\":[{\"name\":\"./example.rules\",\"rules\":[{\"alert\":\"ExampleAlert\",\"expr\":\"vector(1)\"}]}]}}]",
+                        "capabilities": "Deep Insights",
+                        "categories": "Monitoring",
+                        "certified": "false",
+                        "containerImage": "quay.io/coreos/prometheus-operator:v0.32.0",
+                        "createdAt": "2019-09-04 12:00:00",
+                        "description": "Manage the full lifecycle of configuring and managing Prometheus and Alertmanager servers.",
+                        "repository": "https://github.com/coreos/prometheus-operator",
+                        "support": "Frederic Branczyk"
+                    },
+                    "apiservicedefinitions": {},
+                    "customresourcedefinitions": {
+                        "owned": [
+                            {
+                                "description": "A running Prometheus instance",
+                                "displayName": "Prometheus",
+                                "kind": "Prometheus",
+                                "name": "prometheuses.monitoring.coreos.com",
+                                "resources": [
+                                    {
+                                        "kind": "StatefulSet",
+                                        "name": "",
+                                        "version": "v1beta2"
+                                    },
+                                    {
+                                        "kind": "Pod",
+                                        "name": "",
+                                        "version": "v1"
+                                    },
+                                    {
+                                        "kind": "ConfigMap",
+                                        "name": "",
+                                        "version": "v1"
+                                    },
+                                    {
+                                        "kind": "Service",
+                                        "name": "",
+                                        "version": "v1"
+                                    }
+                                ],
+                                "specDescriptors": [
+                                    {
+                                        "description": "Desired number of Pods for the cluster",
+                                        "displayName": "Size",
+                                        "path": "replicas",
+                                        "x-descriptors": [
+                                            "urn:alm:descriptor:com.tectonic.ui:podCount"
+                                        ]
+                                    },
+                                    {
+                                        "description": "A selector for the ConfigMaps from which to load rule files",
+                                        "displayName": "Rule Config Map Selector",
+                                        "path": "ruleSelector",
+                                        "x-descriptors": [
+                                            "urn:alm:descriptor:com.tectonic.ui:selector:core:v1:ConfigMap"
+                                        ]
+                                    },
+                                    {
+                                        "description": "ServiceMonitors to be selected for target discovery",
+                                        "displayName": "Service Monitor Selector",
+                                        "path": "serviceMonitorSelector",
+                                        "x-descriptors": [
+                                            "urn:alm:descriptor:com.tectonic.ui:selector:monitoring.coreos.com:v1:ServiceMonitor"
+                                        ]
+                                    },
+                                    {
+                                        "description": "The ServiceAccount to use to run the Prometheus pods",
+                                        "displayName": "Service Account",
+                                        "path": "serviceAccountName",
+                                        "x-descriptors": [
+                                            "urn:alm:descriptor:io.kubernetes:ServiceAccount"
+                                        ]
+                                    },
+                                    {
+                                        "description": "Limits describes the minimum/maximum amount of compute resources required/allowed",
+                                        "displayName": "Resource Requirements",
+                                        "path": "resources",
+                                        "x-descriptors": [
+                                            "urn:alm:descriptor:com.tectonic.ui:resourceRequirements"
+                                        ]
+                                    }
+                                ],
+                                "version": "v1"
+                            },
+                            {
+                                "description": "A Prometheus Rule configures groups of sequentially evaluated recording and alerting rules.",
+                                "displayName": "Prometheus Rule",
+                                "kind": "PrometheusRule",
+                                "name": "prometheusrules.monitoring.coreos.com",
+                                "version": "v1"
+                            },
+                            {
+                                "description": "Configures prometheus to monitor a particular k8s service",
+                                "displayName": "Service Monitor",
+                                "kind": "ServiceMonitor",
+                                "name": "servicemonitors.monitoring.coreos.com",
+                                "resources": [
+                                    {
+                                        "kind": "Pod",
+                                        "name": "",
+                                        "version": "v1"
+                                    }
+                                ],
+                                "specDescriptors": [
+                                    {
+                                        "description": "The label to use to retrieve the job name from",
+                                        "displayName": "Job Label",
+                                        "path": "jobLabel",
+                                        "x-descriptors": [
+                                            "urn:alm:descriptor:com.tectonic.ui:label"
+                                        ]
+                                    },
+                                    {
+                                        "description": "A list of endpoints allowed as part of this ServiceMonitor",
+                                        "displayName": "Endpoints",
+                                        "path": "endpoints",
+                                        "x-descriptors": [
+                                            "urn:alm:descriptor:com.tectonic.ui:endpointList"
+                                        ]
+                                    }
+                                ],
+                                "version": "v1"
+                            },
+                            {
+                                "description": "Configures prometheus to monitor a particular pod",
+                                "displayName": "Pod Monitor",
+                                "kind": "PodMonitor",
+                                "name": "podmonitors.monitoring.coreos.com",
+                                "resources": [
+                                    {
+                                        "kind": "Pod",
+                                        "name": "",
+                                        "version": "v1"
+                                    }
+                                ],
+                                "specDescriptors": [
+                                    {
+                                        "description": "The label to use to retrieve the job name from",
+                                        "displayName": "Job Label",
+                                        "path": "jobLabel",
+                                        "x-descriptors": [
+                                            "urn:alm:descriptor:com.tectonic.ui:label"
+                                        ]
+                                    },
+                                    {
+                                        "description": "A list of endpoints allowed as part of this PodMonitor",
+                                        "displayName": "Pod Metrics Endpoints",
+                                        "path": "podMetricsEndpoints",
+                                        "x-descriptors": [
+                                            "urn:alm:descriptor:com.tectonic.ui:endpointList"
+                                        ]
+                                    }
+                                ],
+                                "version": "v1"
+                            },
+                            {
+                                "description": "Configures an Alertmanager for the namespace",
+                                "displayName": "Alertmanager",
+                                "kind": "Alertmanager",
+                                "name": "alertmanagers.monitoring.coreos.com",
+                                "resources": [
+                                    {
+                                        "kind": "StatefulSet",
+                                        "name": "",
+                                        "version": "v1beta2"
+                                    },
+                                    {
+                                        "kind": "Pod",
+                                        "name": "",
+                                        "version": "v1"
+                                    },
+                                    {
+                                        "kind": "Service",
+                                        "name": "",
+                                        "version": "v1"
+                                    }
+                                ],
+                                "specDescriptors": [
+                                    {
+                                        "description": "Desired number of Pods for the cluster",
+                                        "displayName": "Size",
+                                        "path": "replicas",
+                                        "x-descriptors": [
+                                            "urn:alm:descriptor:com.tectonic.ui:podCount"
+                                        ]
+                                    },
+                                    {
+                                        "description": "Limits describes the minimum/maximum amount of compute resources required/allowed",
+                                        "displayName": "Resource Requirements",
+                                        "path": "resources",
+                                        "x-descriptors": [
+                                            "urn:alm:descriptor:com.tectonic.ui:resourceRequirements"
+                                        ]
+                                    }
+                                ],
+                                "version": "v1"
+                            }
+                        ]
+                    },
+                    "description": "The Prometheus Operator for Kubernetes provides easy monitoring definitions for Kubernetes services and deployment and management of Prometheus instances.\n\nOnce installed, the Prometheus Operator provides the following features:\n\n* **Create/Destroy**: Easily launch a Prometheus instance for your Kubernetes namespace, a specific application or team easily using the Operator.\n\n* **Simple Configuration**: Configure the fundamentals of Prometheus like versions, persistence, retention policies, and replicas from a native Kubernetes resource.\n\n* **Target Services via Labels**: Automatically generate monitoring target configurations based on familiar Kubernetes label queries; no need to learn a Prometheus specific configuration language.\n\n### Other Supported Features\n\n**High availability**\n\nMultiple instances are run across failure zones and data is replicated. This keeps your monitoring available during an outage, when you need it most.\n\n**Updates via automated operations**\n\nNew Prometheus versions are deployed using a rolling update with no downtime, making it easy to stay up to date.\n\n**Handles the dynamic nature of containers**\n\nAlerting rules are attached to groups of containers instead of individual instances, which is ideal for the highly dynamic nature of container deployment.\n",
+                    "displayName": "Prometheus Operator",
+                    "icon": [
+                        {
+                            "base64data": "PHN2ZyB3aWR0aD0iMjQ5MCIgaGVpZ2h0PSIyNTAwIiB2aWV3Qm94PSIwIDAgMjU2IDI1NyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCI+PHBhdGggZD0iTTEyOC4wMDEuNjY3QzU3LjMxMS42NjcgMCA1Ny45NzEgMCAxMjguNjY0YzAgNzAuNjkgNTcuMzExIDEyNy45OTggMTI4LjAwMSAxMjcuOTk4UzI1NiAxOTkuMzU0IDI1NiAxMjguNjY0QzI1NiA1Ny45NyAxOTguNjg5LjY2NyAxMjguMDAxLjY2N3ptMCAyMzkuNTZjLTIwLjExMiAwLTM2LjQxOS0xMy40MzUtMzYuNDE5LTMwLjAwNGg3Mi44MzhjMCAxNi41NjYtMTYuMzA2IDMwLjAwNC0zNi40MTkgMzAuMDA0em02MC4xNTMtMzkuOTRINjcuODQyVjE3OC40N2gxMjAuMzE0djIxLjgxNmgtLjAwMnptLS40MzItMzMuMDQ1SDY4LjE4NWMtLjM5OC0uNDU4LS44MDQtLjkxLTEuMTg4LTEuMzc1LTEyLjMxNS0xNC45NTQtMTUuMjE2LTIyLjc2LTE4LjAzMi0zMC43MTYtLjA0OC0uMjYyIDE0LjkzMyAzLjA2IDI1LjU1NiA1LjQ1IDAgMCA1LjQ2NiAxLjI2NSAxMy40NTggMi43MjItNy42NzMtOC45OTQtMTIuMjMtMjAuNDI4LTEyLjIzLTMyLjExNiAwLTI1LjY1OCAxOS42OC00OC4wNzkgMTIuNTgtNjYuMjAxIDYuOTEuNTYyIDE0LjMgMTQuNTgzIDE0LjggMzYuNTA1IDcuMzQ2LTEwLjE1MiAxMC40Mi0yOC42OSAxMC40Mi00MC4wNTYgMC0xMS43NjkgNy43NTUtMjUuNDQgMTUuNTEyLTI1LjkwNy02LjkxNSAxMS4zOTYgMS43OSAyMS4xNjUgOS41MyA0NS40IDIuOTAyIDkuMTAzIDIuNTMyIDI0LjQyMyA0Ljc3MiAzNC4xMzguNzQ0LTIwLjE3OCA0LjIxMy00OS42MiAxNy4wMTQtNTkuNzg0LTUuNjQ3IDEyLjguODM2IDI4LjgxOCA1LjI3IDM2LjUxOCA3LjE1NCAxMi40MjQgMTEuNDkgMjEuODM2IDExLjQ5IDM5LjYzOCAwIDExLjkzNi00LjQwNyAyMy4xNzMtMTEuODQgMzEuOTU4IDguNDUyLTEuNTg2IDE0LjI4OS0zLjAxNiAxNC4yODktMy4wMTZsMjcuNDUtNS4zNTVjLjAwMi0uMDAyLTMuOTg3IDE2LjQwMS0xOS4zMTQgMzIuMTk3eiIgZmlsbD0iI0RBNEUzMSIvPjwvc3ZnPg==",
+                            "mediatype": "image/svg+xml"
+                        }
+                    ],
+                    "installModes": [
+                        {
+                            "supported": true,
+                            "type": "OwnNamespace"
+                        },
+                        {
+                            "supported": true,
+                            "type": "SingleNamespace"
+                        },
+                        {
+                            "supported": false,
+                            "type": "MultiNamespace"
+                        },
+                        {
+                            "supported": false,
+                            "type": "AllNamespaces"
+                        }
+                    ],
+                    "provider": {
+                        "name": "Red Hat"
+                    },
+                    "version": "0.32.0"
+                },
+                "name": "beta"
+            }
+        ],
+        "defaultChannel": "beta",
+        "packageName": "prometheus",
+        "provider": {
+            "name": "Red Hat"
+        }
+    }
+}

@@ -37,6 +37,8 @@ RUN BASE_URL=noop \
 # Stage: final
 FROM ruby:2.5.7-alpine3.10
 
+ARG VERSION
+
 LABEL maintainer="info@appvia.io"
 LABEL source="https://github.com/appvia/appvia-hub"
 
@@ -62,6 +64,8 @@ ENV HOME $APP_PATH
 ENV PORT 3001
 ENV RAILS_LOG_TO_STDOUT true
 ENV RAILS_SERVE_STATIC_FILES true
+
+RUN echo -n ${VERSION:-not-set} > public/version
 
 RUN bundle -v && \
     bundle config --global disable_shared_gems true

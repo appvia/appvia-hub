@@ -1,0 +1,10 @@
+<% input_group_classes = local_assigns.key?(:input_group_classes) ? input_group_classes.join(' ') : 'mb-0' %>
+<div class="input-group input-group-sm <%= input_group_classes %>">
+  <% input_id = "#{id}-#{SecureRandom.hex(10)}" %>
+  <input id="<%= input_id %>" type="text" class="form-control text-monospace bg-white" value="<%= copy_text %>" readonly=""/>
+  <div class="input-group-append">
+    <button class="copy-btn" data-clipboard-target="#<%= input_id %>" data-toggle="tooltip" data-original-title="Copy to clipboard">
+      <%= icon 'clipboard', css_class: ['ml-1'] %>
+    </button>
+  </div>
+</div>

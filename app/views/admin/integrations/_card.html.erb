@@ -72,6 +72,9 @@
     %>
   </div>
   <div class="card-footer">
+    <%- if integration.kubernetes? -%>
+      <%= link_to 'Manage Cluster Subscriptions', (admin_operator_subscriptions_path integration), class: 'btn btn-success' %>
+    <%- end -%>
     <%= link_to 'Edit', edit_admin_integration_path(integration), class: 'btn btn-primary' %>
   </div>
 </div>

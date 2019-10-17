@@ -5,7 +5,11 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :integrations, except: %i[show destroy]
     resource :settings, only: %i[show update]
-
+    scope '/operator_subscriptions', controller: 'operator_subscriptions' do
+      get '/:integration_id/', action: :index, as: 'operator_subscriptions'
+      get '/:integration_id/:namespace/:name', action: :show, as: 'operator_subscription'
+      get '/:integration_id/:namespace/:name/approve', action: :approve, as: 'approve_operator_subscription'
+    end
     get '/create', to: 'create#show', as: 'create'
 
     resources :tasks, only: %i[new create destroy]

@@ -1,0 +1,32 @@
+{
+    "apiVersion": "operators.coreos.com/v1alpha1",
+    "kind": "CatalogSource",
+    "metadata": {
+        "annotations": {
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"operators.coreos.com/v1alpha1\",\"kind\":\"CatalogSource\",\"metadata\":{\"annotations\":{},\"name\":\"appvia-catalog\",\"namespace\":\"olm\"},\"spec\":{\"displayName\":\"Appvia Operators\",\"image\":\"quay.io/appvia/operator-catalog:latest\",\"publisher\":\"Appvia.io\",\"sourceType\":\"grpc\"}}\n"
+        },
+        "creationTimestamp": "2019-10-10T09:52:41Z",
+        "generation": 1,
+        "name": "appvia-catalog",
+        "namespace": "olm",
+        "resourceVersion": "1321",
+        "selfLink": "/apis/operators.coreos.com/v1alpha1/namespaces/olm/catalogsources/appvia-catalog",
+        "uid": "81b64be2-630f-4849-be64-6f10328e01cd"
+    },
+    "spec": {
+        "displayName": "Appvia Operators",
+        "image": "quay.io/appvia/operator-catalog:latest",
+        "publisher": "Appvia.io",
+        "sourceType": "grpc"
+    },
+    "status": {
+        "lastSync": "2019-10-10T09:53:24Z",
+        "registryService": {
+            "createdAt": "2019-10-10T09:52:41Z",
+            "port": "50051",
+            "protocol": "grpc",
+            "serviceName": "appvia-catalog",
+            "serviceNamespace": "olm"
+        }
+    }
+}
