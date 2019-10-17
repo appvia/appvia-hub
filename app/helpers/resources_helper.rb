@@ -42,7 +42,8 @@ module ResourcesHelper
   def resource_status(resource)
     return [] if resource.status != 'active'
 
-    agent = AgentsService.get resource.integration.provider_id, resource.integration.config
+    config = IntegrationOverridesService.new.effective_config_for resource.integration, resource.project
+    agent = AgentsService.get resource.integration.provider_id, config
 
     case resource.integration.provider_id
     when 'git_hub'
