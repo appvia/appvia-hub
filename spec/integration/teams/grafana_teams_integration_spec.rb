@@ -145,8 +145,6 @@ RSpec.describe 'Grafana teams end-to-end' do
       expect_any_instance_of(grafana_agent_class).to receive(:sync_team)
 
       process_jobs
-
-      reload_all team1
     end
   end
 end
