@@ -58,7 +58,6 @@ RSpec.describe 'Grafana teams end-to-end' do
   end
 
   context 'with integrations' do
-
     let :kubernetes_integration_config do
       {
         'cluster_name' => 'Our Kube Cluster',
@@ -143,10 +142,6 @@ RSpec.describe 'Grafana teams end-to-end' do
         user
       )
       expect(success).to be true
-      expect(team1.slug).to eq 'grafana-team'
-
-      expect(Sidekiq::Worker.jobs.size).to eq 4
-
       expect_any_instance_of(grafana_agent_class).to receive(:sync_team)
 
       process_jobs
