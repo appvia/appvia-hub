@@ -101,7 +101,14 @@ RSpec.describe 'Grafana teams end-to-end' do
         admin_password: grafana_integration_config['admin_password']
       }
     end
-    let(:agent) { instance_double(grafana_agent_class) }
+    let(:grafana_agent) { instance_double(grafana_agent_class) }
+
+    before do
+      expect(grafana_agent_class).to receive(:new)
+        .with(**grafana_agent_initializer_params)
+        .and_return(grafana_agent)
+        .at_least(:once)
+    end
 
     it 'synchronises users with grafana' do
       # Create a kubernetes and grafana integration
@@ -114,10 +121,13 @@ RSpec.describe 'Grafana teams end-to-end' do
         config: kubernetes_integration_config
       )
 
-      expect(Sidekiq::Worker.jobs.size).to eq 1
       expect(kubernetes_integration_success).to be true
       expect(Integration.count).to be 1
       expect(kubernetes_integration.kubernetes?).to be true
+
+      expect(Sidekiq::Worker.jobs.size).to eq 1
+
+      process_jobs
 
       grafana_integration, grafana_success = Admin::IntegrationsService.create(
         name: 'Grafana Integration',
@@ -125,10 +135,11 @@ RSpec.describe 'Grafana teams end-to-end' do
         config: grafana_integration_config,
         parent_ids: [kubernetes_integration.id]
       )
-
-      expect(Sidekiq::Worker.jobs.size).to eq 2
       expect(grafana_success).to be true
       expect(Integration.count).to be 2
+
+      expect(Sidekiq::Worker.jobs.size).to eq 1
+
       expect(grafana_integration.grafana?).to be true
 
       team1, success = TeamsService.create(
@@ -139,10 +150,14 @@ RSpec.describe 'Grafana teams end-to-end' do
         },
         user
       )
-      expect(Sidekiq::Worker.jobs.size).to eq 4
+
       expect(success).to be true
       expect(team1.slug).to eq 'grafana-team'
-      expect_any_instance_of(grafana_agent_class).to receive(:sync_team)
+
+      expect(Sidekiq::Worker.jobs.size).to eq 3
+
+      expect(grafana_agent).to receive(:sync_team)
+        .with(team1.memberships)
 
       process_jobs
     end
