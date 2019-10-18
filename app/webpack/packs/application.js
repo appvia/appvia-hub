@@ -20,6 +20,7 @@ import Vue from 'vue/dist/vue.esm';
 import TurbolinksAdapter from 'vue-turbolinks';
 import Autorefresh from '../components/Autorefresh.vue';
 import AddUserToTeam from '../components/AddUserToTeam.vue';
+import ResourceChecks from '../components/ResourceChecks.vue';
 
 Rails.start();
 Turbolinks.start();
@@ -31,28 +32,35 @@ Vue.use(TurbolinksAdapter);
 document.addEventListener('turbolinks:load', () => {
   const components = [
     {
-      elementId: 'autorefresh',
+      elementSelector: '#autorefresh',
       components: { Autorefresh },
       data: {}
     },
     {
-      elementId: 'add-user-to-team',
+      elementSelector: '#add-user-to-team',
       components: { AddUserToTeam },
+      data: {}
+    },
+    {
+      elementSelector: '.resource-checks',
+      components: { ResourceChecks },
       data: {}
     }
   ];
 
   components.forEach(e => {
-    const element = document.getElementById(e.elementId);
-    if (element != null) {
-      /* eslint-disable no-unused-vars */
-      const app = new Vue({
-        el: element,
-        components: e.components,
-        data: e.data
-      });
-      /* eslint-enable no-unused-vars */
-    }
+    const elems = document.querySelectorAll(e.elementSelector);
+    elems.forEach(element => {
+      if (element !== null) {
+        /* eslint-disable no-unused-vars */
+        const app = new Vue({
+          el: element,
+          components: e.components,
+          data: e.data
+        });
+        /* eslint-enable no-unused-vars */
+      }
+    });
   });
 });
 
@@ -69,7 +77,7 @@ document.addEventListener('turbolinks:load', () => {
   $(window).trigger('load.bs.select.data-api');
 
   const clipboard = new ClipboardJS('.copy-btn');
-  clipboard.on('success', function(e) {
+  clipboard.on('success', function clipboardSuccess(e) {
     const { originalTitle } = e.trigger.dataset;
     $(e.trigger)
       .attr('data-original-title', 'Copied!')

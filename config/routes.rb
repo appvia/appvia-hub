@@ -25,6 +25,9 @@ Rails.application.routes.draw do
         get :bootstrap, action: :prepare_bootstrap
         post :bootstrap
       end
+      member do
+        get :checks, constraints: { format: 'json' }
+      end
     end
 
     resource :integration_overrides, only: %i[show update]
