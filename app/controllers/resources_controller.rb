@@ -31,8 +31,8 @@ class ResourcesController < ApplicationController
     if integration_specific_prechecks(@resource, params) && @resource.save
       ResourceProvisioningService.new.request_create @resource
 
-      notice_message = 'Resource has been requested. The page will now refresh automatically to update the status of resources.'
-      redirect_to project_path(@project, autorefresh: true), notice: notice_message
+      notice_message = 'Resource has been requested. The status of the resource will refresh automatically to reflect any changes.'
+      redirect_to project_path(@project), notice: notice_message
     else
       render :new
     end
@@ -41,8 +41,8 @@ class ResourcesController < ApplicationController
   def destroy
     ResourceProvisioningService.new.request_delete @resource
 
-    notice_message = 'Deletion of resource has been requested. The page will now refresh automatically to update the status of resources.'
-    redirect_to project_path(@project, autorefresh: true), notice: notice_message
+    notice_message = 'Deletion of resource has been requested. The status of the resource will refresh automatically to reflect any changes.'
+    redirect_to project_path(@project), notice: notice_message
   end
 
   # GET spaces/:project_id/resources/:id/checks
@@ -70,7 +70,7 @@ class ResourcesController < ApplicationController
 
     notice = ('A default set of resources have been requested for this space' if result)
 
-    redirect_to project_path(@project, autorefresh: true), notice: notice
+    redirect_to project_path(@project), notice: notice
   end
 
   private

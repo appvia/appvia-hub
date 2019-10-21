@@ -164,7 +164,7 @@ RSpec.describe 'Project resources', type: :request do
           post project_resources_path(project, type: resource_type), params: { resource: params }
         end.to change { Resource.count }.by(1)
 
-        expect(response).to redirect_to(project_path(project, autorefresh: true))
+        expect(response).to redirect_to(project_path(project))
 
         resource = assigns(:resource)
         expect(resource).to be_persisted
@@ -348,7 +348,7 @@ RSpec.describe 'Project resources', type: :request do
           delete project_resource_path(resource.project, resource)
         end.not_to change(Resource, :count)
 
-        expect(response).to redirect_to(project_path(resource.project, autorefresh: true))
+        expect(response).to redirect_to(project_path(resource.project))
       end
 
       def expect_access_denied(resource)
@@ -513,7 +513,7 @@ RSpec.describe 'Project resources', type: :request do
           .with(requested_by: current_user)
 
         post bootstrap_project_resources_path(project)
-        expect(response).to redirect_to(project_path(project, autorefresh: true))
+        expect(response).to redirect_to(project_path(project))
       end
 
       def expect_access_denied(project)
