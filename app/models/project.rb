@@ -3,6 +3,7 @@ class Project < ApplicationRecord
   include FriendlyId
 
   audited associated_with: :team
+  has_associated_audits
 
   belongs_to :team
 

@@ -23,9 +23,19 @@ module TeamsService
       team.update params
     end
 
+    # USE WITH CAUTION! See note below.
     def destroy!(team)
       slug = team.slug
       integration_ids = TeamIntegrationsService.get(team).map(&:id)
+
+      # Delete allocations explicitly; cleanup in upstream providers should be
+      # taken care of by the worker below.
+      #
+      # IMPORTANT: as things stand (Oct 2019) this is potentially *dangerous*
+      # and could cause a "closed" integration suddenly becoming "open". Until
+      # we resolve the core issue of the workflow and mutability of allocated
+      # integrations, problems like this will rear it's ugly head!
+      team.allocations.destroy_all
 
       team.destroy!
 

@@ -14,6 +14,7 @@ require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 require 'sidekiq/testing'
+Sidekiq::Testing.fake!
 Sidekiq::Logging.logger = nil
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -53,6 +54,10 @@ RSpec.configure do |config|
   config.include_context 'mocked integration helper'
 
   config.include_context 'fixture helpers'
+
+  config.before(:suite) do
+    Rails.application.load_tasks
+  end
 
   config.before(:each) do
     Sidekiq::Worker.clear_all
