@@ -21,5 +21,9 @@ RSpec.describe ResourcesController, type: :routing do
     it 'routes to #bootstrap' do
       expect(post: '/spaces/foo/resources/bootstrap').to route_to('resources#bootstrap', project_id: 'foo')
     end
+
+    it 'routes to #checks' do
+      expect(get: '/spaces/foo/resources/1/checks').to route_to('resources#checks', project_id: 'foo', id: '1')
+    end
   end
 end

@@ -8,7 +8,7 @@ class ResourcesController < ApplicationController
   before_action :find_resource_type, only: %i[new create]
   before_action :find_integrations, only: %i[new create]
 
-  before_action :find_resource, only: [:destroy]
+  before_action :find_resource, only: %i[destroy checks]
 
   before_action :create_service_catalog_service, if: :service_catalog?, only: %i[new create]
 
@@ -43,6 +43,15 @@ class ResourcesController < ApplicationController
 
     notice_message = 'Deletion of resource has been requested. The page will now refresh automatically to update the status of resources.'
     redirect_to project_path(@project, autorefresh: true), notice: notice_message
+  end
+
+  # GET spaces/:project_id/resources/:id/checks
+  def checks
+    response = ResourceChecksService.new.get_checks @resource
+
+    respond_to do |format|
+      format.any { render json: response, content_type: 'application/json' }
+    end
   end
 
   def prepare_bootstrap

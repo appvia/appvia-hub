@@ -34,7 +34,7 @@ class GitHubAgent
   def get_status(name)
     status_branch = 'master'
     client = app_installation_client
-    timeout = 0.5
+    timeout = 10
 
     client.connection_options[:request] = {
       timeout: timeout,

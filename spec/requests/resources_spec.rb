@@ -559,4 +559,89 @@ RSpec.describe 'Project resources', type: :request do
       end
     end
   end
+
+  describe 'checks - GET /spaces/:project_id/resources/:id/checks' do
+    let(:integration) { create_mocked_integration }
+
+    let! :resource do
+      create :code_repo, project: @project, integration: integration
+    end
+
+    let :resource_checks do
+      [{
+        colour: 'success',
+        text: 'ci/circleci: test Your tests passed on CircleCI!',
+        status: 'SUCCESS',
+        url: false
+      }]
+    end
+
+    let :resource_checks_service do
+      instance_double('ResourceChecksService')
+    end
+
+    before do
+      allow(ResourceChecksService).to receive(:new)
+        .and_return(resource_checks_service)
+      allow(resource_checks_service).to receive(:get_checks)
+        .and_return(resource_checks)
+    end
+
+    it_behaves_like 'unauthenticated not allowed' do
+      before do
+        get checks_project_resource_path(@project, resource)
+      end
+    end
+
+    it_behaves_like 'authenticated' do
+      def expect_checks_response(project, resource)
+        get checks_project_resource_path(project, resource)
+        expect(response).to be_successful
+        expect(is_json_response?).to be true
+        expect(response.body).to eq resource_checks.to_json
+      end
+
+      it_behaves_like 'a hub admin' do
+        it 'returns the checks for the resource' do
+          expect_checks_response @project, resource
+        end
+      end
+
+      context 'not a hub admin' do
+        context 'is in the project\'s team' do
+          before do
+            create :team_membership, team: @project.team, user: current_user
+          end
+
+          it 'returns the checks for the resource' do
+            expect_checks_response @project, resource
+          end
+        end
+
+        context 'is in a different team' do
+          let(:other_project) { @other_projects.first }
+          let(:other_team) { other_project.team }
+
+          let! :resource do
+            create :code_repo, project: other_project, integration: integration
+          end
+
+          before do
+            create :team_membership, team: other_team, user: current_user
+          end
+
+          it 'can\'t get the checks for the resource' do
+            expect(ResourceChecksService).to receive(:new).never
+            get checks_project_resource_path(@project, resource)
+            expect(response).to redirect_to root_path
+            expect(flash[:alert]).not_to be_empty
+          end
+
+          it 'can still bootstrap resources for this different project' do
+            expect_checks_response other_project, resource
+          end
+        end
+      end
+    end
+  end
 end

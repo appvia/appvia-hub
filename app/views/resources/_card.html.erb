@@ -116,25 +116,11 @@
       Requested by: <%= resource.requested_by.email %>
     </p>
   </div>
-  <% statuses = resource_status resource %>
-  <% if statuses.present? %>
+  <% if resource.status == 'active' %>
     <div class="card-footer bg-light p-0">
-    <% statuses.each do |s| %>
-      <% if s[:url] %>
-        <a href="<%= s[:url] %>" target="_new" rel="noopener noreferrer" class="card-link ml-0">
-      <% end %>
-      <div class="row border m-0 bg-white">
-        <div class="col-1 p-1 bg-<%= s[:colour] %> text-center text-white"><%= s[:status] %></div>
-        <div class="col-11 p-1">
-          <div class="ml-2">
-            <span class="card-text text-muted"><%= s[:text] %></span>
-          </div>
-        </div>
+      <div class="resource-checks">
+        <resource-checks resource-id="<%= resource.id %>" project-id="<%= resource.project_id %>"></resource-checks>
       </div>
-      <% if s[:url] %>
-        </a>
-      <% end %>
-    <% end %>
     </div>
   <% end %>
 </div>
