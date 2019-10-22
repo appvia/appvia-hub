@@ -8,9 +8,21 @@ class ResourcesController < ApplicationController
   before_action :find_resource_type, only: %i[new create]
   before_action :find_integrations, only: %i[new create]
 
-  before_action :find_resource, only: %i[destroy checks]
+  before_action :find_resource, only: %i[show destroy checks]
 
   before_action :create_service_catalog_service, if: :service_catalog?, only: %i[new create]
+
+  def show
+    respond_to do |format|
+      format.any do
+        render(
+          partial: 'resources/card',
+          locals: { resource: @resource },
+          layout: nil
+        )
+      end
+    end
+  end
 
   def new
     integration = @integrations.values.first.first

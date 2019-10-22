@@ -25,7 +25,12 @@
 
     <% if resources.present? %>
       <% resources.each do |r| %>
-        <%= render partial: 'resources/card', locals: { resource: r } %>
+        <div
+          data-controller="resource-card"
+          data-resource-card-resource-url="<%= project_resource_url(r.project.slug, r) -%>"
+        >
+          <%= render partial: 'resources/card', locals: { resource: r } %>
+        </div>
       <% end %>
     <% else %>
       <div class="text-center p-3">

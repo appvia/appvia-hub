@@ -20,7 +20,7 @@ Rails.application.routes.draw do
   end
 
   resources :projects, path: 'spaces' do
-    resources :resources, only: %i[new create destroy] do
+    resources :resources, only: %i[show new create destroy] do
       collection do
         get :bootstrap, action: :prepare_bootstrap
         post :bootstrap

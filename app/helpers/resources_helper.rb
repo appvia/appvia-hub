@@ -34,7 +34,10 @@ module ResourcesHelper
         'badge',
         "badge-#{RESOURCE_STATUS_TO_CLASS[status]}",
         'text-capitalize'
-      ] + Array(css_class)
+      ] + Array(css_class),
+      data: {
+        target: 'resource-card.status'
+      }
   end
 
   def delete_resource_link(project_id, resource, css_class: [])
