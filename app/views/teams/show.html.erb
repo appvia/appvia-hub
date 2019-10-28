@@ -37,6 +37,12 @@
     </a>
   </li>
   <li class="nav-item">
+    <a class="nav-link active" id="clusters-tab" data-toggle="tab" href="#clusters" role="tab" aria-controls="clusters" aria-selected="true">
+      Clusters
+      <%= count_badge @team.clusters.count %>
+    </a>
+  </li>
+  <li class="nav-item">
     <a class="nav-link" id="people-tab" data-toggle="tab" href="#people" role="tab" aria-controls="people" aria-selected="false">
       People
       <%= count_badge @team.members.count %>
@@ -49,57 +55,14 @@
 
 <div class="tab-content border border-top-0">
   <div class="tab-pane active" id="spaces" role="tabpanel" aria-labelledby="spaces-tab">
-    <% if @team.projects.count.zero? %>
-      <div class="p-3 border-bottom">
-        <div class="card bg-light p-3 text-center">
-          <p class="lead">
-            This team has no spaces at the moment.
-          </p>
-
-          <p>
-            Spaces allow you to provision and group resources for your team.
-          </p>
-
-          <div>
-            <%=
-              link_to 'Create a new space...',
-                new_project_path(team_id: @team.id),
-                class: 'btn btn-primary',
-                role: 'button'
-            %>
-          </div>
-        </div>
-      </div>
-    <% else %>
-      <div class="text-right">
-        <%=
-          link_to 'New space',
-            new_project_path(team_id: @team.id),
-            class: 'btn btn-sm btn-primary my-2 mr-3',
-            role: 'button'
-        %>
-      </div>
-    <% end %>
-
     <%= render partial: 'projects', locals: { team: @team } %>
   </div>
 
+  <div class="tab-pane" id="clusters" role="tabpanel" aria-labelledby="clusters-tab">
+    <%= render partial: 'clusters', locals: { team: @team } %>
+  </div>
+
   <div class="tab-pane" id="people" role="tabpanel" aria-labelledby="people-tab">
-    <% if can? :edit, @team %>
-      <div id="add-user-to-team" class="border-bottom" style="min-height: 82px;">
-        <add-user-to-team
-          team-id="<%= @team.id -%>"
-          team-url="<%= team_path(@team, anchor: 'people') -%>"
-        ></add-user-to-team>
-      </div>
-    <% end %>
-
-    <% if @team.members.count.zero? %>
-      <p class="none-text text-center p-3 mb-0">
-        No team members yet
-      </p>
-    <% end %>
-
     <%= render partial: 'people', locals: { team: @team } %>
   </div>
 

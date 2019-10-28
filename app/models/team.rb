@@ -35,6 +35,11 @@ class Team < ApplicationRecord
     through: :memberships,
     source: :user
 
+  has_many :clusters,
+    -> { order(:name) },
+    dependent: :restrict_with_exception,
+    inverse_of: :team
+
   def descriptor
     slug
   end

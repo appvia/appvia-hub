@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_13_100202) do
+ActiveRecord::Schema.define(version: 2019_10_25_131207) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -71,6 +71,30 @@ ActiveRecord::Schema.define(version: 2019_09_13_100202) do
     t.index ["request_uuid"], name: "index_audits_on_request_uuid"
     t.index ["user_email"], name: "index_audits_on_user_email"
     t.index ["user_type", "user_id"], name: "index_audits_on_user_type_and_user_id"
+  end
+
+  create_table "clusters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "team_id", null: false
+    t.uuid "crd_id", null: false
+    t.uuid "created_by_id", null: false
+    t.string "name", null: false
+    t.string "status", null: false
+    t.text "error"
+    t.string "lock_version"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["crd_id"], name: "index_clusters_on_crd_id"
+    t.index ["created_by_id"], name: "index_clusters_on_created_by_id"
+    t.index ["name"], name: "index_clusters_on_name", unique: true
+    t.index ["team_id"], name: "index_clusters_on_team_id"
+  end
+
+  create_table "crds", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.jsonb "data", default: {}, null: false
+    t.string "lock_version"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["data"], name: "index_crds_on_data", using: :gin
   end
 
   create_table "credentials", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -197,6 +221,9 @@ ActiveRecord::Schema.define(version: 2019_09_13_100202) do
   end
 
   add_foreign_key "admin_tasks", "users", column: "created_by_id"
+  add_foreign_key "clusters", "crds"
+  add_foreign_key "clusters", "teams"
+  add_foreign_key "clusters", "users", column: "created_by_id"
   add_foreign_key "integration_overrides", "integrations"
   add_foreign_key "integration_overrides", "projects"
   add_foreign_key "resources", "integrations"

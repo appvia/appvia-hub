@@ -1,4 +1,5 @@
 class Resource < ApplicationRecord
+  include HasResourceStatus
   include SluggedAttribute
   include AttrJson::Record
 
@@ -31,15 +32,6 @@ class Resource < ApplicationRecord
     class_name: 'User',
     inverse_of: false
 
-  enum status: {
-    pending: 'pending',
-    active: 'active',
-    deleting: 'deleting',
-    failed: 'failed'
-  }
-
-  validates :status, presence: true
-
   slugged_attribute :name,
     presence: true,
     uniqueness: { scope: :integration_id },
@@ -48,8 +40,6 @@ class Resource < ApplicationRecord
   validate :check_integration_is_allowed
 
   attr_readonly :project_id, :integration_id, :requested_by_id
-
-  default_value_for :status, :pending
 
   def classification
     "#{self.class.model_name.human} - #{integration.provider_id.camelize}"

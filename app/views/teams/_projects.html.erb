@@ -1,4 +1,36 @@
 <div class="team-projects">
+  <% if team.projects.count.zero? %>
+    <div class="p-3 border-bottom">
+      <div class="card bg-light p-3 text-center">
+        <p class="lead">
+          This team has no spaces at the moment.
+        </p>
+
+        <p>
+          Spaces allow you to provision and group resources for your team.
+        </p>
+
+        <div>
+          <%=
+            link_to 'Create a new space...',
+              new_project_path(team_id: team.id),
+              class: 'btn btn-primary',
+              role: 'button'
+          %>
+        </div>
+      </div>
+    </div>
+  <% else %>
+    <div class="text-right">
+      <%=
+        link_to 'New space',
+          new_project_path(team_id: team.id),
+          class: 'btn btn-sm btn-primary my-2 mr-3',
+          role: 'button'
+      %>
+    </div>
+  <% end %>
+
   <div class="list-group list-group-flush border-top">
     <% team.projects.each do |project| %>
       <div class="list-group-item">
