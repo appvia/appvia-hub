@@ -5,7 +5,7 @@ ruby '2.5.7'
 
 gem 'rails', '~> 5.2.3'
 gem 'pg', '>= 0.18', '< 2.0'
-gem 'puma', '~> 3.12.1'
+gem 'puma', '~> 4.3.8'
 gem 'webpacker', '~> 4.0', '>= 4.0.7'
 gem 'bootsnap', '>= 1.4.5', require: false
 gem 'memoist', '~> 0.16.0'
