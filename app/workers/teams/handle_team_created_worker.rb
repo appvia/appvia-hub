@@ -5,7 +5,7 @@ module Teams
 
       return if team.nil?
 
-      integrations = TeamIntegrationsService.get team
+      integrations = TeamIntegrationsService.get(team, include_dependents: true)
 
       return if integrations.blank?
 

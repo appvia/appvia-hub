@@ -1,13 +1,16 @@
 class GrafanaAgent
   include AgentHttpClient
 
-  def initialize(agent_base_url:, agent_token:, grafana_url:, grafana_api_key:, grafana_ca_cert:)
+  def initialize(agent_base_url:, agent_token:, url:, api_key:, ca_cert:, admin_username:, admin_password:)
     @agent_base_url = agent_base_url
     @agent_token = agent_token
 
-    @grafana_url = grafana_url
-    @grafana_api_key = grafana_api_key
-    @grafana_ca_cert = grafana_ca_cert
+    @url = url
+    @api_key = api_key
+    @ca_cert = ca_cert
+
+    @admin_username = admin_username
+    @admin_password = admin_password
   end
 
   def create_dashboard(name, template_url:)
@@ -30,12 +33,29 @@ class GrafanaAgent
     end.body
   end
 
+  def sync_team(memberships)
+    users = memberships.map do |membership|
+      {
+        name: membership.user.email,
+        login: membership.user.email,
+        email: membership.user.email
+      }
+    end
+    body = users.to_json
+    client.put do |req|
+      add_grafana_headers req
+      req.url 'users'
+      req.body = body
+    end.body
+  end
+
   private
 
   def add_grafana_headers(req)
-    req.headers['X-Grafana-URL'] = @grafana_url
-    req.headers['X-Grafana-API-Key'] = @grafana_api_key
-    req.headers['X-Grafana-CA'] = @grafana_ca_cert
+    req.headers['X-Grafana-URL'] = @url
+    req.headers['X-Grafana-API-Key'] = @api_key
+    req.headers['X-Grafana-CA'] = @ca_cert
+    req.headers['X-Grafana-Basic-Auth'] = Base64.strict_encode64("#{@admin_username}:#{@admin_password}")
   end
 
   def dashboard_path(name)

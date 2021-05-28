@@ -164,6 +164,15 @@
         description: The API key used when talking to this Grafana instance.
         type: string
         masked: true
+      admin_username:
+        title: Grafana admin username used for basic auth in admin API calls
+        description: The Grafana admin username.
+        type: string
+      admin_password:
+        title: Grafana admin password used for basic auth in admin API calls
+        description: The Grafana admin password.
+        type: string
+        masked: true
       ca_cert:
         title: CA certificate
         description: "MUST be base64 encoded. This is the CA bundle (pem format) for requests to the Grafana API. If none is required, you can set this to a dummy value (e.g. 'noop')"

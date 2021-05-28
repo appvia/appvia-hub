@@ -18,6 +18,10 @@ module SyncIntegrationTeamService
         team.memberships.each do |membership|
           sync_team_membership integration, membership
         end
+      when 'grafana'
+        agent = agent_for integration
+
+        agent.sync_team(team.memberships)
       end
 
       true
